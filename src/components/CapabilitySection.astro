@@ -1,0 +1,115 @@
+---
+import { CAPABILITIES } from "@/data/site";
+
+type Capability = (typeof CAPABILITIES)[number];
+
+interface Props {
+  capabilities?: readonly Capability[];
+}
+
+const { capabilities = CAPABILITIES } = Astro.props;
+---
+
+<section class="capabilities af-section" id="capabilities" aria-labelledby="capabilities-title">
+  <div class="af-container">
+    <header class="capabilities__header">
+      <h2 id="capabilities-title">Five problems. One studio.</h2>
+      <p>Security, performance, network and player-facing systems built as one Minecraft infrastructure portfolio.</p>
+    </header>
+    <div class="capabilities__rows">
+      {capabilities.map((capability) => (
+        <article class="capabilities__row">
+          <h3 class="capabilities__category">{capability.label}</h3>
+          <div class="capabilities__details">
+            <p class="capabilities__body">{capability.body}</p>
+            <ul class="capabilities__keywords">
+              {capability.keywords.map((keyword) => <li class="af-chip">{keyword}</li>)}
+            </ul>
+          </div>
+          <a class="btn btn-outline capabilities__cta" href={capability.href}>{capability.cta}</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .capabilities__header {
+    max-width: 820px;
+    margin-bottom: 36px;
+  }
+
+  .capabilities__header h2 {
+    margin-bottom: 12px;
+    font-size: clamp(32px, 5vw, 46px);
+  }
+
+  .capabilities__header p {
+    margin: 0;
+    max-width: 72ch;
+    color: var(--af-muted);
+    font-size: 18px;
+  }
+
+  .capabilities__row {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.8fr) minmax(0, 2fr) auto;
+    align-items: center;
+    gap: 28px;
+    padding: 24px 0;
+    border-top: 1px solid var(--af-border);
+  }
+
+  .capabilities__category {
+    position: relative;
+    margin: 0;
+    padding-left: 18px;
+    font-size: 17px;
+    letter-spacing: 0.06em;
+  }
+
+  .capabilities__category::before {
+    position: absolute;
+    top: 0.48em;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--af-accent);
+    content: "";
+  }
+
+  .capabilities__body {
+    margin: 0 0 12px;
+    color: var(--af-muted);
+  }
+
+  .capabilities__keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .capabilities__cta {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .capabilities__row {
+      grid-template-columns: 1fr auto;
+      gap: 14px 18px;
+    }
+
+    .capabilities__category,
+    .capabilities__details {
+      grid-column: 1 / -1;
+    }
+
+    .capabilities__cta {
+      justify-self: start;
+    }
+  }
+</style>

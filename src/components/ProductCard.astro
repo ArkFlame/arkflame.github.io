@@ -1,0 +1,266 @@
+---
+import type { Product } from "@/data/products";
+import { getCategory } from "@/data/categories";
+
+interface Props {
+  product: Product;
+  headingLevel?: "h2" | "h3";
+}
+
+const { product, headingLevel = "h3" } = Astro.props;
+const Heading = headingLevel;
+
+const category = getCategory(product.category);
+
+/**
+ * Verified intrinsic dimensions of the shipped artwork (public/assets).
+ * Only slugs present here get width/height; nothing is guessed.
+ */
+const ARTWORK_SIZE: Readonly<Record<string, { width: number; height: number }>> = {
+  exploitfixer: { width: 512, height: 512 },
+  fairplay: { width: 512, height: 512 },
+  "authme-premium": { width: 512, height: 512 },
+  redstonelimiter: { width: 1200, height: 720 },
+  entitylimiter: { width: 1200, height: 720 },
+  flamepaper: { width: 1200, height: 720 },
+  flamecord: { width: 1200, height: 720 },
+  veloflame: { width: 512, height: 512 },
+  flamepractice: { width: 1200, height: 720 },
+  essentialslite: { width: 2000, height: 1000 },
+  "smp-lifesteal": { width: 1774, height: 887 },
+  "smp-punishments": { width: 2000, height: 1000 },
+  "smp-combat": { width: 2000, height: 1000 },
+  "smp-menus": { width: 1774, height: 887 },
+  "smp-harvest": { width: 2000, height: 1000 },
+  "smp-regions": { width: 2000, height: 1000 },
+};
+
+const size = ARTWORK_SIZE[product.slug];
+const href = `/plugins/${product.slug}/`;
+const chips = product.tags.slice(0, 4);
+const showIcon = product.image === undefined && product.icon !== undefined;
+---
+
+<li
+  class="af-card af-product-card"
+  data-product={product.slug}
+  data-name={product.name}
+  data-summary={product.summary}
+  data-tags={product.tags.join(" ")}
+  data-category={product.category}
+>
+  <div class="af-product-card__media">
+    {
+      product.image !== undefined ? (
+        <img
+          src={product.image}
+          alt={`${product.name} artwork`}
+          loading="lazy"
+          decoding="async"
+          width={size?.width}
+          height={size?.height}
+        />
+      ) : (
+        <div class="af-product-card__placeholder">
+          {category !== undefined && <i class={`bi ${category.icon}`} aria-hidden="true" />}
+          <span>{category?.name ?? product.category}</span>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="af-product-card__body">
+    <Heading class="af-product-card__title">
+      {
+        showIcon && product.icon !== undefined && (
+          <img
+            class="af-product-card__icon"
+            src={product.icon}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width={40}
+            height={40}
+          />
+        )
+      }
+      <a href={href}>{product.name}</a>
+    </Heading>
+
+    <p class="af-product-card__summary">{product.summary}</p>
+
+    <p class="af-product-card__meta">
+      {
+        category !== undefined ? (
+          <a class="af-product-card__category" href={`/plugins/${product.category}/`}>
+            {category.name}
+          </a>
+        ) : (
+          <span class="af-product-card__category">{product.category}</span>
+        )
+      }
+    </p>
+
+    {
+      chips.length > 0 && (
+        <ul class="af-product-card__tags">
+          {chips.map((tag) => (
+            <li class="af-chip">{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+
+  <a class="af-card-link" href={href}>View<span class="af-sr-only"> {product.name}</span></a>
+</li>
+
+<style>
+  .af-product-card {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 14px;
+    padding: 14px;
+    position: relative;
+  }
+
+  .af-product-card[hidden] {
+    display: none !important;
+  }
+
+  .af-product-card:hover {
+    border-color: var(--af-border-strong);
+    background-color: var(--af-surface-2);
+  }
+
+  .af-product-card__media img {
+    width: 88px;
+    height: auto;
+    max-height: 88px;
+    object-fit: cover;
+    border: 1px solid var(--af-border);
+    border-radius: 6px;
+    background-color: var(--af-raised);
+  }
+
+  .af-product-card__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 88px;
+    min-height: 88px;
+    padding: 8px 4px;
+    background-color: var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: 6px;
+    color: var(--af-muted);
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .af-product-card__placeholder i {
+    font-size: 24px;
+    color: var(--af-accent);
+  }
+
+  .af-product-card__body {
+    min-width: 0;
+  }
+
+  .af-product-card__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+  }
+
+  .af-product-card__title a:hover {
+    color: var(--af-accent);
+  }
+
+  .af-product-card__icon {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    object-fit: contain;
+    border-radius: 6px;
+    background-color: var(--af-raised);
+  }
+
+  .af-product-card__summary {
+    margin: 6px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--af-muted);
+  }
+
+  .af-product-card__meta {
+    margin: 8px 0 0;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .af-product-card__category {
+    color: var(--af-accent);
+  }
+
+  .af-product-card__category:hover {
+    text-decoration: underline;
+  }
+
+  .af-product-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .af-product-card__tags .af-chip {
+    padding: 3px 10px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 400;
+    white-space: normal;
+  }
+
+  .af-card-link {
+    align-self: center;
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--af-accent);
+  }
+
+  .af-card-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 480px) {
+    .af-product-card {
+      grid-template-columns: 56px minmax(0, 1fr);
+    }
+
+    .af-product-card__media img,
+    .af-product-card__placeholder {
+      width: 56px;
+      min-height: 56px;
+      max-height: 56px;
+    }
+
+    .af-card-link {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: 8px;
+    }
+  }
+</style>

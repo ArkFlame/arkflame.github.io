@@ -1,0 +1,145 @@
+---
+import type { CategoryInfo } from "@/data/categories";
+import { getCategory } from "@/data/categories";
+import { getProductsByCategory } from "@/data/products";
+import ProductCard from "@/components/ProductCard.astro";
+
+interface Props {
+  category: CategoryInfo;
+}
+
+const { category } = Astro.props;
+
+const products = getProductsByCategory(category.slug);
+const related = category.related
+  .map((slug) => getCategory(slug))
+  .filter((info): info is CategoryInfo => info !== undefined)
+  .slice(0, 2);
+---
+
+<article class="af-container af-section af-category-page">
+  <nav class="af-breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/plugins/">Plugins</a></li>
+      <li aria-current="page">{category.name}</li>
+    </ol>
+  </nav>
+
+  <h1>{category.h1}</h1>
+  <p class="af-category-page__intro">{category.intro}</p>
+
+  <section class="af-category-page__products" aria-labelledby="category-products-heading">
+    <h2 class="af-category-page__heading" id="category-products-heading">
+      <i class={`bi ${category.icon}`} aria-hidden="true" />
+      {category.name} plugins
+    </h2>
+
+    {
+      products.length === 0 ? (
+        <p class="af-category-page__note">No plugins are listed in this category yet.</p>
+      ) : (
+        <ul class="af-category-page__list">
+          {products.map((product) => (
+            <ProductCard product={product} headingLevel="h3" />
+          ))}
+        </ul>
+      )
+    }
+  </section>
+
+  <p class="af-category-page__closing">{category.closing}</p>
+
+  <nav class="af-category-page__nav" aria-label="Plugin categories">
+    <a class="btn" href="/plugins/">All plugins</a>
+    {related.map((info) => <a class="btn" href={`/plugins/${info.slug}/`}>{info.name}</a>)}
+  </nav>
+</article>
+
+<style>
+  .af-category-page h1 {
+    margin-top: 14px;
+    font-size: clamp(2.1rem, 5vw, 3rem);
+  }
+
+  .af-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--af-muted);
+  }
+
+  .af-breadcrumb li + li::before {
+    content: "/";
+    margin-right: 8px;
+    color: var(--af-border-strong);
+  }
+
+  .af-breadcrumb a:hover {
+    color: var(--af-accent);
+  }
+
+  .af-breadcrumb [aria-current="page"] {
+    color: var(--af-accent);
+  }
+
+  .af-category-page__intro {
+    margin: 14px 0 0;
+    max-width: 68ch;
+    color: var(--af-muted);
+  }
+
+  .af-category-page__products {
+    margin-top: 40px;
+  }
+
+  .af-category-page__heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--af-border);
+    font-size: 24px;
+    color: var(--af-accent);
+  }
+
+  .af-category-page__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 12px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .af-category-page__note {
+    margin: 16px 0 0;
+    color: var(--af-muted);
+  }
+
+  .af-category-page__closing {
+    margin: 40px 0 0;
+    max-width: 70ch;
+    color: var(--af-muted);
+  }
+
+  .af-category-page__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  @media (max-width: 760px) {
+    .af-category-page__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

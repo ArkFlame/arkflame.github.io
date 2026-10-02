@@ -1,0 +1,52 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const description = "The page you requested does not exist on arkflame.com.";
+---
+
+<BaseLayout
+  title="Page not found | ArkFlame Studios"
+  description={description}
+  canonicalPath="/404.html"
+  noindex={true}
+>
+  <section class="nf af-section">
+    <div class="af-container">
+      <p class="af-eyebrow">404</p>
+      <h1>Page not found</h1>
+      <p class="nf__body">
+        That address does not match a page on this site. Use the links below, or
+        go back and check the URL.
+      </p>
+      <div class="nf__actions">
+        <a class="btn btn-primary" href="/">Go home</a>
+        <a class="btn" href="/plugins/">Browse plugins</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    text-align: center;
+  }
+
+  .nf h1 {
+    margin: 8px 0 16px;
+    font-size: clamp(38px, 6vw, 58px);
+  }
+
+  .nf__body {
+    margin: 0 auto 26px;
+    max-width: 52ch;
+    color: var(--af-muted);
+    line-height: 1.65;
+  }
+
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+</style>

@@ -1,0 +1,336 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE } from "@/data/site";
+
+const description =
+  "ArkFlame Studios builds Minecraft server, security, performance and gameplay software. It is built by LinsaFTW, an Argentine software developer.";
+
+const buildAreas = [
+  {
+    label: "Security",
+    href: "/plugins/security/",
+    body: "Exploit protection, anticheat, authentication and abuse prevention for Minecraft servers and networks.",
+  },
+  {
+    label: "Performance",
+    href: "/plugins/performance/",
+    body: "Server optimization tools for entity pressure, redstone abuse, runtime stability and high-load environments.",
+  },
+  {
+    label: "Network",
+    href: "/plugins/network/",
+    body: "Proxy infrastructure for Minecraft networks built around Velocity and Bungee-compatible environments.",
+  },
+  {
+    label: "Gameplay",
+    href: "/plugins/gameplay/",
+    body: "PvP, practice, minigame and player-facing systems built for multiplayer Minecraft.",
+  },
+];
+
+const milestones = [
+  "FlameCord — verified public BuiltByBit launch: 2020-02-01",
+  "VeloFlame — verified public BuiltByBit launch: 2025-10-27",
+  "Public article consolidating “ArkFlame Studios as the main hub” — 2026-05-28",
+  "FairPlay — verified public BuiltByBit launch: 2026-06-12",
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      "@id": "https://arkflame.com/about/#aboutpage",
+      name: "About ArkFlame Studios | Minecraft Infrastructure Software",
+      url: "https://arkflame.com/about/",
+      isPartOf: { "@id": "https://arkflame.com/#website" },
+      mainEntity: { "@id": "https://arkflame.com/#organization" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://arkflame.com/about/#breadcrumb",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://arkflame.com/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "About",
+          item: "https://arkflame.com/about/",
+        },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="About ArkFlame Studios | Minecraft Infrastructure Software"
+  description={description}
+  canonicalPath="/about/"
+  jsonLd={jsonLd}
+>
+  <div class="af-container">
+    <nav class="ab-crumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><span aria-current="page">About</span></li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="af-section ab-lead" aria-labelledby="ab-about-heading">
+    <div class="af-container">
+      <p class="af-eyebrow">ABOUT</p>
+      <h1>About ArkFlame Studios</h1>
+      <h2 id="ab-about-heading">ArkFlame Studios</h2>
+      <p class="ab-lede">
+        ArkFlame Studios builds Minecraft infrastructure, security, performance,
+        authentication, anticheat and gameplay software.
+      </p>
+      <p class="ab-copy">
+        The work is infrastructure software rather than resource packs,
+        shaders or client modifications. Products run on the server or proxy
+        side of a Minecraft deployment, which is where abuse filtering, load
+        control and network entry protection actually have to happen.
+      </p>
+      <p class="ab-copy">
+        Every product listed on this site documents its own supported platforms
+        and version compatibility, so check the individual product page before
+        deploying. Nothing here is presented as a finished guarantee for an
+        environment you have not tested. Minecraft is a trademark of Mojang
+        Studios. ArkFlame Studios is not affiliated with Mojang or Microsoft.
+      </p>
+    </div>
+  </section>
+
+  <section class="af-section" aria-labelledby="ab-build-heading">
+    <div class="af-container">
+      <h2 id="ab-build-heading">What we build</h2>
+      <p class="ab-copy">
+        The catalogue is grouped into four areas. Authentication and anticheat
+        work sits inside security; proxy and ingress control sits inside
+        network infrastructure. Security products cover crash and dupe exploit
+        protection, packet abuse filtering, combat anticheat and premium
+        authentication bridges. Network software guards the entry point of a
+        Minecraft network rather than running inside a single server.
+      </p>
+      <ul class="ab-areas">
+        {
+          buildAreas.map((area) => (
+            <li class="af-card ab-area">
+              <a class="af-chip" href={area.href}>{area.label}</a>
+              <p>{area.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="ab-copy">
+        Products span legacy and modern Minecraft environments, including Paper,
+        Folia, Velocity and BungeeCord. Engineering work concentrates on packet
+        handling, concurrency, cross-version compatibility, runtime cost and
+        security boundaries.
+      </p>
+    </div>
+  </section>
+
+  <section class="af-section" aria-labelledby="ab-roots-heading">
+    <div class="af-container">
+      <h2 id="ab-roots-heading">Public roots</h2>
+      <p class="ab-copy">
+        ArkFlame-branded Minecraft activity is independently documented through
+        ArkFlame Network by 2013-11-29. That record is evidence of the brand's
+        public roots; it is not a claim about when the current company began
+        operating.
+      </p>
+      <p class="ab-copy">Publicly verifiable product and hub milestones:</p>
+      <ol class="ab-milestones">
+        {milestones.map((milestone) => <li>{milestone}</li>)}
+      </ol>
+      <p class="ab-copy">
+        Each BuiltByBit entry marks the first public release date recorded for
+        that product on its marketplace page. The 2026-05-28 entry is the public
+        article that consolidated ArkFlame Studios as the main hub for the
+        surrounding work. These are release and publication records, not
+        corporate milestones.
+      </p>
+    </div>
+  </section>
+
+  <section class="af-section" aria-labelledby="ab-founder-heading">
+    <div class="af-container">
+      <div class="ab-founder af-card">
+        <img
+          src={SITE.founderImage}
+          alt="Juan Cruz Linsalata (LinsaFTW)"
+          width="512"
+          height="512"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="ab-founder-copy">
+          <h2 id="ab-founder-heading">Founder</h2>
+          <p class="ab-founder-role">Founder &amp; Developer</p>
+          <p class="ab-copy">
+            Juan Cruz Linsalata, known online as LinsaFTW, is an Argentine
+            software developer and the builder behind ArkFlame Studios.
+          </p>
+          <p class="ab-copy">
+            LinsaFTW publicly describes himself as coding since 2010. That is his
+            own personal account of his experience, not a date for this company.
+            Design, implementation and release of the products listed here are
+            his work; support questions are answered through the public channels
+            linked from each product page.
+          </p>
+          <a
+            class="btn btn-primary"
+            href={SITE.founderUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Meet LinsaFTW
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="af-container ab-cta">
+    <a class="btn btn-primary" href="/plugins/">Browse plugins</a>
+  </div>
+</BaseLayout>
+
+<style>
+  .ab-crumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 22px 0 0;
+    list-style: none;
+    font-size: 14px;
+    color: var(--af-muted);
+  }
+
+  .ab-crumb a {
+    color: var(--af-muted);
+  }
+
+  .ab-crumb a:hover {
+    color: var(--af-accent);
+  }
+
+  .ab-lead h1 {
+    margin: 8px 0 34px;
+    font-size: clamp(38px, 6vw, 60px);
+  }
+
+  .ab-lead h2 {
+    margin: 0 0 18px;
+    font-size: clamp(22px, 3vw, 28px);
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+  }
+
+  .ab-lede {
+    margin: 0 0 18px;
+    max-width: 58ch;
+    font-size: clamp(19px, 2.4vw, 24px);
+    line-height: 1.45;
+    color: var(--af-text);
+  }
+
+  .ab-copy {
+    margin: 0 0 14px;
+    max-width: 62ch;
+    color: var(--af-muted);
+    line-height: 1.65;
+  }
+
+  .ab-copy:last-child {
+    margin-bottom: 0;
+  }
+
+  .ab-areas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ab-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ab-area p {
+    margin: 0;
+    color: var(--af-muted);
+    line-height: 1.6;
+  }
+
+  .ab-milestones {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding-left: 22px;
+    max-width: 62ch;
+    color: var(--af-muted);
+    line-height: 1.6;
+  }
+
+  .ab-milestones li::marker {
+    color: var(--af-accent);
+    font-family: var(--font-display);
+  }
+
+  .ab-founder {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .ab-founder img {
+    flex: 0 0 auto;
+    width: 196px;
+    height: 196px;
+    object-fit: cover;
+    border: 1px solid var(--af-border-strong);
+    border-radius: 22px;
+  }
+
+  .ab-founder-copy {
+    flex: 1 1 320px;
+  }
+
+  .ab-founder-role {
+    margin: 0 0 12px;
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .ab-cta {
+    padding-block-end: var(--af-section-y);
+    text-align: center;
+  }
+
+  @media (max-width: 560px) {
+    .ab-founder img {
+      width: 132px;
+      height: 132px;
+    }
+  }
+</style>

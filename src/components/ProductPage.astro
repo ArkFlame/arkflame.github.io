@@ -1,0 +1,404 @@
+---
+import type { Product } from "@/data/products";
+import { getCategory } from "@/data/categories";
+import { getProductsByCategory } from "@/data/products";
+import ProductCard from "@/components/ProductCard.astro";
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const category = getCategory(product.category);
+const categoryName = category?.name ?? product.category;
+
+const related = getProductsByCategory(product.category)
+  .filter((candidate) => candidate.slug !== product.slug)
+  .slice(0, 3);
+
+/** Verified intrinsic dimensions of the shipped artwork (public/assets). */
+const ARTWORK_SIZE: Readonly<Record<string, { width: number; height: number }>> = {
+  exploitfixer: { width: 512, height: 512 },
+  fairplay: { width: 512, height: 512 },
+  "authme-premium": { width: 512, height: 512 },
+  redstonelimiter: { width: 1200, height: 720 },
+  entitylimiter: { width: 1200, height: 720 },
+  flamepaper: { width: 1200, height: 720 },
+  flamecord: { width: 1200, height: 720 },
+  veloflame: { width: 512, height: 512 },
+  flamepractice: { width: 1200, height: 720 },
+  essentialslite: { width: 2000, height: 1000 },
+  "smp-lifesteal": { width: 1774, height: 887 },
+  "smp-punishments": { width: 2000, height: 1000 },
+  "smp-combat": { width: 2000, height: 1000 },
+  "smp-menus": { width: 1774, height: 887 },
+  "smp-harvest": { width: 2000, height: 1000 },
+  "smp-regions": { width: 2000, height: 1000 },
+};
+
+const size = ARTWORK_SIZE[product.slug];
+
+/**
+ * "What it does" copy, authored per slug from that product's own summary, tags
+ * and category context only. No fact absent from those three sources; no cost,
+ * star-score, version-label or sales-count claims; no marketplace prose.
+ */
+const WHAT_IT_DOES: Readonly<Record<string, string>> = {
+  exploitfixer:
+    "ExploitFixer is recorded by ArkFlame as protecting servers from crash, dupe and packet-exploit abuse. Its four stored scope tags are exploit protection, crash protection, dupe protection and packet abuse — four names for one job: stopping hostile traffic from turning a running server into a broken one. It sits in the Security set because the work it describes happens before gameplay does, at the boundary where bad packets are refused rather than processed.",
+  fairplay:
+    "FairPlay is a combat anticheat, and its stored tags say the same in four parts: anticheat, combat, 140+ checks and Grim. That describes a check set applied to fights rather than to logins, sessions or chat, with Grim named as the system it integrates with. ArkFlame lists it under Security because a combat anticheat watches the part of a Minecraft server where client behaviour is hardest to trust.",
+  "authme-premium":
+    "AuthMe Premium is described as an auto-login bridge for premium players using AuthMe, with proxy and Geyser-oriented workflows. Its tags — authentication, premium support, Geyser, proxy — place it at the network edge rather than in gameplay. The work is narrow: letting an account that already authenticated elsewhere reach the server without being asked to log in twice, in the proxy and Geyser setups its tags name.",
+  chatsentinel:
+    "ChatSentinel is a regex-based anti-swear and anti-spam chat moderator, and its tags read chat moderation, anti-spam and regex. Regex is the whole mechanism: patterns describe what counts as abuse, so behaviour is a set of rules an operator can read and adjust. In ArkFlame's Security set it covers the other side of a server's public surface from the crash and exploit products — what players are allowed to put in chat.",
+  "chatsentinel-premium":
+    "ChatSentinel Premium is recorded as a premium smart chat-filter configuration for spam and swear protection, with tags chat moderation, smart filter and premium. The word configuration is the distinguishing one: this entry describes a tuned rule set rather than a new command surface. Its job inside the Security set matches the rest of the chat-moderation group — keeping chat usable without an operator reading every message by hand.",
+  "aac-aacap-config":
+    "AAC + AACAP Balanced Configuration is, as its name states, a configuration rather than a new anticheat. Its summary names three targets — protection, performance and fewer false positives — and its tags of anticheat, configuration, AAC and AACAP say the same in shorthand. An anticheat can flag far more than a server wants flagged, so this entry exists to tune that balance rather than to add detection.",
+  redstonelimiter:
+    "RedstoneLimiter limits expensive redstone contraptions and exploit lag machines, and its tags are redstone, performance and lag prevention. All three point at the same server cost: redstone that fires continuously rather than occasionally. ArkFlame files it under Performance because the outcome is tick time rather than packet-level exploits. It is a cap on a specific kind of work, applied where a server can watch that work accumulate.",
+  flamestack:
+    "FlameStack stacks ground items and redstone-machine outputs to reduce server load. Its tags — item stacking, redstone, performance and Folia — describe two kinds of stacking: the loose items that accumulate fastest on the ground, and the outputs a redstone machine leaves behind. The Folia tag records the runtime support the public listing advertises. In ArkFlame's Performance set it is entity-count reduction aimed at the tick loop.",
+  mobstacker:
+    "MobStacker stacks mobs to reduce entity pressure and server load, with tags entity performance, mob stacking and performance. The mechanism is the one its name describes: a group of the same mob occupies one entity slot instead of many. Entity pressure is the most common reason a Minecraft server slows down under its own population rather than under attack, and this product targets that specific cost.",
+  blocklimiter:
+    "BlockLimiter limits block counts per chunk to control expensive server structures, with tags block limits, performance and Folia. Its target is density: a chunk packed with placed blocks costs the server to load, tick and persist, whether or not anything is moving. The Folia tag records the runtime support the public listing advertises. ArkFlame places it in Performance beside the entity-side products because it caps the same class of cost by a different unit.",
+  entitylimiter:
+    "EntityLimiter limits entity pressure to prevent crash and lag conditions, with tags entity limits, crash prevention and performance. Where a product that merges entities reduces their number, this one sets a boundary: past a defined count the server stops accepting more. That makes it a capacity tool rather than an optimisation, and its two failure modes are the ones named in its tags — crashes and lag.",
+  flamepaper:
+    "FlamePaper is a Paper 1.8.8 fork, and its tags read paper fork, 1.8.8, server stability and redstone. A fork is not a plugin: it is the server jar itself, carrying its own patches, which is why the tags describe stability and redstone behaviour rather than a feature list. It sits in Performance because what a fork changes is the work the server does per tick. The 1.8.8 tag is the target it is built for; confirm it fits your environment.",
+  flamecord:
+    "FlameCord is a secure BungeeCord and Waterfall-compatible replacement proxy with anti-bot and anti-crash focus; its tags are proxy, BungeeCord, Waterfall and anti-bot. Proxy is the load-bearing word: this is entry-point software, not a server plugin, because every connection in a network passes through it before reaching a backend. ArkFlame files it under Network for that reason, with the anti-bot tag describing the traffic it refuses.",
+  veloflame:
+    "VeloFlame is a Velocity-based proxy focused on performance and protection against bot attacks, with tags velocity, proxy, anti-bot and performance. It covers the same job as the Bungee-side proxy in this set on the modern Velocity platform, and the tags split the reason in two: performance for the connections that should pass, anti-bot for the ones that should not. Both are proxy concerns, which is why it is filed under Network.",
+  discordflow:
+    "DiscordFlow integrates Minecraft and Discord with role sync, chat sync, proximity voice and console-access integration — the same four things its tags list. Each runs in a different direction across the same bridge: roles decide who may do what, chat crosses between the platforms, voice follows players through space, and console access extends server control to the Discord side. ArkFlame groups it under Network because the work is connectivity between two systems.",
+  flamepractice:
+    "FlamePractice is a PvP practice system for duels, ranked play and FFA, and its tags are PvP, duels, ranked and FFA. A practice server exists so fight mechanics can be rehearsed without the consequences of a real match, and the tags name the three formats it targets. It sits in ArkFlame's Gameplay set because players feel it directly: it changes how combat is practised, not how the server defends itself.",
+  floatingheads:
+    "FloatingHeads adds floating-head visual, NPC and hologram effects for Minecraft servers, with tags visuals, NPC and holograms. Three presentation mechanisms sharing one result: a name, a face or a label rendered in the world at a chosen position. The tags carry no behavioural or protective claims, which is the honest shape of this product — it changes what a server looks like and what players can point at inside it.",
+  mineclans:
+    "MineClans is a factions-style clan system, with tags clans, factions, land claiming and alliances. Land claiming is the part that touches protection products: a clan owns ground, and what happens inside it follows from that ownership. Alliances are the other half, since clans rarely function alone. ArkFlame files it under Gameplay because it is a social structure players join, choose and progress, not a defence mechanism.",
+  harvestableblocks:
+    "HarvestableBlocks provides mining and farming zones whose blocks and crops return after use, plus WorldGuard-oriented workflows; its tags are farming, regeneration and WorldGuard. The two halves fit together: a zone is defined, and what is taken from it grows back. The WorldGuard tag places it alongside region tools rather than inside them, and it sits in ArkFlame's Gameplay set because the restore loop is one players repeat.",
+  essentialslite:
+    "EssentialsLite is a modern essentials command suite, with tags essentials, commands and Folia. Essentials means the everyday server verbs — the commands a community expects to exist — while the Folia tag records the runtime support the current listing advertises. It sits in ArkFlame's Gameplay set rather than Security because it adds no protection; it removes the need to assemble basic commands separately.",
+  squidgamex:
+    "SquidGameX runs large Squid Game-style Minecraft events, with tags events and minigames. Both words point at scale: an event product is judged by how many players it can hold in one structured round and how much of that round runs automatically. ArkFlame files it under Gameplay, where the event and minigame entries sit, because the work is producing a scheduled, self-running game session.",
+  disasters:
+    "Disasters is a Minecraft implementation inspired by Hypixel's Disasters minigame, and its tag list is short: minigames and Disasters. Read literally, that is the scope — a named minigame implemented as a game, in the same family as the other event products here. ArkFlame lists it under Gameplay, and the honest description of this entry is a minigame rather than a server-wide system.",
+  "sh-pets":
+    "SH-Pets is a companion and pet system with abilities and events, and its tags read pets, companion, abilities and events. The two pairs describe one feature from two sides: the companion is the pet, abilities are what it does, and events are how those abilities are staged. It sits in ArkFlame's Gameplay set because it adds a player-facing progression element with its own moments, rather than changing how the server runs.",
+  flamepearls:
+    "FlamePearls fixes ender-pearl glitch behaviour and supports stasis-chamber limiting, with tags ender pearls, glitch fix and stasis. Ender pearls carry a long-running set of movement edge cases, and this product is recorded as correcting them rather than redesigning the item. The stasis tag describes a related limit on where a pearl may place a player. ArkFlame files it under Gameplay as a behaviour fix.",
+  fancyglow:
+    "FancyGlow lets VIP players select glow colours using TAB integration, with tags glow, TAB and VIP. The tags read as three roles: the visual effect, the integration point and the eligibility group. A menu-driven choice feeds a display plugin, which is the whole mechanism. ArkFlame places it under Gameplay because it is a cosmetic perk system — visible to everyone, granted to a subset.",
+  mineclasses:
+    "MineClasses provides armor-based MMORPG and HCF classes with automatic potion effects, and its tags are classes, MMORPG and HCF. Armour is the class selector: what a player wears decides what they are, and the potion effects follow from that automatically instead of being applied by hand. It sits in ArkFlame's Gameplay set beside the other progression products, because a class is a progression track expressed through equipment.",
+  staffmodex:
+    "StaffModeX is staff-mode tooling, and its tags read staff mode, HEX, Redis and MySQL. Staff mode is the feature; the remaining three tags are the environments it is recorded against — a hex-configured server, Redis for shared state, MySQL for storage. That pairing matters when reading the scope: the product is aimed at moderation staff and at the infrastructure a larger staff operation needs behind them.",
+  slevels:
+    "sLevels provides server-level progression and rewards, with tags progression, rewards and levels. It is the simplest shape of progression product here: experience is earned on the server, a level rises from it, and a reward follows. ArkFlame files it under Gameplay, where the retention and reward entries sit, and its recorded scope contains no competitive or protective claims.",
+  "leash-workers":
+    "Leash Workers leashes entities and players, and lets villagers perform configured jobs; its tags are villagers, leashes and jobs. Two related behaviours: leashing binds something to a player or a point, and the job system gives villagers something to do. ArkFlame files it under Gameplay as a small, legible server behaviour rather than a large subsystem, which is also the full extent of its stored scope.",
+  "sh-koth":
+    "SH-Koth is a King-of-the-Hill event system, with tags events and king of the hill. King of the Hill is a fixed round format — an area is contested, holding it wins it — and this product's recorded scope is running that format as a scheduled event. ArkFlame groups it with the other event products under Gameplay, and it shares their shape: bounded, self-contained, and server-wide only for the duration of the event.",
+  hubcombat:
+    "HubCombat adds lobby PvP and weapons, with tags lobby, PvP and weapons. The lobby is the setting, PvP is the mode, and weapons are what players carry into it. It is a deliberate change to how a staging area behaves rather than a match system, which is why ArkFlame files it under Gameplay separately from the duel and practice products.",
+  "lucky-pillars":
+    "Lucky Pillars is a Pillars of Fortune minigame implementation, and its tag list is a single word: minigames. Read literally, that is the scope — a named minigame, implemented as a game, in the same family as Disasters and SquidGameX. It sits in ArkFlame's Gameplay set, and its purpose is to provide a self-contained round players can be dropped into.",
+  minekoth:
+    "MineKoth runs time-limited capture-the-hill events with rewards, with tags events, rewards and capture the hill. It is the same round format as the King-of-the-Hill entry in this set, recorded with a time limit and a reward attached. Both live in ArkFlame's Gameplay set, which is where scheduled, bounded server events are grouped.",
+  nextrtp:
+    "NextRTP is a lightweight random-teleport plugin, and its single stored tag is random teleport. That is the entire recorded scope: send a player somewhere else, chosen at random. ArkFlame files it under Gameplay as the smallest entry in the set — a counterpart to region and teleport-adjacent products rather than a system in its own right.",
+  "crates-hcf":
+    "Crates is an HCF-oriented crate and reward system, with tags crates, rewards and HCF. A crate is a container that yields a reward, and HCF is the hardcore-flavoured server type it is aimed at. ArkFlame places it under Gameplay beside the other reward products, and its recorded scope covers the crate and reward loop rather than economy or progression depth.",
+  flameforge:
+    "FlameForge provides custom weapons, upgrades and reforging mechanics, with tags weapons, upgrades and reforging. Three layers of one progression: a weapon exists, it can be upgraded, and it can be reforged. ArkFlame places it under Gameplay, where the weapon entries sit, aimed at servers that want combat items to carry a progression track instead of staying static.",
+  flameorders:
+    "FlameOrders provides server-synchronized orders and deliveries, and its tags are orders, deliveries and Folia. Synchronisation is the point: an order placed on one server has to resolve the same way for every player connected to it, which is the concern the Folia tag records from the public listing. ArkFlame files it under SMP, where the survival-loop products sit.",
+  "smp-lifesteal":
+    "SMP Lifesteal is a lifesteal core for SMP progression, with tags lifesteal, progression and Folia. Lifesteal is a single, well-understood mechanic — health recovered through combat — attached to a progression loop, so it rewards practice rather than standing still. The Folia tag records the runtime support claimed in the public listing. ArkFlame groups it under SMP with the other combat and progression entries.",
+  "smp-protections":
+    "SMP Protections is a ProtectionStones-style protection system with menus, and its tags are protection, menus and Folia. The reference to ProtectionStones is the important part: this is a claim-and-region system built around an idea players already know, using menus instead of commands as the primary interface. ArkFlame files it under SMP, and it is the closest thing in that set to a security product.",
+  "protectionstones-extras":
+    "ProtectionStones Extras provides GUI management, region flags and bans for ProtectionStones workflows, with tags ProtectionStones, GUI and region flags. It is a companion to a protection system rather than a replacement for one: the regions exist elsewhere, and this product is how they are administered and configured. That is why its tags name a third-party base alongside its own interface.",
+  "smp-shards":
+    "SMP Shards is an AFK-earned shard currency and shop system, with tags currency, shop and Folia. Two halves that depend on each other: shards are a currency earned by being present, and the shop is what spends them. The Folia tag records the runtime support claimed in the public listing. ArkFlame places it under SMP, where the economy-style entries sit.",
+  "smp-punishments":
+    "SMP Punishments is a punishment and moderation suite with voice-chat mute support, with tags moderation, punishments and voice mute. Moderation on a survival server is largely a record of what happened and what was decided, and voice mute is the capability its tags single out. ArkFlame files it under SMP with the moderation products there, without reaching into its Security set.",
+  "smp-weapons":
+    "SMP Weapons provides configurable legendary weapons for SMP, PvP and FFA, with premade weapons available; its tags are weapons, PvP and FFA. Configuration is what separates it from a static item pack — the legendary set is meant to be adjusted per server. ArkFlame groups it under SMP with the other combat entries, and its stored scope makes no claim beyond weapons and the modes they are used in.",
+  "smp-combat":
+    "SMP Combat is a combat-tag system with legacy-combat, WorldGuard-barrier and elytra restrictions, and its tags are combat tags, legacy combat and WorldGuard. Combat tags are the older convention: leaving a fight carries a penalty, which discourages disengaging. Each extra tag names a specific rule attached to that convention — a legacy-combat mode, a region barrier, and elytra flight. ArkFlame files it under SMP as a combat-rule system.",
+  "smp-menus":
+    "SMP Menus is a help and rules menu system positioned as a modern DeluxeMenus alternative, with tags menus, rules and Folia. The positioning in the summary is explicit: an alternative to a named menu plugin, offering the same job — a menu surface for server information — with the Folia tag recording the runtime support the current listing claims.",
+  flamespawners:
+    "FlameSpawners is an item-producing configurable spawner system with stacking, storage and upgrades, and its tags are spawners, storage and Folia, with the public listing making the same Folia claim. Stacking and storage are the two reasons spawner systems are usually customised: how many entities exist, and where the drops go. ArkFlame files it under SMP as an economy and progression product.",
+  "smp-lobby":
+    "SMP Lobby is a lobby system with PvP, announcements, protection, titles, redirect and void protection, and its tags are lobby, PvP and protection. Six behaviours in one summary: a staging area that can be fought in, can announce to the server, can protect itself, can grant titles, can redirect players elsewhere and can survive a fall into the void. The tags name the first three as the headline scope.",
+  "smp-crates":
+    "SMP Crates are modern configurable crates, with tags crates and Folia. That is the recorded scope in full — a crate system a server configures rather than one shipped fixed — plus the runtime support the current listing claims. ArkFlame places it under SMP next to the other reward products, and it is narrower than the crate entries in the Gameplay set.",
+  "smp-harvest":
+    "SMP Harvest is a harvest progression system with upgradable hoes, XP, tokens and rewards, and its tags are harvest, progression and XP. The loop is legible: a tool improves, experience accrues, tokens accumulate, and rewards follow. It sits in ArkFlame's SMP set among the progression products, and its stored scope describes the progression chain rather than any particular economy.",
+  "smp-regions":
+    "SMP Regions is a WorldGuard-alternative region system with extra flags and resettable areas, and its tags are regions, WorldGuard and Folia. The alternative framing matters: a different implementation of the same job — defined areas with rules attached — with reset as a first-class operation. ArkFlame files it under SMP, and the Folia tag records the runtime claim the listing makes.",
+  "smp-rewards":
+    "SMP Rewards provides daily and hourly rewards with streak, menu and playtime mechanics, and its tags are rewards, daily and playtime. Streak is why this category exists: a reward is worth more when it is expected, and the mechanics listed here track that expectation. The Folia tag records the runtime support the public listing claims. ArkFlame groups it under SMP with the other economy entries.",
+};
+
+const whatItDoes = WHAT_IT_DOES[product.slug] ?? `${product.summary}`;
+const scopeWord = product.tags.length === 1 ? "label" : "labels";
+const storeClass = product.officialUrl !== undefined ? "btn" : "btn btn-primary";
+---
+
+<article class="af-container af-section af-product-page">
+  <nav class="af-breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/plugins/">Plugins</a></li>
+      <li><a href={`/plugins/${product.category}/`}>{categoryName}</a></li>
+      <li aria-current="page">{product.name}</li>
+    </ol>
+  </nav>
+
+  <div class="af-product-page__media">
+    {
+      product.image !== undefined ? (
+        <img
+          src={product.image}
+          alt={`${product.name} artwork`}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          width={size?.width}
+          height={size?.height}
+        />
+      ) : (
+        <div class="af-product-page__placeholder">
+          {category !== undefined && <i class={`bi ${category.icon}`} aria-hidden="true" />}
+          <span>{categoryName}</span>
+        </div>
+      )
+    }
+  </div>
+
+  <h1>{product.name}</h1>
+  <p class="af-product-page__summary">{product.summary}</p>
+
+  <p class="af-product-page__meta">
+    <a class="af-product-page__category" href={`/plugins/${product.category}/`}>{categoryName}</a>
+  </p>
+
+  {
+    product.tags.length > 0 && (
+      <ul class="af-product-page__tags">
+        {product.tags.map((tag) => (
+          <li class="af-chip">{tag}</li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="af-product-page__cta">
+    {
+      product.officialUrl !== undefined && (
+        <a class="btn btn-primary" href={product.officialUrl} target="_blank" rel="noopener noreferrer">
+          Official website
+        </a>
+      )
+    }
+    <a class={storeClass} href={product.storeUrl} target="_blank" rel="noopener noreferrer">View on BuiltByBit</a>
+  </div>
+
+  <section class="af-product-page__section" aria-labelledby="what-it-does">
+    <h2 id="what-it-does">What it does</h2>
+    <p>{whatItDoes}</p>
+  </section>
+
+  {
+    product.tags.length > 0 && (
+      <section class="af-product-page__section" aria-labelledby="compatibility">
+        <h2 id="compatibility">Compatibility</h2>
+        <ul class="af-product-page__tags">
+          {product.tags.map((tag) => (
+            <li class="af-chip">{tag}</li>
+          ))}
+        </ul>
+        <p class="af-product-page__note">
+          ArkFlame records {product.tags.length} scope {scopeWord} for {product.name}: {product.tags.join(", ")}. Check those against your own environment before you deploy.
+        </p>
+      </section>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <section class="af-product-page__section" aria-labelledby="related-products">
+        <h2 id="related-products">Related products</h2>
+        <ul class="af-product-page__related">
+          {related.map((item) => (
+            <ProductCard product={item} headingLevel="h3" />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</article>
+
+<style>
+  .af-product-page h1 {
+    margin-top: 16px;
+    font-size: clamp(2.1rem, 5vw, 3rem);
+  }
+
+  .af-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--af-muted);
+  }
+
+  .af-breadcrumb li + li::before {
+    content: "/";
+    margin-right: 8px;
+    color: var(--af-border-strong);
+  }
+
+  .af-breadcrumb a:hover {
+    color: var(--af-accent);
+  }
+
+  .af-breadcrumb [aria-current="page"] {
+    color: var(--af-accent);
+  }
+
+  .af-product-page__media {
+    margin-top: 26px;
+  }
+
+  .af-product-page__media img {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    background-color: var(--af-raised);
+  }
+
+  .af-product-page__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+    min-height: 180px;
+    padding: 24px;
+    background-color: var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    color: var(--af-muted);
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .af-product-page__placeholder i {
+    font-size: 48px;
+    color: var(--af-accent);
+  }
+
+  .af-product-page__summary {
+    margin: 12px 0 0;
+    max-width: 68ch;
+    font-size: 18px;
+    color: var(--af-text);
+  }
+
+  .af-product-page__meta {
+    margin: 12px 0 0;
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .af-product-page__category {
+    color: var(--af-accent);
+  }
+
+  .af-product-page__category:hover {
+    text-decoration: underline;
+  }
+
+  .af-product-page__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .af-product-page__tags .af-chip {
+    padding: 4px 12px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 400;
+    white-space: normal;
+  }
+
+  .af-product-page__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  .af-product-page__section {
+    margin-top: 42px;
+  }
+
+  .af-product-page__section h2 {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--af-border);
+    font-size: 24px;
+  }
+
+  .af-product-page__section p {
+    margin: 14px 0 0;
+    max-width: 72ch;
+    color: var(--af-muted);
+  }
+
+  .af-product-page__note {
+    font-size: 14px;
+  }
+
+  .af-product-page__related {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 760px) {
+    .af-product-page__related {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

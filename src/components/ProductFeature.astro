@@ -1,0 +1,174 @@
+---
+/**
+ * Homepage featured-product block. Owns exactly one dominant (internal) CTA;
+ * the product page owns the external store CTA.
+ */
+import { getCategory } from "@/data/categories";
+import type { Product } from "@/data/products";
+
+interface Props {
+  product: Product;
+  /** Defaults to "h3"; pass "h2" when the block is a top-level section. */
+  headingLevel?: "h2" | "h3";
+}
+
+const { product, headingLevel = "h3" } = Astro.props;
+const Heading = headingLevel;
+const category = getCategory(product.category);
+const tags = product.tags.slice(0, 4);
+---
+
+<article class="pf af-card">
+  <div class="pf__media">
+    {
+      product.image ? (
+        <img
+          class="pf__art"
+          src={product.image}
+          alt={`${product.name} artwork`}
+          width="1200"
+          height="720"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div
+          class="pf__missing"
+          role="img"
+          aria-label={`${product.name} has no artwork yet`}
+        >
+          <i class:list={["bi", category?.icon ?? "bi-box"]} aria-hidden="true" />
+        </div>
+      )
+    }
+  </div>
+
+  <div class="pf__body">
+    <Heading class="pf__title">{product.name}</Heading>
+    <p class="pf__summary">{product.summary}</p>
+
+    {
+      tags.length > 0 && (
+        <ul class="pf__tags">
+          {tags.map((tag) => (
+            <li class="af-chip pf__tag">{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <div class="pf__actions">
+      <a class="btn btn-primary" href={`/plugins/${product.slug}/`}>
+        Explore {product.name}
+      </a>
+      <a class="pf__more" href={`/plugins/${product.category}/`}>
+        {category?.name ?? product.category} plugins
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .pf {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .pf:hover {
+    border-color: var(--af-border-strong);
+  }
+
+  .pf__media {
+    height: 144px;
+    flex: 0 0 144px;
+    background-color: var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    overflow: hidden;
+  }
+
+  /* Contain, never crop: every product keeps its own aspect ratio. */
+  .pf__art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .pf__missing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(140deg, var(--af-surface-2), var(--af-surface));
+    color: var(--af-border-strong);
+  }
+
+  .pf__missing i {
+    font-size: 42px;
+  }
+
+  .pf__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 9px;
+    padding-top: 12px;
+  }
+
+  .pf__title {
+    margin: 0;
+    font-size: 22px;
+  }
+
+  .pf__summary {
+    margin: 0;
+    color: var(--af-muted);
+    font-size: 14px;
+  }
+
+  .pf__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pf__tag {
+    padding: 4px 9px;
+    font-size: 12px;
+  }
+
+  .pf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  /* Visually subordinate to the single dominant CTA. */
+  .pf__more {
+    color: var(--af-muted);
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color var(--af-transition);
+  }
+
+  .pf__more:hover {
+    color: var(--af-accent);
+  }
+
+  @media (min-width: 768px) {
+    .pf__media {
+      height: clamp(132px, 12vw, 148px);
+      flex-basis: clamp(132px, 12vw, 148px);
+    }
+  }
+</style>

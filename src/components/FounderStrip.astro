@@ -1,0 +1,103 @@
+---
+/**
+ * Founder strip. All copy is read from the frozen FOUNDER/SITE data so the
+ * rendered text can never drift from the single source of truth.
+ */
+import { FOUNDER, SITE } from "@/data/site";
+
+interface Props {
+  /** Callers pass id="founder". */
+  id?: string;
+}
+
+const { id } = Astro.props;
+const headingId = id === undefined ? undefined : `${id}-title`;
+---
+
+<section class="fs af-section" id={id} aria-labelledby={headingId}>
+  <div class="af-container">
+    <div class="fs__inner af-card">
+      <img
+        class="fs__portrait"
+        src={SITE.founderImage}
+        alt="Juan Cruz Linsalata (LinsaFTW)"
+        width="512"
+        height="512"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <div class="fs__copy">
+        <p class="af-eyebrow">{FOUNDER.eyebrow}</p>
+        <h2 class="fs__name" id={headingId}>{FOUNDER.name}</h2>
+        <p class="fs__role">{FOUNDER.fullName}</p>
+        <p class="fs__body">{FOUNDER.body}</p>
+
+        <a
+          class="btn btn-primary"
+          href={SITE.founderUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {FOUNDER.cta}
+          <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fs__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .fs__portrait {
+    flex: 0 0 auto;
+    width: 196px;
+    height: 196px;
+    object-fit: cover;
+    border: 1px solid var(--af-border-strong);
+    border-radius: 22px;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--af-accent) 18%, transparent),
+      0 0 42px -12px color-mix(in srgb, var(--af-accent) 32%, transparent);
+  }
+
+  .fs__copy {
+    display: flex;
+    flex: 1 1 320px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .fs__name {
+    font-size: clamp(34px, 5vw, 46px);
+  }
+
+  .fs__role {
+    margin: 0;
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .fs__body {
+    margin: 0;
+    max-width: 56ch;
+    color: var(--af-muted);
+  }
+
+  @media (max-width: 560px) {
+    .fs__portrait {
+      width: 132px;
+      height: 132px;
+    }
+  }
+</style>

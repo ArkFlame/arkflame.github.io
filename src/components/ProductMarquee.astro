@@ -1,0 +1,126 @@
+---
+/**
+ * Three-track moving product strip, reproduced with CSS only.
+ *
+ * Partition rule: deterministic `index % 3` (no randomness), so the same
+ * product list always produces the same three lanes.
+ */
+import type { Product } from "@/data/products";
+
+interface Props {
+  products: readonly Product[];
+}
+
+const { products } = Astro.props;
+
+/** Lane definition. Direction alternates forward / reverse / forward. */
+const LANES = [
+  { key: "forward-46s", duration: "46s", reverse: false },
+  { key: "reverse-38s", duration: "38s", reverse: true },
+  { key: "forward-54s", duration: "54s", reverse: false },
+] as const;
+
+const lanes = LANES.map((lane, laneIndex) => ({
+  ...lane,
+  items: products.filter((_product, index) => index % LANES.length === laneIndex),
+}));
+---
+
+<section class="pm" aria-label="All ArkFlame Studios plugins">
+  {
+    lanes.map((lane) => (
+      <div class:list={["af-marquee", "pm__lane", `pm__lane--${lane.key}`]}>
+        <div
+          class:list={["af-marquee-track", "pm__track", lane.reverse && "pm__track--reverse"]}
+          style={`--pm-duration: ${lane.duration};`}
+        >
+          {/* Same sequence twice so the CSS loop is seamless. */}
+          {[false, true].map((isCopy) => (
+            <Fragment>
+              {lane.items.map((product) => (
+                <a
+                  class="af-chip pm__chip"
+                  href={`/plugins/${product.slug}/`}
+                  aria-hidden={isCopy ? "true" : undefined}
+                  tabindex={isCopy ? -1 : undefined}
+                >
+                  {product.icon ? (
+                    <img
+                      class="pm__icon"
+                      src={product.icon}
+                      alt=""
+                      width="24"
+                      height="24"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <i class="bi bi-box" aria-hidden="true" />
+                  )}
+                  <span>{product.name}</span>
+                </a>
+              ))}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  .pm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /*
+   * Per-chip trailing spacing (instead of a flex `gap`) keeps the duplicated
+   * sequence exactly half the track width, so -50% loops without a jump.
+   */
+  .pm__track {
+    gap: 0;
+    animation-duration: var(--pm-duration, 42s);
+  }
+
+  .pm__track--reverse {
+    animation-direction: reverse;
+  }
+
+  .pm__chip {
+    gap: 8px;
+    margin-inline-end: 12px;
+    padding: 7px 12px;
+    color: var(--af-text);
+    font-size: 15px;
+  }
+
+  .pm__chip:hover {
+    border-color: var(--af-accent);
+    color: var(--af-accent);
+  }
+
+  .pm__icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  /* Pause on hover and on keyboard focus is handled globally. */
+
+  @media (prefers-reduced-motion: reduce) {
+    .pm__lane {
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      -webkit-mask-image: none;
+      mask-image: none;
+      scrollbar-width: thin;
+    }
+
+    .pm__track {
+      animation: none !important;
+      transform: none !important;
+    }
+  }
+</style>

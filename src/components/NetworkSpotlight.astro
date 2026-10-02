@@ -1,0 +1,90 @@
+---
+import { getProduct } from "@/data/products";
+
+const product = getProduct("veloflame");
+
+if (!product) {
+  throw new Error('NetworkSpotlight: required product "veloflame" is missing from the product catalog.');
+}
+
+if (!product.image) {
+  throw new Error('NetworkSpotlight: required image for product "veloflame" is missing from the product catalog.');
+}
+---
+
+<section class="network-spotlight" aria-labelledby="network-spotlight-title">
+  <div class="network-spotlight__media">
+    <img
+      src={product.image}
+      alt={`${product.name} artwork`}
+      width="1200"
+      height="720"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="network-spotlight__copy">
+    <p class="network-spotlight__eyebrow">NETWORK</p>
+    <h2 id="network-spotlight-title">Protect the entry point.</h2>
+    <p class="network-spotlight__description">
+      VeloFlame is ArkFlame's Velocity-based proxy focused on performance and protection against bot attacks.
+    </p>
+    <a class="btn btn-primary" href="/plugins/veloflame/">Explore VeloFlame</a>
+  </div>
+</section>
+
+<style>
+  .network-spotlight {
+    display: grid;
+    grid-template-columns: minmax(0, 44fr) minmax(0, 56fr);
+    align-items: center;
+    gap: clamp(24px, 5vw, 64px);
+  }
+
+  .network-spotlight__media {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    background: var(--af-raised);
+  }
+
+  .network-spotlight__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 5 / 3;
+    object-fit: contain;
+  }
+
+  .network-spotlight__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .network-spotlight__eyebrow {
+    margin: 0;
+    color: var(--af-accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .network-spotlight h2 {
+    margin: 0;
+  }
+
+  .network-spotlight__description {
+    margin: 0 0 4px;
+    color: var(--af-muted);
+  }
+
+  @media (max-width: 767px) {
+    .network-spotlight {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+  }
+</style>

@@ -1,0 +1,129 @@
+---
+import "../styles/global.css";
+import { SITE } from "../data/site";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  image?: string;
+  noindex?: boolean;
+  jsonLd?: unknown;
+  ogType?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  image = SITE.ogImage,
+  noindex = false,
+  jsonLd,
+  ogType = "website",
+} = Astro.props;
+
+const canonicalHref = new URL(canonicalPath, SITE.siteUrl).href;
+const ogImageHref = new URL(image, SITE.siteUrl).href;
+const isDefaultOgImage = ogImageHref === new URL(SITE.ogImage, SITE.siteUrl).href;
+
+const robots =
+  noindex === true
+    ? "noindex,follow"
+    : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
+
+const jsonLdPayload =
+  jsonLd === undefined ? undefined : JSON.stringify(jsonLd).replace(/</g, "\\u003c");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <meta name="author" content={SITE.name} />
+    <meta name="theme-color" content="#050810" />
+
+    <link rel="canonical" href={canonicalHref} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalHref} />
+    <meta property="og:image" content={ogImageHref} />
+    <meta property="og:image:type" content="image/webp" />
+    {isDefaultOgImage && <meta property="og:image:width" content="1200" />}
+    {isDefaultOgImage && <meta property="og:image:height" content="630" />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageHref} />
+
+    <link rel="icon" href="/favicon.webp" type="image/webp" sizes="any" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.webp" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap"
+    />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    {jsonLdPayload && <script is:inline type="application/ld+json" set:html={jsonLdPayload} />}
+  </head>
+  <body>
+    <a href="#main" class="af-sr-only af-skip">Skip to content</a>
+    <SiteHeader currentPath={Astro.url.pathname} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
+
+<style>
+  main {
+    display: block;
+    min-height: 60vh;
+  }
+
+  main:focus {
+    outline: none;
+  }
+
+  .af-skip:focus,
+  .af-skip:focus-visible {
+    position: fixed;
+    inset-block-start: 12px;
+    inset-inline-start: 12px;
+    z-index: 100;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 10px 18px;
+    overflow: visible;
+    clip-path: none;
+    background-color: var(--af-surface);
+    border: 1px solid var(--af-accent);
+    border-radius: var(--af-radius);
+    color: var(--af-text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 500;
+  }
+</style>

@@ -1,0 +1,23 @@
+{
+  "name": "arkflame-com",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "verify": "node scripts/verify-site.mjs",
+    "check": "npm run build && npm run verify"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "@tailwindcss/vite": "4.3.3",
+    "astro": "7.3.4",
+    "daisyui": "5.7.38",
+    "tailwindcss": "4.3.3"
+  }
+}

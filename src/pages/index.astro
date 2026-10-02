@@ -1,0 +1,374 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import HeroProductStack from "@/components/HeroProductStack.astro";
+import ProductFeature from "@/components/ProductFeature.astro";
+import ProductMarquee from "@/components/ProductMarquee.astro";
+import CapabilitySection from "@/components/CapabilitySection.astro";
+import FounderStrip from "@/components/FounderStrip.astro";
+import {
+  SITE,
+  HERO,
+  PLATFORM_STRIP,
+  CAPABILITIES,
+  ENGINEERING_PROOF,
+  FINAL_CTA,
+} from "@/data/site";
+import { PRODUCTS, getProduct, getFeaturedProducts } from "@/data/products";
+
+/* Single product authority: featured products come from the frozen selector. */
+const featured = getFeaturedProducts();
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE.siteUrl}/#organization`,
+      name: SITE.name,
+      url: `${SITE.siteUrl}/`,
+      logo: `${SITE.siteUrl}${SITE.logo}`,
+      image: `${SITE.siteUrl}${SITE.ogImage}`,
+      description:
+        "ArkFlame Studios builds Minecraft plugins and server software for security, performance, authentication, anticheat, proxies and SMP gameplay.",
+      sameAs: [
+        SITE.githubUrl,
+        SITE.builtByBitUrl,
+        SITE.discordUrl,
+        getProduct("flamecord")?.officialUrl,
+        getProduct("exploitfixer")?.officialUrl,
+        getProduct("veloflame")?.officialUrl,
+        getProduct("fairplay")?.officialUrl,
+        SITE.founderUrl,
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE.siteUrl}/#website`,
+      name: SITE.name,
+      url: `${SITE.siteUrl}/`,
+      publisher: { "@id": `${SITE.siteUrl}/#organization` },
+      inLanguage: "en-US",
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Minecraft Plugins & Server Software | ArkFlame Studios"
+  description="Minecraft plugins and server software for security, performance, proxies, anticheat and SMP networks. Built by ArkFlame Studios."
+  canonicalPath="/"
+  jsonLd={jsonLd}
+>
+  <!-- 2. Hero -->
+  <section class="hm af-section">
+    <div class="af-container hm__inner">
+      <div class="hm__copy">
+        <p class="af-eyebrow">{HERO.eyebrow}</p>
+        <h1 class="hm__title">We make <span class="hm__accent">Minecraft</span> plugins.</h1>
+        <p class="hm__lead">{HERO.body}</p>
+        <div class="hm__actions">
+          <a class="btn btn-primary" href="/plugins/">{HERO.primaryCta}</a>
+          <a
+            class="btn"
+            href={SITE.founderUrl}
+            target="_blank"
+            rel="noopener noreferrer">{HERO.secondaryCta}</a
+          >
+        </div>
+      </div>
+
+      <div class="hm__art">
+        <HeroProductStack
+          primary={getProduct("flamecord")!}
+          foreground={[getProduct("exploitfixer")!, getProduct("fairplay")!]}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Platform / proof strip -->
+  <section class="ps" aria-label="Supported platform ecosystems">
+    <div class="af-container ps__inner">
+      <ul class="ps__list">
+        {
+          PLATFORM_STRIP.map((platform, index) => (
+            <Fragment>
+              {index > 0 && (
+                <li class="ps__sep" aria-hidden="true">
+                  &middot;
+                </li>
+              )}
+              <li class="af-chip ps__item">{platform}</li>
+            </Fragment>
+          ))
+        }
+      </ul>
+      <p class="ps__caption">Ecosystems ArkFlame products target across the portfolio.</p>
+    </div>
+  </section>
+
+  <!-- 4. Featured products -->
+  <section class="fp af-section">
+    <div class="af-container">
+      <div class="fp__head">
+        <p class="af-eyebrow">FEATURED</p>
+        <h2 class="fp__title">Selected plugins.</h2>
+      </div>
+      <div class="fp__grid">
+        {featured.map((product) => <ProductFeature product={product} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Product ecosystem marquee -->
+  <section class="pe" aria-labelledby="pe-title">
+    <div class="af-container pe__head">
+      <p class="af-eyebrow">ECOSYSTEM</p>
+      <h2 class="pe__title" id="pe-title">The product ecosystem.</h2>
+      <a class="btn pe__cta" href="/plugins/">Browse all plugins</a>
+    </div>
+    <ProductMarquee products={PRODUCTS} />
+  </section>
+
+  <!-- 6-8. Editorial capability sections -->
+  <CapabilitySection capabilities={CAPABILITIES} />
+
+  <!-- 9. Engineering proof -->
+  <section class="ep af-section">
+    <div class="af-container">
+      <div class="ep__head">
+        <p class="af-eyebrow">ENGINEERING</p>
+        <h2 class="ep__title">{ENGINEERING_PROOF.heading}</h2>
+      </div>
+      <div class="ep__grid">
+        <div class="af-card ep__card">
+          <h3 class="ep__label">Platforms</h3>
+          <ul class="ep__chips">
+            {
+              ENGINEERING_PROOF.platforms.map((platform) => (
+                <li class="af-chip">{platform}</li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="af-card ep__card">
+          <h3 class="ep__label">Disciplines</h3>
+          <ul class="ep__chips">
+            {
+              ENGINEERING_PROOF.disciplines.map((discipline) => (
+                <li class="af-chip">{discipline}</li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+      <p class="ep__note">{ENGINEERING_PROOF.note}</p>
+    </div>
+  </section>
+
+  <!-- 10. Founder bridge -->
+  <FounderStrip id="founder" />
+
+  <!-- 11. Final CTA -->
+  <section class="fc af-section">
+    <div class="af-container fc__inner af-card">
+      <img
+        class="fc__mark"
+        src={SITE.logo}
+        alt=""
+        width="96"
+        height="96"
+        loading="lazy"
+        decoding="async"
+      />
+      <h2 class="fc__title">{FINAL_CTA.heading}</h2>
+      <p class="fc__body">{FINAL_CTA.body}</p>
+      <a class="btn btn-primary" href="/plugins/">{FINAL_CTA.cta}</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hm__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .hm__copy {
+    flex: 1 1 380px;
+    min-width: 0;
+  }
+
+  .hm__title {
+    margin: 0.35em 0 0.3em;
+    font-family: var(--font-display);
+    font-size: clamp(2.3rem, 5.6vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .hm__accent {
+    color: var(--af-accent);
+  }
+
+  .hm__lead {
+    max-width: 46ch;
+    margin: 0 0 26px;
+    color: var(--af-muted);
+    font-size: 17px;
+  }
+
+  .hm__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hm__art {
+    flex: 1 1 420px;
+    min-width: 0;
+  }
+
+  .ps {
+    border-block: 1px solid var(--af-border);
+    background-color: var(--af-raised);
+  }
+
+  .ps__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 24px;
+    padding-block: 22px;
+  }
+
+  .ps__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ps__item {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+
+  .ps__sep {
+    color: var(--af-muted);
+  }
+
+  .ps__caption {
+    margin: 0;
+    color: var(--af-muted);
+    font-size: 13px;
+  }
+
+  .fp__head,
+  .ep__head {
+    margin-bottom: 26px;
+  }
+
+  .fp__title,
+  .ep__title,
+  .pe__title {
+    margin: 0.2em 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3.2vw, 2.1rem);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .fp__grid {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .pe {
+    padding-block: var(--af-section-y);
+  }
+
+  .pe__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 24px;
+  }
+
+  .pe__cta {
+    flex: 0 0 auto;
+  }
+
+  .ep__grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  .ep__card {
+    padding: 22px;
+  }
+
+  .ep__label {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--af-muted);
+  }
+
+  .ep__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ep__note {
+    max-width: 68ch;
+    margin: 20px 0 0;
+    color: var(--af-muted);
+    font-size: 14px;
+  }
+
+  .fc__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 46px 26px;
+    text-align: center;
+  }
+
+  .fc__mark {
+    width: 72px;
+    height: auto;
+  }
+
+  .fc__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 3.6vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .fc__body {
+    max-width: 52ch;
+    margin: 0 0 10px;
+    color: var(--af-muted);
+    font-size: 16px;
+  }
+</style>

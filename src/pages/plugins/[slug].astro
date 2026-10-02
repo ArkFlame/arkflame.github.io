@@ -1,0 +1,151 @@
+---
+import type { Product, ProductCategory } from "@/data/products";
+import { PRODUCTS } from "@/data/products";
+import type { CategoryInfo } from "@/data/categories";
+import { getCategory, getCategorySlugs } from "@/data/categories";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CategoryPage from "@/components/CategoryPage.astro";
+import ProductPage from "@/components/ProductPage.astro";
+import { SITE } from "@/data/site";
+
+/**
+ * Single dynamic route owning both `/plugins/<category>/` and `/plugins/<product>/`.
+ * products.ts already rejects product slugs that collide with a category slug at
+ * import time; the explicit check below is a second, local guard so a collision
+ * fails here too instead of silently emitting one path twice.
+ */
+export async function getStaticPaths() {
+  const paths = [
+    ...getCategorySlugs().map((slug) => ({
+      params: { slug },
+      props: { pageType: "category", category: getCategory(slug) },
+    })),
+    ...PRODUCTS.map((product) => ({
+      params: { slug: product.slug },
+      props: { pageType: "product", product },
+    })),
+  ];
+  const seen = new Set<string>();
+  for (const entry of paths) {
+    const key = String(entry.params.slug);
+    if (seen.has(key)) throw new Error(`Duplicate /plugins/ route: ${key}`);
+    seen.add(key);
+  }
+  return paths;
+}
+
+type Props = { pageType: "category"; category: CategoryInfo } | { pageType: "product"; product: Product };
+
+const { pageType, ...rest } = Astro.props;
+
+/** Title-phrase table only; no product data is duplicated here. */
+const CATEGORY_TITLE_PHRASE: Readonly<Record<ProductCategory, string>> = {
+  security: "Minecraft security plugin",
+  performance: "Minecraft performance plugin",
+  network: "Minecraft proxy software",
+  gameplay: "Minecraft gameplay plugin",
+  smp: "Minecraft SMP plugin",
+};
+
+const abs = (path: string): string => new URL(path, SITE.siteUrl).href;
+const homeUrl = `${SITE.siteUrl}/`;
+const websiteId = `${SITE.siteUrl}/#website`;
+const organizationId = `${SITE.siteUrl}/#organization`;
+const pluginsUrl = abs("/plugins/");
+
+const breadcrumbs = (trail: readonly { name: string; url: string }[]) => [
+  { "@type": "ListItem", "position": 1, "name": "Home", "item": homeUrl },
+  ...trail.map((entry, index) => ({
+    "@type": "ListItem",
+    "position": index + 2,
+    "name": entry.name,
+    "item": entry.url,
+  })),
+];
+
+let jsonLd: unknown;
+
+if ("category" in rest) {
+  const category = rest.category;
+  const categoryUrl = abs(`/plugins/${category.slug}/`);
+  jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${categoryUrl}#collection`,
+        "name": category.h1,
+        "url": categoryUrl,
+        "description": category.intro,
+        "isPartOf": { "@id": websiteId },
+        "breadcrumb": { "@id": `${categoryUrl}#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${categoryUrl}#breadcrumb`,
+        "itemListElement": breadcrumbs([
+          { name: "Minecraft Plugins", url: pluginsUrl },
+          { name: category.name, url: categoryUrl },
+        ]),
+      },
+    ],
+  };
+} else if ("product" in rest) {
+  const product = rest.product;
+  const category = getCategory(product.category);
+  if (category === undefined) {
+    throw new Error(`plugins/[slug]: unknown category "${product.category}" for product "${product.slug}"`);
+  }
+  const productUrl = abs(`/plugins/${product.slug}/`);
+  const categoryUrl = abs(`/plugins/${category.slug}/`);
+  const imagePath = product.image ?? SITE.ogImage;
+  jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${productUrl}#software`,
+        "name": product.name,
+        "url": productUrl,
+        "description": product.summary,
+        "image": `${SITE.siteUrl}${imagePath}`,
+        "keywords": product.tags.join(", "),
+        "isPartOf": { "@id": websiteId },
+        "publisher": { "@id": organizationId },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${productUrl}#breadcrumb`,
+        "itemListElement": breadcrumbs([
+          { name: "Minecraft Plugins", url: pluginsUrl },
+          { name: category.name, url: categoryUrl },
+          { name: product.name, url: productUrl },
+        ]),
+      },
+    ],
+  };
+}
+---
+
+{
+  "category" in rest ? (
+    <BaseLayout
+      title={rest.category.title}
+      description={rest.category.intro}
+      canonicalPath={`/plugins/${rest.category.slug}/`}
+      jsonLd={jsonLd}
+    >
+      <CategoryPage category={rest.category} />
+    </BaseLayout>
+  ) : (
+    <BaseLayout
+      title={`${rest.product.name} — ${CATEGORY_TITLE_PHRASE[rest.product.category]} | ArkFlame`}
+      description={rest.product.summary}
+      canonicalPath={`/plugins/${rest.product.slug}/`}
+      image={rest.product.image ?? SITE.ogImage}
+      jsonLd={jsonLd}
+    >
+      <ProductPage product={rest.product} />
+    </BaseLayout>
+  )
+}

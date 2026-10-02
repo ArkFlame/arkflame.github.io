@@ -1,0 +1,149 @@
+---
+import { SITE } from "../data/site";
+import { CATEGORIES } from "../data/categories";
+---
+
+<footer class="site-footer">
+  <div class="af-container">
+    <div class="footer-top">
+      <a class="brand" href="/">
+        <img
+          src="/assets/img/arkflame-logo.webp"
+          alt="ArkFlame Studios"
+          width="24"
+          height="24"
+        />
+        <span class="brand-line">{SITE.brandLine}</span>
+      </a>
+    </div>
+
+    <div class="footer-grid">
+      <section class="group" aria-labelledby="footer-plugins">
+        <h2 id="footer-plugins" class="group-title">Plugins</h2>
+        <ul class="group-list">
+          <li><a href="/plugins/">All plugins</a></li>
+          {
+            CATEGORIES.map((category) => (
+              <li>
+                <a href={`/plugins/${category.slug}/`}>{category.name}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="group" aria-labelledby="footer-elsewhere">
+        <h2 id="footer-elsewhere" class="group-title">Elsewhere</h2>
+        <ul class="group-list">
+          <li><a href="/about/">About</a></li>
+          <li>
+            <a href={SITE.founderUrl} target="_blank" rel="noopener noreferrer">Founder</a>
+          </li>
+          <li>
+            <a href={SITE.githubUrl} target="_blank" rel="noopener noreferrer">
+              <i class="bi bi-github" aria-hidden="true"></i>
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a href={SITE.discordUrl} target="_blank" rel="noopener noreferrer">
+              <i class="bi bi-discord" aria-hidden="true"></i>
+              Discord
+            </a>
+          </li>
+          <li>
+            <a href={SITE.builtByBitUrl} target="_blank" rel="noopener noreferrer">
+              <i class="bi bi-basket" aria-hidden="true"></i>
+              View all BuiltByBit resources
+            </a>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <p class="disclaimer">{SITE.nonAffiliation}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-block-start: var(--af-section-y);
+    padding-block: 48px 34px;
+    background-color: color-mix(in srgb, var(--af-raised) 70%, transparent);
+    border-block-start: 1px solid var(--af-border);
+  }
+
+  .footer-top {
+    padding-block-end: 26px;
+    border-block-end: 1px solid var(--af-border);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .brand-line {
+    color: var(--af-text);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px;
+    padding-block: 30px;
+  }
+
+  .group-title {
+    margin: 0 0 14px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--af-accent);
+  }
+
+  .group-list {
+    display: grid;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .group-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--af-muted);
+    font-size: 15px;
+    transition: color var(--af-transition);
+  }
+
+  .group-list a:hover {
+    color: var(--af-accent);
+  }
+
+  .disclaimer {
+    margin: 0;
+    padding-block-start: 22px;
+    border-block-start: 1px solid var(--af-border);
+    color: var(--af-muted);
+    font-size: 13px;
+  }
+
+  @media (max-width: 560px) {
+    .footer-grid {
+      gap: 26px;
+    }
+  }
+</style>

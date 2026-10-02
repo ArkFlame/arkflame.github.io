@@ -1,0 +1,42 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProductCatalog from "@/components/ProductCatalog.astro";
+import { PRODUCTS } from "@/data/products";
+import { SITE } from "@/data/site";
+
+const TITLE = "Minecraft Plugins | ArkFlame Studios";
+const DESCRIPTION =
+  "Browse ArkFlame Minecraft plugins for server security, performance, proxies, SMP gameplay, anticheat, authentication and optimization.";
+
+/** Absolute URL helper; SITE.siteUrl is the single origin authority. */
+const abs = (path: string): string => new URL(path, SITE.siteUrl).href;
+
+const pluginsUrl = abs("/plugins/");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${pluginsUrl}#collection`,
+      "name": "Minecraft Plugins",
+      "url": pluginsUrl,
+      "description": DESCRIPTION,
+      "isPartOf": { "@id": `${SITE.siteUrl}/#website` },
+      "breadcrumb": { "@id": `${pluginsUrl}#breadcrumb` },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${pluginsUrl}#breadcrumb`,
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE.siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Minecraft Plugins", "item": pluginsUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout title={TITLE} description={DESCRIPTION} canonicalPath="/plugins/" jsonLd={jsonLd}>
+  <ProductCatalog products={PRODUCTS} />
+</BaseLayout>

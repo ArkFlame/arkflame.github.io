@@ -1,0 +1,161 @@
+---
+---
+
+<div class="hps" aria-hidden="true">
+  <div class="hps__scene">
+    <span class="hps__block hps__block--1"></span>
+    <span class="hps__block hps__block--2"></span>
+    <span class="hps__block hps__block--3"></span>
+    <span class="hps__block hps__block--4"></span>
+    <span class="hps__block hps__block--5"></span>
+    <span class="hps__block hps__block--6"></span>
+    <span class="hps__block hps__block--7"></span>
+    <span class="hps__block hps__block--8"></span>
+    <span class="hps__block hps__block--9"></span>
+    <span class="hps__block hps__block--10"></span>
+    <span class="hps__block hps__block--11"></span>
+    <span class="hps__block hps__block--12"></span>
+    <span class="hps__block hps__block--13"></span>
+    <span class="hps__block hps__block--14"></span>
+    <span class="hps__block hps__block--15"></span>
+    <span class="hps__block hps__block--16"></span>
+    <span class="hps__block hps__block--17"></span>
+    <span class="hps__block hps__block--18"></span>
+    <span class="hps__block hps__block--19"></span>
+    <span class="hps__block hps__block--20"></span>
+    <span class="hps__block hps__block--21"></span>
+    <span class="hps__block hps__block--22"></span>
+    <span class="hps__block hps__block--23"></span>
+    <span class="hps__block hps__block--24"></span>
+    <span class="hps__block hps__block--25"></span>
+    <span class="hps__block hps__block--26"></span>
+    <span class="hps__block hps__block--27"></span>
+    <span class="hps__block hps__block--28"></span>
+    <span class="hps__block hps__block--29"></span>
+    <span class="hps__block hps__block--30"></span>
+    <span class="hps__core"></span>
+  </div>
+</div>
+
+<style>
+  .hps {
+    display: grid;
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .hps__scene {
+    position: relative;
+    width: min(100%, 360px);
+    aspect-ratio: 1;
+    transform: rotateX(58deg) rotateZ(45deg) scale(0.78);
+    transform-style: preserve-3d;
+    animation: hps-drift 6s ease-in-out infinite;
+  }
+
+  .hps__block {
+    position: absolute;
+    width: 16%;
+    height: 16%;
+    border: 1px solid rgba(99, 220, 255, 0.28);
+    border-radius: 3px;
+    background: linear-gradient(145deg, #173a68, #09182f 72%);
+    box-shadow: 0 0 18px rgba(25, 174, 255, 0.12);
+    transform-style: preserve-3d;
+  }
+
+  .hps__block::before,
+  .hps__block::after {
+    position: absolute;
+    content: "";
+    border: 1px solid rgba(99, 220, 255, 0.2);
+  }
+
+  .hps__block::before {
+    top: -22%;
+    left: 0;
+    width: 100%;
+    height: 22%;
+    background: #245388;
+    transform: skewX(-45deg);
+    transform-origin: bottom left;
+  }
+
+  .hps__block::after {
+    top: 0;
+    right: -22%;
+    width: 22%;
+    height: 100%;
+    background: #102a4c;
+    transform: skewY(-45deg);
+    transform-origin: top left;
+  }
+
+  .hps__block--1 { left: 8%; top: 8%; }
+  .hps__block--2 { left: 25%; top: 8%; }
+  .hps__block--3 { left: 42%; top: 8%; }
+  .hps__block--4 { left: 59%; top: 8%; }
+  .hps__block--5 { left: 76%; top: 8%; }
+  .hps__block--6 { left: 8%; top: 25%; }
+  .hps__block--7 { left: 25%; top: 25%; }
+  .hps__block--8 { left: 42%; top: 25%; }
+  .hps__block--9 { left: 59%; top: 25%; }
+  .hps__block--10 { left: 76%; top: 25%; }
+  .hps__block--11 { left: 8%; top: 42%; }
+  .hps__block--12 { left: 25%; top: 42%; }
+  .hps__block--13 { left: 59%; top: 42%; }
+  .hps__block--14 { left: 76%; top: 42%; }
+  .hps__block--15 { left: 8%; top: 59%; }
+  .hps__block--16 { left: 25%; top: 59%; }
+  .hps__block--17 { left: 59%; top: 59%; }
+  .hps__block--18 { left: 76%; top: 59%; }
+  .hps__block--19 { left: 8%; top: 76%; }
+  .hps__block--20 { left: 25%; top: 76%; }
+  .hps__block--21 { left: 42%; top: 76%; }
+  .hps__block--22 { left: 59%; top: 76%; }
+  .hps__block--23 { left: 76%; top: 76%; }
+  .hps__block--24 { left: 42%; top: 25%; opacity: 0.8; transform: translateZ(14px); }
+  .hps__block--25 { left: 25%; top: 42%; opacity: 0.8; transform: translateZ(14px); }
+  .hps__block--26 { left: 59%; top: 42%; opacity: 0.8; transform: translateZ(14px); }
+  .hps__block--27 { left: 42%; top: 59%; opacity: 0.8; transform: translateZ(14px); }
+  .hps__block--28 { left: 25%; top: 25%; opacity: 0.62; transform: translateZ(28px); }
+  .hps__block--29 { left: 59%; top: 25%; opacity: 0.62; transform: translateZ(28px); }
+  .hps__block--30 { left: 42%; top: 42%; opacity: 0.55; transform: translateZ(28px); }
+
+  .hps__core {
+    position: absolute;
+    z-index: 2;
+    top: 39%;
+    left: 39%;
+    width: 22%;
+    height: 22%;
+    border: 1px solid #a5f4ff;
+    border-radius: 5px;
+    background: linear-gradient(145deg, #8ef4ff, #13bde8 60%, #0873c7);
+    box-shadow: 0 0 18px #20cfff, 0 0 52px rgba(19, 189, 232, 0.75), inset 0 0 15px #d4fbff;
+    transform: translateZ(45px);
+  }
+
+  @keyframes hps-drift {
+    0%, 100% { transform: rotateX(58deg) rotateZ(45deg) scale(0.78) translateY(0); }
+    50% { transform: rotateX(58deg) rotateZ(45deg) scale(0.78) translateY(-8px); }
+  }
+
+  @media (max-width: 360px) {
+    .hps { max-width: 100%; }
+    .hps__scene { transform: rotateX(58deg) rotateZ(45deg) scale(0.7); }
+    .hps__scene { animation-name: hps-drift-small; }
+  }
+
+  @keyframes hps-drift-small {
+    0%, 100% { transform: rotateX(58deg) rotateZ(45deg) scale(0.7) translateY(0); }
+    50% { transform: rotateX(58deg) rotateZ(45deg) scale(0.7) translateY(-5px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hps__scene { animation: none; }
+  }
+</style>

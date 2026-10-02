@@ -1,0 +1,299 @@
+---
+import type { Product } from "@/data/products";
+import { CATEGORIES } from "@/data/categories";
+import ProductCard from "@/components/ProductCard.astro";
+
+interface Props {
+  products: readonly Product[];
+}
+
+const { products } = Astro.props;
+
+const groups = CATEGORIES.map((category) => ({
+  category,
+  items: products.filter((product) => product.category === category.slug),
+})).filter((group) => group.items.length > 0);
+---
+
+<section class="af-container af-section af-catalog" data-catalog>
+  <p class="af-eyebrow">Plugins</p>
+  <h1>Minecraft Plugins</h1>
+  <p class="af-catalog__intro">
+    Security, performance, proxy and gameplay software from ArkFlame Studios.
+  </p>
+
+  <div class="af-catalog__controls">
+    <div class="af-catalog__search">
+      <label class="af-sr-only" for="catalog-search">Search plugins</label>
+      <input
+        class="input"
+        type="search"
+        name="q"
+        id="catalog-search"
+        placeholder="Search by name, summary or tag"
+        autocomplete="off"
+      />
+    </div>
+
+    <div
+      class="af-catalog__filters"
+      role="group"
+      aria-label="Filter plugins by category"
+      data-catalog-filters
+    >
+      <button type="button" class="af-catalog__filter" data-category="all" aria-pressed="true">
+        All
+      </button>
+      {
+        CATEGORIES.map((category) => (
+          <button
+            type="button"
+            class="af-catalog__filter"
+            data-category={category.slug}
+            aria-pressed="false"
+          >
+            {category.name}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <p class="af-catalog__count" data-catalog-count aria-live="polite">{products.length} plugins</p>
+
+  <p class="af-catalog__empty" data-catalog-empty hidden>No plugins match your search.</p>
+
+  {
+    groups.length === 0 ? (
+      <p class="af-catalog__empty">No plugins to show.</p>
+    ) : (
+      groups.map(({ category, items }) => (
+        <section class="af-catalog__group" data-catalog-group aria-labelledby={`catalog-group-${category.slug}`}>
+          <h2 class="af-catalog__group-title" id={`catalog-group-${category.slug}`}>
+            <i class={`bi ${category.icon}`} aria-hidden="true" />
+            {category.name}
+          </h2>
+          <ul class="af-catalog__list">
+            {items.map((product) => (
+              <ProductCard product={product} />
+            ))}
+          </ul>
+        </section>
+      ))
+    )
+  }
+</section>
+
+<script>
+  const catalog = document.querySelector("[data-catalog]");
+
+  if (catalog) {
+    const search = catalog.querySelector<HTMLInputElement>("#catalog-search");
+    const count = catalog.querySelector<HTMLElement>("[data-catalog-count]");
+    const empty = catalog.querySelector<HTMLElement>("[data-catalog-empty]");
+    const filterGroup = catalog.querySelector("[data-catalog-filters]");
+    const buttons = filterGroup
+      ? Array.from(filterGroup.querySelectorAll<HTMLButtonElement>("[data-category]"))
+      : [];
+    const groups = Array.from(catalog.querySelectorAll("[data-catalog-group]"));
+
+    if (search !== null && buttons.length > 0) {
+      const known = new Set(buttons.map((button) => button.dataset.category ?? "all"));
+
+      let query = "";
+      let category = "all";
+
+      const syncUrl = (): void => {
+        const url = new URL(window.location.href);
+        if (query !== "") {
+          url.searchParams.set("q", query);
+        } else {
+          url.searchParams.delete("q");
+        }
+        if (category !== "all") {
+          url.searchParams.set("category", category);
+        } else {
+          url.searchParams.delete("category");
+        }
+        window.history.replaceState(null, "", `${url.pathname}${url.search}`);
+      };
+
+      const apply = (): void => {
+        const needle = query.trim().toLowerCase();
+        let visible = 0;
+
+        for (const group of groups) {
+          let groupVisible = 0;
+          const cards = Array.from(group.querySelectorAll<HTMLElement>("[data-product]"));
+
+          for (const card of cards) {
+            const matchesCategory = category === "all" || card.dataset.category === category;
+            const haystack = `${card.dataset.name ?? ""} ${card.dataset.summary ?? ""} ${
+              card.dataset.tags ?? ""
+            }`.toLowerCase();
+            const matchesQuery = needle === "" || haystack.includes(needle);
+            const matches = matchesCategory && matchesQuery;
+
+            card.hidden = !matches;
+            if (matches) {
+              groupVisible += 1;
+            }
+          }
+
+          group.hidden = groupVisible === 0;
+          visible += groupVisible;
+        }
+
+        if (count !== null) {
+          count.textContent = `${visible} plugin${visible === 1 ? "" : "s"}`;
+        }
+        if (empty !== null) {
+          empty.hidden = visible !== 0;
+        }
+
+        for (const button of buttons) {
+          button.setAttribute("aria-pressed", String((button.dataset.category ?? "all") === category));
+        }
+
+        syncUrl();
+      };
+
+      const initial = new URL(window.location.href).searchParams;
+      const initialCategory = initial.get("category");
+      query = initial.get("q") ?? "";
+      if (initialCategory !== null && known.has(initialCategory)) {
+        category = initialCategory;
+      }
+      search.value = query;
+
+      search.addEventListener("input", () => {
+        query = search.value;
+        apply();
+      });
+
+      search.form?.addEventListener("submit", (event) => {
+        event.preventDefault();
+      });
+
+      for (const button of buttons) {
+        button.addEventListener("click", () => {
+          category = button.dataset.category ?? "all";
+          apply();
+        });
+      }
+
+      apply();
+    }
+  }
+</script>
+
+<style>
+  .af-catalog h1 {
+    margin-top: 6px;
+    font-size: clamp(2.1rem, 5vw, 3rem);
+  }
+
+  .af-catalog__intro {
+    margin: 12px 0 0;
+    max-width: 62ch;
+    color: var(--af-muted);
+  }
+
+  .af-catalog__controls {
+    display: grid;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .af-catalog__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .af-catalog__filter {
+    padding: 8px 14px;
+    background-color: transparent;
+    border: 1px solid var(--af-border-strong);
+    border-radius: 999px;
+    color: var(--af-text);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color var(--af-transition), background-color var(--af-transition);
+  }
+
+  .af-catalog__filter:hover {
+    border-color: var(--af-accent);
+  }
+
+  .af-catalog__filter[aria-pressed="true"] {
+    background-color: var(--af-primary);
+    border-color: var(--af-primary);
+    color: #ffffff;
+  }
+
+  .af-catalog__count {
+    margin: 22px 0 0;
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--af-muted);
+  }
+
+  .af-catalog__empty {
+    margin: 22px 0 0;
+    padding: 18px;
+    border: 1px dashed var(--af-border-strong);
+    border-radius: var(--af-radius);
+    color: var(--af-muted);
+  }
+
+  .af-catalog__empty[hidden] {
+    display: none;
+  }
+
+  .af-catalog__group {
+    margin-top: 34px;
+  }
+
+  .af-catalog__group[hidden] {
+    display: none;
+  }
+
+  .af-catalog__group-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--af-border);
+    font-size: 22px;
+    color: var(--af-accent);
+  }
+
+  .af-catalog__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 760px) {
+    .af-catalog__controls {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .af-catalog__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
