@@ -15,9 +15,9 @@ const { products } = Astro.props;
 
 /** Lane definition. Direction alternates forward / reverse / forward. */
 const LANES = [
-  { key: "forward-46s", duration: "46s", reverse: false },
-  { key: "reverse-38s", duration: "38s", reverse: true },
-  { key: "forward-54s", duration: "54s", reverse: false },
+  { key: "ltr-88s", duration: "88s", reverse: true },
+  { key: "rtl-76s", duration: "76s", reverse: false },
+  { key: "ltr-96s", duration: "96s", reverse: true },
 ] as const;
 
 const lanes = LANES.map((lane, laneIndex) => ({
@@ -82,6 +82,16 @@ const lanes = LANES.map((lane, laneIndex) => ({
   .pm__track {
     gap: 0;
     animation-duration: var(--pm-duration, 42s);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .pm__lane {
+    scrollbar-width: none;
+  }
+
+  .pm__lane::-webkit-scrollbar {
+    display: none;
   }
 
   .pm__track--reverse {
@@ -115,7 +125,7 @@ const lanes = LANES.map((lane, laneIndex) => ({
       overscroll-behavior-x: contain;
       -webkit-mask-image: none;
       mask-image: none;
-      scrollbar-width: thin;
+      scrollbar-width: none;
     }
 
     .pm__track {

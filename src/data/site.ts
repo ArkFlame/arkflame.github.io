@@ -25,62 +25,56 @@ export const HERO = {
 } as const;
 
 export const PLATFORM_STRIP = [
-  "Bukkit",
-  "Spigot",
-  "Paper",
-  "Folia",
-  "BungeeCord",
-  "Velocity",
+  { key: "bukkit", label: "Bukkit", logo: "/assets/img/vendor/bukkit.webp" },
+  { key: "spigot", label: "Spigot", logo: "/assets/img/vendor/spigot.webp" },
+  { key: "paper", label: "Paper", logo: "/assets/img/vendor/papermc.webp" },
+  { key: "folia", label: "Folia", logo: "/assets/img/vendor/folia.webp" },
+  { key: "bungeecord", label: "BungeeCord", logo: "/assets/img/vendor/bungeecord.webp" },
+  { key: "velocity", label: "Velocity", logo: "/assets/img/vendor/velocity.webp" },
 ] as const;
 
 export const CAPABILITIES = [
   {
     key: "security",
     label: "SECURITY",
-    body: "Stop malicious clients and abusive traffic before they become downtime.",
-    keywords: ["Anti-exploit", "Anticheat", "Authentication"],
-    cta: "Explore security",
     href: "/plugins/security/",
+    icon: "shield-lock",
   },
   {
     key: "performance",
     label: "PERFORMANCE",
-    body: "Control expensive server behavior before it becomes a stability problem.",
-    keywords: ["Entity pressure", "Redstone limits", "Runtime optimization"],
-    cta: "Explore performance",
     href: "/plugins/performance/",
+    icon: "speedometer2",
   },
   {
     key: "network",
     label: "NETWORK",
-    body: "Protect and control the entry point to a Minecraft network.",
-    keywords: ["Velocity", "Bungee-compatible proxy software", "Anti-bot"],
-    cta: "Explore network",
     href: "/plugins/network/",
+    icon: "diagram-3",
   },
   {
     key: "gameplay",
     label: "GAMEPLAY",
-    body: "Build PvP, practice, minigame and player-facing systems for multiplayer servers.",
-    keywords: ["Practice", "Minigames", "Player systems"],
-    cta: "View",
     href: "/plugins/gameplay/",
+    icon: "controller",
   },
   {
     key: "smp",
     label: "SMP",
-    body: "Add survival systems for combat, regions, progression, menus and server economies.",
-    keywords: ["Combat", "Regions", "Progression"],
-    cta: "View",
     href: "/plugins/smp/",
+    icon: "boxes",
   },
 ] as const;
 
 export const ENGINEERING_PROOF = {
   heading: "Built across the Minecraft server ecosystem.",
-  platforms: ["Paper", "Folia", "Velocity", "BungeeCord"],
-  disciplines: ["Packet handling", "Concurrency", "Compatibility", "Performance", "Security"],
-  note: "Products span legacy and modern Minecraft environments. Verify compatibility on each product page.",
+  platforms: [
+    { key: "paper", label: "Paper", logo: "/assets/img/vendor/papermc.webp", url: "https://papermc.io/software/paper/" },
+    { key: "folia", label: "Folia", logo: "/assets/img/vendor/folia.webp", url: "https://papermc.io/software/folia/" },
+    { key: "velocity", label: "Velocity", logo: "/assets/img/vendor/velocity.webp", url: "https://papermc.io/software/velocity/" },
+    { key: "bungeecord", label: "BungeeCord", logo: "/assets/img/vendor/bungeecord.webp", url: "https://www.spigotmc.org/wiki/bungeecord/" },
+  ],
+  note: "Our plugins support legacy to modern versions from 1.8 to 1.21. Folia is compatible in most plugins.",
 } as const;
 
 export const FOUNDER = {

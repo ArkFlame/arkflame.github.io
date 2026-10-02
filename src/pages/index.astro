@@ -91,19 +91,14 @@ const jsonLd = {
     <div class="af-container ps__inner">
       <ul class="ps__list">
         {
-          PLATFORM_STRIP.map((platform, index) => (
-            <Fragment>
-              {index > 0 && (
-                <li class="ps__sep" aria-hidden="true">
-                  &middot;
-                </li>
-              )}
-              <li class="af-chip ps__item">{platform}</li>
-            </Fragment>
+          PLATFORM_STRIP.map((platform) => (
+            <li class="ps__item">
+              <img src={platform.logo} alt={platform.label} title={platform.label} loading="lazy" decoding="async" />
+            </li>
           ))
         }
       </ul>
-      <p class="ps__caption">Ecosystems ArkFlame products target across the portfolio.</p>
+      <p class="ps__caption">Supported Minecraft ecosystem</p>
     </div>
   </section>
 
@@ -140,28 +135,15 @@ const jsonLd = {
         <p class="af-eyebrow">ENGINEERING</p>
         <h2 class="ep__title">{ENGINEERING_PROOF.heading}</h2>
       </div>
-      <div class="ep__grid">
-        <div class="af-card ep__card">
-          <h3 class="ep__label">Platforms</h3>
-          <ul class="ep__chips">
-            {
-              ENGINEERING_PROOF.platforms.map((platform) => (
-                <li class="af-chip">{platform}</li>
-              ))
-            }
-          </ul>
-        </div>
-        <div class="af-card ep__card">
-          <h3 class="ep__label">Disciplines</h3>
-          <ul class="ep__chips">
-            {
-              ENGINEERING_PROOF.disciplines.map((discipline) => (
-                <li class="af-chip">{discipline}</li>
-              ))
-            }
-          </ul>
-        </div>
-      </div>
+      <ul class="ep__platforms">
+        {ENGINEERING_PROOF.platforms.map((platform) => (
+          <li>
+            <a href={platform.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${platform.label}`}>
+              <img src={platform.logo} alt={platform.label} loading="lazy" decoding="async" />
+            </a>
+          </li>
+        ))}
+      </ul>
       <p class="ep__note">{ENGINEERING_PROOF.note}</p>
     </div>
   </section>
@@ -250,19 +232,23 @@ const jsonLd = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px 12px;
+    gap: 18px 28px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .ps__item {
-    font-size: 13px;
-    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
   }
 
-  .ps__sep {
-    color: var(--af-muted);
+  .ps__item img {
+    display: block;
+    width: auto;
+    max-width: 112px;
+    height: 30px;
+    object-fit: contain;
   }
 
   .ps__caption {
@@ -308,32 +294,28 @@ const jsonLd = {
     flex: 0 0 auto;
   }
 
-  .ep__grid {
-    display: grid;
-    gap: 18px;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-
-  .ep__card {
-    padding: 22px;
-  }
-
-  .ep__label {
-    margin: 0 0 12px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--af-muted);
-  }
-
-  .ep__chips {
+  .ep__platforms {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    align-items: center;
+    gap: 18px 28px;
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  .ep__platforms a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+  }
+
+  .ep__platforms img {
+    display: block;
+    width: auto;
+    max-width: 140px;
+    height: 40px;
+    object-fit: contain;
   }
 
   .ep__note {

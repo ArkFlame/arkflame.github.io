@@ -43,6 +43,12 @@ const REQUIRED_FILES = [
   "assets/img/linsaftw-profile.webp",
   "assets/img/arkflame-logo.webp",
   "assets/img/og-image.webp",
+  "assets/img/vendor/bukkit.webp",
+  "assets/img/vendor/spigot.webp",
+  "assets/img/vendor/papermc.webp",
+  "assets/img/vendor/folia.webp",
+  "assets/img/vendor/bungeecord.webp",
+  "assets/img/vendor/velocity.webp",
 ];
 
 const FORBIDDEN_PATTERNS = [
@@ -74,12 +80,31 @@ const CANONICAL_ROUTES = [
 // Markers asserted against the RENDERED TEXT of dist/index.html. Typography may
 // legally wrap part of the phrase in an inline element (e.g. an accent span), which
 // splits it across tags in the raw markup, so a raw substring match would be wrong.
-const HOME_TEXT_MARKERS = ["We make Minecraft plugins.", "Five problems. One studio."];
+const HOME_TEXT_MARKERS = [
+  "We make Minecraft plugins.",
+  "Five problems, one studio",
+  "Supported Minecraft ecosystem",
+  "Our plugins support legacy to modern versions from 1.8 to 1.21. Folia is compatible in most plugins.",
+];
 
 // Markers asserted against the RAW markup of dist/index.html: routes and absolute
 // URLs live in href attributes, so matching rendered text would be the wrong axis.
-const HOME_MARKUP_MARKERS = ["/plugins/", "https://linsaftw.arkflame.com/"];
-const FORBIDDEN_HOME_MARKUP_MARKERS = ['data-accent="network"', 'class="cs af-section"'];
+const HOME_MARKUP_MARKERS = [
+  "/plugins/",
+  "https://linsaftw.arkflame.com/",
+  "https://papermc.io/software/paper/",
+  "https://papermc.io/software/folia/",
+  "https://papermc.io/software/velocity/",
+  "https://www.spigotmc.org/wiki/bungeecord/",
+];
+const FORBIDDEN_HOME_MARKUP_MARKERS = [
+  'data-accent="network"',
+  'class="cs af-section"',
+  "Disciplines",
+  "Packet handling",
+  "Concurrency",
+  "Products span legacy and modern Minecraft environments. Verify compatibility on each product page.",
+];
 
 let greenChecks = 0;
 
