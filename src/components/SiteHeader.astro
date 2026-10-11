@@ -291,6 +291,12 @@ const currentHref = activeHref(currentPath);
     color: var(--af-accent);
   }
 
+  @media (max-width: 560px) {
+    .header-inner { gap: 8px; }
+    .wordmark { font-size: 15px; letter-spacing: 0.05em; }
+    .mobile-menu summary { padding-inline: 10px; }
+  }
+
   @media (max-width: 940px) {
     .nav-desktop,
     .header-actions {

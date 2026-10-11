@@ -1,0 +1,135 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE } from "@/data/site";
+
+const imageRoot = "/assets/img/global-dom-optimizer";
+const productUrl = `${SITE.siteUrl}/global-dom-optimizer/`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Global DOM Optimizer",
+  description: "A Chromium browser extension that uses native offscreen rendering containment on eligible content in long pages.",
+  url: productUrl,
+  softwareVersion: "0.0.6",
+  applicationCategory: "BrowserApplication",
+  operatingSystem: "Chromium-based browsers",
+  image: `${SITE.siteUrl}${imageRoot}/og-cover.webp`,
+  publisher: { "@type": "Organization", name: SITE.name, url: SITE.siteUrl },
+};
+---
+
+<BaseLayout
+  title="Global DOM Optimizer — Offscreen Rendering Extension | ArkFlame Studios"
+  description="Make long articles, conversations and content-heavy pages smoother with local offscreen rendering containment. Discover Global DOM Optimizer by ArkFlame Studios."
+  canonicalPath="/global-dom-optimizer/"
+  image={`${imageRoot}/og-cover.webp`}
+  jsonLd={jsonLd}
+>
+  <div class="gdo-page">
+    <section class="gdo-hero af-container" aria-labelledby="gdo-title">
+      <div class="gdo-copy">
+        <p class="gdo-eyebrow"><span class="gdo-led" aria-hidden="true"></span> ARKFLAME STUDIOS / BROWSER TOOLS</p>
+        <div class="gdo-product-name">
+          <span class="gdo-leaf" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="#55f9a4" d="M41 7C23 9 9 17 8 33c0 4 2 7 6 7 16-1 26-14 27-33ZM12 43C16 28 25 21 35 15"/><path d="M12 43C16 28 25 21 35 15" fill="none" stroke="#063a25" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>GLOBAL DOM OPTIMIZER <small>VERSION 0.0.6</small></span>
+        </div>
+        <h1 id="gdo-title">A cleaner,<br /><span>faster web.</span></h1>
+        <p class="gdo-lead">Long conversations, articles, feeds and documentation should stay responsive. Global DOM Optimizer helps Chromium skip unnecessary rendering of eligible content outside the viewport—without removing it from the page.</p>
+        <div class="gdo-actions">
+          <a class="gdo-primary" href="/downloads/global-dom-optimizer-0.0.6.zip" download>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13m-5-5 5 5 5-5M4 17v3h16v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            Download v0.0.6 ZIP
+          </a>
+          <a class="gdo-secondary" href="#how-it-works">How it works <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="gdo-install-note">For Chromium and Helium · Manual installation (unpacked) · Chrome Web Store listing pending</p>
+        <div class="gdo-points" aria-label="Product highlights">
+          <span><i aria-hidden="true">✓</i> Automatic containment</span>
+          <span><i aria-hidden="true">✓</i> On-device processing</span>
+          <span><i aria-hidden="true">✓</i> Per-site control</span>
+        </div>
+      </div>
+      <figure class="gdo-preview">
+        <div class="gdo-preview-backdrop" aria-hidden="true"><span class="gdo-blur-box one"></span><span class="gdo-blur-box two"></span><span class="gdo-blur-box three"></span></div>
+        <img src={`${imageRoot}/popup.webp`} alt="Global DOM Optimizer extension popup showing an offscreen coverage gauge, hidden and managed blocks, global and per-website switches, and scan diagnostics" width="400" height="716" fetchpriority="high" decoding="async" />
+        <figcaption>Interface preview · example diagnostic values</figcaption>
+      </figure>
+    </section>
+    <section class="gdo-section gdo-band" id="how-it-works" aria-labelledby="gdo-how-title">
+      <div class="af-container">
+        <div class="gdo-section-heading">
+          <p class="gdo-eyebrow">HOW IT WORKS</p>
+          <h2 id="gdo-how-title">Less work beyond what you see.</h2>
+          <p>Content remains in the document. Supported sections far from view can skip layout and painting until you approach them.</p>
+        </div>
+        <div class="gdo-mechanics">
+          <div class="gdo-diagram">
+            <img src={`${imageRoot}/offscreen-viewport.svg`} width="760" height="450" loading="lazy" decoding="async" alt="Illustration of visible content rendered normally between two sections whose offscreen rendering work is skipped" />
+          </div>
+          <div class="gdo-steps">
+            <article><span>01</span><div><h3>Detect independent blocks</h3><p>Identifies eligible paragraphs, messages, articles, code and image sections—even inside nested scrollers.</p></div></article>
+            <article><span>02</span><div><h3>Skip offscreen rendering</h3><p>Uses native <code>content-visibility</code> containment rather than deleting nodes or rewriting the website.</p></div></article>
+            <article><span>03</span><div><h3>Restore content on approach</h3><p>Viewport-aware observation and cached scan regions bring nearby elements back as you scroll.</p></div></article>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="gdo-section" aria-labelledby="gdo-benefits-title">
+      <div class="af-container">
+        <div class="gdo-section-heading center">
+          <p class="gdo-eyebrow">BUILT FOR REAL PAGES</p>
+          <h2 id="gdo-benefits-title">Quietly useful. Fully in control.</h2>
+        </div>
+        <div class="gdo-features">
+          <article><div class="feature-glyph" aria-hidden="true">▤</div><h3>Long-form content</h3><p>Designed for lengthy AI conversations, documents, tutorials and image-rich feeds.</p></article>
+          <article><div class="feature-glyph" aria-hidden="true">▦</div><h3>Incremental scanning</h3><p>Tracks structural changes in cached regions instead of rescanning the entire page after each update.</p></article>
+          <article><div class="feature-glyph" aria-hidden="true">◎</div><h3>Live diagnostics</h3><p>Inspect managed blocks, offscreen coverage estimates, scan counts and local scan work.</p></article>
+          <article><div class="feature-glyph" aria-hidden="true">◇</div><h3>Your choice per website</h3><p>One automatic optimization strategy, plus a global switch and a site-specific on/off control.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="gdo-section gdo-install" aria-labelledby="gdo-install-title">
+      <div class="af-container gdo-install-inner">
+        <div><p class="gdo-eyebrow">GET STARTED</p><h2 id="gdo-install-title">Install in under a minute.</h2><p>Download the extension, unzip it, then open <code>chrome://extensions</code> in your Chromium-based browser. Enable Developer mode and select <strong>Load unpacked</strong>.</p><a class="gdo-primary" href="/downloads/global-dom-optimizer-0.0.6.zip" download>Download the extension ZIP <span aria-hidden="true">↓</span></a></div>
+        <aside class="gdo-caution"><h3>Designed to be safe, not magical.</h3><p>Optimization varies by site and device. Interactive elements may be left untouched, and reduced rendering work does not guarantee a particular FPS, CPU or RAM improvement. The percentage in the extension is an estimated scroll-height coverage metric—not a benchmark result.</p><p><a href="/global-dom-optimizer/privacy/">Read the privacy policy <span aria-hidden="true">↗</span></a></p></aside>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+.gdo-page{--leaf:#55f9a4;--leaf-dim:#8dbdaf;overflow:clip}
+.gdo-eyebrow{font:700 13px/1.4 var(--font-display);letter-spacing:.19em;color:var(--leaf);margin:0 0 19px}
+.gdo-led{display:inline-block;width:7px;height:7px;margin-right:9px;border-radius:50%;background:var(--leaf);box-shadow:0 0 14px #31ff94}
+.gdo-hero{min-height:750px;display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.92fr);gap:40px;align-items:center;padding-block:80px 68px;position:relative}
+.gdo-copy{position:relative;z-index:2;max-width:610px}
+.gdo-product-name{display:flex;align-items:center;gap:13px;color:#e6fff0;font:700 19px/1.1 var(--font-display);letter-spacing:.07em;margin-bottom:35px}
+.gdo-product-name small{display:block;margin-top:6px;color:#779c91;font-size:12px;letter-spacing:.15em}
+.gdo-leaf{width:49px;height:49px;display:grid;place-items:center;background:linear-gradient(145deg,#174b39,#031a17);border:1px solid #3bbd84;border-radius:13px;box-shadow:0 0 40px #23e88c33}
+.gdo-leaf svg{width:37px}
+h1{font:700 clamp(62px,6.3vw,100px)/.95 var(--font-display);letter-spacing:-.03em;color:#eff9ff;margin:0 0 27px}
+h1 span{color:var(--leaf);text-shadow:0 0 50px #29e88d26}
+.gdo-lead{font-size:18px;line-height:1.75;max-width:570px;color:#a1b6c7;margin:0 0 33px}
+.gdo-actions{display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.gdo-primary,.gdo-secondary{display:inline-flex;align-items:center;gap:10px;min-height:49px;padding:13px 20px;border-radius:12px;font-size:14px;font-weight:700;line-height:1.2;transition:transform .18s,background .18s,border-color .18s}
+.gdo-primary{color:#05251a;background:linear-gradient(135deg,#73ffb3,#32d88a);box-shadow:0 12px 34px #31e38a2c}.gdo-primary svg{width:19px;height:19px}
+.gdo-secondary{color:#daeeeb;background:#0b1b23b3;border:1px solid #294f4b}
+.gdo-primary:hover,.gdo-secondary:hover{transform:translateY(-2px)}.gdo-secondary:hover{border-color:#49c994}
+.gdo-install-note{color:#859cae;font-size:12px;line-height:1.7;margin:15px 0 26px}
+.gdo-points{display:flex;gap:11px;flex-wrap:wrap}.gdo-points span{display:inline-flex;gap:7px;align-items:center;font-size:12px;color:#b0cec4;border:1px solid #29413f;border-radius:30px;padding:7px 11px;background:#1122209c}.gdo-points i{font-style:normal;color:var(--leaf)}
+.gdo-preview{min-width:0;position:relative;display:flex;align-items:center;flex-direction:column;margin:0;padding:35px 0 0;isolation:isolate}
+.gdo-preview-backdrop{position:absolute;inset:25px -16px 45px;background:radial-gradient(ellipse at 55% 45%,#0f765646,transparent 61%),linear-gradient(125deg,#10213795,#09132000);border-radius:60px;filter:drop-shadow(0 20px 60px #071119);z-index:-1}
+.gdo-blur-box{position:absolute;display:block;border:1px solid #458b8460;background:linear-gradient(145deg,#1225387d,#11252644);border-radius:22px;backdrop-filter:blur(5px);transform:rotate(-7deg)}
+.gdo-blur-box.one{width:270px;height:110px;top:18%;right:5%}.gdo-blur-box.two{width:360px;height:150px;top:42%;left:0;transform:rotate(7deg)}.gdo-blur-box.three{width:190px;height:80px;bottom:12%;right:0}
+.gdo-preview>img{width:min(100%,395px);height:auto;filter:drop-shadow(0 36px 35px #000b) drop-shadow(0 0 48px #18e3902b)}
+.gdo-preview figcaption{margin-top:-9px;text-align:center;color:#6e9a8f;font-size:12px;position:relative;z-index:2}
+.gdo-section{padding-block:86px}.gdo-band{background:linear-gradient(180deg,#081620dc,#080f1bcb);border-block:1px solid #25414175}
+.gdo-section-heading{max-width:750px;margin-bottom:42px}.gdo-section-heading.center{text-align:center;margin-inline:auto}.gdo-section-heading h2,.gdo-install h2{font-size:clamp(34px,4vw,53px);letter-spacing:-.01em;color:#e9f5f7}.gdo-section-heading>p:last-child{font-size:16px;color:#a0b9c6;max-width:650px;margin:15px 0 0}
+.gdo-mechanics{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}.gdo-diagram img{border-radius:20px;border:1px solid #2a514e8c;width:100%;height:auto;box-shadow:0 20px 60px #0005}
+.gdo-steps{display:grid;gap:23px}.gdo-steps article{display:flex;gap:18px}.gdo-steps article>span{font:700 21px var(--font-display);color:#52ecab;flex-shrink:0;padding-top:2px}.gdo-steps h3{font-size:24px;color:#e5f3f4;margin:0 0 9px}.gdo-steps p,.gdo-features p{color:#93a9b9;font-size:15px;line-height:1.75;margin:0}.gdo-steps code,.gdo-install code{font-size:.9em;color:#8cffbf;background:#142c29;padding:2px 6px;border-radius:5px}
+.gdo-features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.gdo-features article{border:1px solid #29423f;border-radius:19px;background:linear-gradient(140deg,#122325cf,#0c1626e3);padding:25px 22px;min-height:240px}.gdo-features h3{color:#e0f4ef;font-size:24px;margin:12px 0 12px}.feature-glyph{display:grid;place-items:center;background:#123c30;color:#75ffc0;border:1px solid #276f53;border-radius:13px;font-size:29px;width:48px;height:48px}
+.gdo-install{border-block-start:1px solid #18312f}.gdo-install-inner{display:grid;grid-template-columns:1.12fr .88fr;gap:60px;align-items:center}.gdo-install h2{margin-bottom:15px}.gdo-install-inner>div>p:not(.gdo-eyebrow){max-width:590px;color:#a1b7c6;line-height:1.8;margin:0 0 25px}.gdo-caution{background:linear-gradient(130deg,#172c31d4,#111c2be0);border:1px solid #2c544b;border-radius:22px;padding:30px}.gdo-caution h3{font-size:25px;color:#dbece9;margin:0 0 12px}.gdo-caution p{color:#a1b6c4;font-size:14px;line-height:1.8}.gdo-caution a{color:#77f4b5;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:970px){.gdo-hero{grid-template-columns:1fr 360px;gap:12px}.gdo-preview>img{width:330px}.gdo-features{grid-template-columns:repeat(2,minmax(0,1fr))}.gdo-mechanics{grid-template-columns:1fr}.gdo-install-inner{grid-template-columns:1fr;gap:24px}}
+@media(max-width:730px){.gdo-hero{display:flex;flex-direction:column;align-items:stretch;padding-block:55px 25px}.gdo-preview{padding-top:8px}.gdo-preview>img{width:min(330px,90%)}.gdo-product-name{margin-bottom:25px}h1{font-size:65px}.gdo-lead{font-size:16px}.gdo-section{padding-block:62px}.gdo-features{grid-template-columns:1fr}.gdo-features article{min-height:0}.gdo-preview-backdrop{inset:0}}
+@media(prefers-reduced-motion:reduce){.gdo-primary:hover,.gdo-secondary:hover{transform:none}}
+</style>

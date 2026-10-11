@@ -1,0 +1,98 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Global DOM Optimizer Privacy Policy | ArkFlame Studios"
+  description="Privacy policy for Global DOM Optimizer by ArkFlame Studios. Learn what the browser extension processes locally, saves, and never transmits."
+  canonicalPath="/global-dom-optimizer/privacy/"
+>
+  <div class="privacy-shell af-container">
+    <div class="privacy-head">
+      <a class="privacy-return" href="/global-dom-optimizer/">← Global DOM Optimizer</a>
+      <p class="privacy-label">ARKFLAME STUDIOS · PRIVACY</p>
+      <h1>Privacy policy<span>.</span></h1>
+      <p class="privacy-description">A clear explanation of what Global DOM Optimizer does with the webpage information it encounters.</p>
+      <div class="privacy-meta"><span>Global DOM Optimizer v0.0.6</span><span>Effective October 11, 2026</span><span>Publisher: ArkFlame Studios</span></div>
+    </div>
+    <div class="privacy-layout">
+      <nav class="privacy-nav" aria-label="On this page">
+        <p>ON THIS PAGE</p>
+        <a href="#processing">Purpose &amp; processing</a>
+        <a href="#storage">Local storage</a>
+        <a href="#sharing">Collection &amp; sharing</a>
+        <a href="#permissions">Permissions</a>
+        <a href="#controls">Your controls</a>
+        <a href="#limited-use">Limited Use</a>
+        <a href="#contact">Contact &amp; updates</a>
+      </nav>
+      <article class="privacy-article">
+        <section class="privacy-summary" aria-label="Privacy summary">
+          <span class="privacy-check" aria-hidden="true">✓</span>
+          <div><h2>Rendering stays on your device.</h2><p>Global DOM Optimizer processes page structure for rendering optimization inside your browser. The extension has no telemetry or analytics endpoint and does not upload page content to ArkFlame Studios.</p></div>
+        </section>
+        <section id="processing">
+          <h2>1. Purpose and local processing</h2>
+          <p>Global DOM Optimizer improves rendering efficiency on eligible webpages. Its content script inspects document structure, text lengths, element dimensions, scroll containers, and viewport or scroll positions to find elements that can safely use native CSS offscreen rendering containment. It restores rendering as content approaches the visible region.</p>
+          <p>This processing occurs inside the browser. The extension does not upload or copy page text, images, personal communications, or other webpage contents to ArkFlame Studios.</p>
+        </section>
+        <section id="storage">
+          <h2>2. Information stored locally</h2>
+          <p>The extension uses <code>chrome.storage.local</code> for its global enabled/disabled preference and website hostnames explicitly excluded by the user. These settings remain on the device and are not synchronized by the extension.</p>
+          <p>Its popup displays current-tab diagnostics, including managed or hidden block counts, scroll-region information and scan timings. These values are exchanged through browser-internal messaging, not uploaded to the publisher or stored as a browsing-history log.</p>
+        </section>
+        <section id="sharing">
+          <h2>3. Collection, sharing and retention</h2>
+          <p>ArkFlame Studios does not receive webpage contents, personal communications, browsing histories, scrolling activity, authentication information, or diagnostic metrics from the extension. Version 0.0.6 contains no tracking, analytics, advertising SDK, external API calls or remotely executed code. It does not sell or share extension user data with third parties.</p>
+          <p>Local settings persist until users change them, clear extension data using their browser controls, or uninstall the extension subject to browser storage behavior.</p>
+        </section>
+        <section id="permissions">
+          <h2>4. Permissions and website access</h2>
+          <p>The extension runs local content scripts on HTTP and HTTPS pages to inspect eligible elements and apply rendering styles. This cross-site access is necessary because its primary function is automatic optimization across webpages.</p>
+          <ul>
+            <li><strong>storage:</strong> saves the global switch and user-selected website exclusions locally.</li>
+            <li><strong>activeTab:</strong> supports the user-opened popup's access to the current site's hostname and local diagnostics.</li>
+            <li><strong>HTTP/HTTPS content scripts:</strong> identify eligible offscreen DOM sections and adjust their rendering containment.</li>
+          </ul>
+          <p>The extension does not request cookies, browser history, network interception, or downloads permissions. Chrome blocks content scripts on certain internal or restricted pages.</p>
+        </section>
+        <section id="controls">
+          <h2>5. Your controls</h2>
+          <p>You can turn optimization off globally or for the current website using the extension popup. Either option reverses the styles managed by the extension. Some elements and entire websites may be left unchanged where safe containment is not possible.</p>
+        </section>
+        <section id="limited-use">
+          <h2>6. Limited Use and security</h2>
+          <p>Information accessed by Global DOM Optimizer is used solely for its stated offscreen-rendering feature and related on-device diagnostics. Use of information received from Google APIs will adhere to the <a href="https://developer.chrome.com/docs/webstore/program-policies/limited-use" target="_blank" rel="noopener noreferrer">Chrome Web Store User Data Policy, including its Limited Use requirements</a>. The extension does not execute remotely hosted scripts.</p>
+        </section>
+        <section id="external">
+          <h2>7. External publisher link</h2>
+          <p>The popup includes an optional link to <a href="https://arkflame.com/">ArkFlame Studios</a>. Opening it navigates to the publisher's website; the extension does not transmit page content or diagnostic data as part of that navigation. Website access is separate from the extension's local processing.</p>
+        </section>
+        <section id="contact">
+          <h2>8. Updates and contact</h2>
+          <p>Material changes to the extension's data practices will be reflected in this policy and the Chrome Web Store disclosures before they are published. For questions, contact ArkFlame Studios through <a href="https://arkflame.com/">arkflame.com</a>.</p>
+          <p class="privacy-note">This policy describes Global DOM Optimizer version 0.0.6. Other ArkFlame Studios services may operate under separate notices.</p>
+        </section>
+      </article>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.privacy-shell{padding-block:64px 100px}
+.privacy-head{max-width:950px;margin-bottom:50px}
+.privacy-return{display:inline-block;color:#88ffbf;font-size:14px;margin-bottom:37px;text-decoration:underline;text-underline-offset:4px}
+.privacy-label{font:700 13px var(--font-display);letter-spacing:.2em;color:#55f9a4;margin:0 0 12px}
+h1{font-size:clamp(52px,6vw,80px);letter-spacing:-.03em;color:#f3faf8}h1 span{color:#54eda5}
+.privacy-description{font-size:18px;color:#a1b7c6;max-width:680px;margin:19px 0}
+.privacy-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:23px}.privacy-meta span{background:#11251fbb;border:1px solid #2a4945;border-radius:30px;color:#a9c9bf;font-size:12px;padding:6px 12px}
+.privacy-layout{display:grid;grid-template-columns:235px minmax(0,800px);gap:48px;align-items:start}
+.privacy-nav{position:sticky;top:92px;display:flex;flex-direction:column;gap:5px;border-left:1px solid #2a4942;padding-left:17px}
+.privacy-nav p{font:700 13px var(--font-display);letter-spacing:.13em;color:#71c5a3;margin:0 0 12px}.privacy-nav a{color:#9db0bc;font-size:14px;padding-block:5px}.privacy-nav a:hover{color:#7cffb4}
+.privacy-article{max-width:800px;padding:0 34px 15px;background:linear-gradient(145deg,#0d1c28ec,#0d1524d9);border:1px solid #29443c;border-radius:20px;box-shadow:0 30px 80px #0004}
+.privacy-article section:not(.privacy-summary){padding-block:27px;border-bottom:1px solid #29413e88;scroll-margin-top:85px}.privacy-article section:last-child{border-bottom:0}
+.privacy-article h2{font-size:25px;color:#edf9f7;margin:0 0 13px}.privacy-article p,.privacy-article li{font-size:15px;line-height:1.85;color:#a9bdc6}.privacy-article p{margin:0 0 13px}.privacy-article ul{padding-left:21px;margin:7px 0 15px}.privacy-article li{margin:8px 0}.privacy-article strong{color:#d6f4e4}.privacy-article a{color:#83ffbd;text-decoration:underline;text-underline-offset:4px}.privacy-article code{color:#93ffd1;background:#122f29;border-radius:5px;padding:2px 5px}
+.privacy-summary{display:flex;gap:16px;margin:27px -9px 12px;padding:20px;border:1px solid #2b6d53;background:linear-gradient(130deg,#15453465,#092c2666);border-radius:14px}.privacy-summary .privacy-check{font-size:20px;color:#66f9ab;flex-shrink:0}.privacy-summary h2{font-size:23px;margin-bottom:5px}.privacy-summary p{margin:0}
+.privacy-article .privacy-note{font-size:13px;color:#8097a7}
+@media(max-width:780px){.privacy-shell{padding-block:40px 65px}.privacy-layout{grid-template-columns:1fr;gap:21px}.privacy-nav{position:static;display:flex;flex-direction:row;flex-wrap:wrap;gap:4px 16px;border-left:none;padding-left:0}.privacy-nav p{width:100%}.privacy-nav a{font-size:13px}.privacy-article{padding:0 20px}.privacy-article h2{font-size:23px}}
+</style>

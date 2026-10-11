@@ -26,6 +26,18 @@ const MIN_PRODUCT_PAGES = 45;
 const REQUIRED_FILES = [
   "index.html",
   "about/index.html",
+  "global-dom-optimizer/index.html",
+  "global-dom-optimizer/privacy/index.html",
+  "assets/img/global-dom-optimizer/popup.webp",
+  "assets/img/global-dom-optimizer/og-cover.webp",
+  "assets/img/global-dom-optimizer/offscreen-viewport.svg",
+  "downloads/global-dom-optimizer-0.0.6.zip",
+  "global-dom-optimizer/index.html",
+  "global-dom-optimizer/privacy/index.html",
+  "assets/img/global-dom-optimizer/popup.webp",
+  "assets/img/global-dom-optimizer/og-cover.webp",
+  "assets/img/global-dom-optimizer/offscreen-viewport.svg",
+  "downloads/global-dom-optimizer-0.0.6.zip",
   "plugins/index.html",
   "plugins/security/index.html",
   "plugins/performance/index.html",
@@ -68,6 +80,10 @@ const FORBIDDEN_PATTERNS = [
 const CANONICAL_ROUTES = [
   "index.html",
   "about/index.html",
+  "global-dom-optimizer/index.html",
+  "global-dom-optimizer/privacy/index.html",
+  "global-dom-optimizer/index.html",
+  "global-dom-optimizer/privacy/index.html",
   "plugins/index.html",
   "plugins/security/index.html",
   "plugins/performance/index.html",
@@ -265,6 +281,23 @@ async function main() {
       throw new Error(`dist/sitemap-index.xml must reference the origin ${ORIGIN}`);
     }
     return ORIGIN;
+  });
+
+  await check("DOM OPTIMIZER PRODUCT, PRIVACY AND SITEMAP", async () => {
+    const product = html.get("global-dom-optimizer/index.html") ?? "";
+    const privacy = html.get("global-dom-optimizer/privacy/index.html") ?? "";
+    const sitemap = await readDist("sitemap-0.xml");
+    for (const expected of ["Global DOM Optimizer", "content-visibility", "/downloads/global-dom-optimizer-0.0.6.zip", "/global-dom-optimizer/privacy/"]) {
+      if (!product.includes(expected)) throw new Error(`product page missing ${expected}`);
+    }
+    for (const expected of ["Global DOM Optimizer", "chrome.storage.local", "Limited Use", "ArkFlame Studios"]) {
+      if (!privacy.includes(expected)) throw new Error(`privacy page missing ${expected}`);
+    }
+    for (const route of ["global-dom-optimizer/", "global-dom-optimizer/privacy/"]) {
+      const url = `${ORIGIN}/${route}`;
+      if (!sitemap.includes(`<loc>${url}</loc>`)) throw new Error(`sitemap missing ${url}`);
+    }
+    return "product route, privacy disclosures, assets and sitemap URLs";
   });
 
   // Product slugs are derived from the built HTML catalog, never from the TS data source.
