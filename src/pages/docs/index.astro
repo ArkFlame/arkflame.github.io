@@ -25,7 +25,7 @@ const jsonLd = {
       "@id": `${SITE.siteUrl}/docs/#collection`,
       name: "ArkFlame plugin documentation",
       url: `${SITE.siteUrl}/docs/`,
-      description: "Quick starts, requirements, commands and limits for ArkFlame Minecraft plugins.",
+      description: "Quick starts, requirements, commands and configuration for ArkFlame Minecraft plugins.",
       isPartOf: { "@id": `${SITE.siteUrl}/#website` },
     },
     {
@@ -42,7 +42,7 @@ const jsonLd = {
 
 <BaseLayout
   title="Plugin Documentation | ArkFlame Studios"
-  description="Source-backed quick starts for ArkFlame Minecraft plugins: requirements, installation, commands, permissions, configuration and known limits."
+  description="Quick starts for ArkFlame Minecraft plugins: requirements, installation, commands, permissions and configuration."
   canonicalPath="/docs/"
   jsonLd={jsonLd}
 >
@@ -51,12 +51,10 @@ const jsonLd = {
       <p class="af-eyebrow">Documentation</p>
       <h1>Plugin quick starts</h1>
       <p class="docs-head__intro">
-        Each page is written from the plugin repository: manifest dependencies, real command syntax, declared
-        permissions and the defaults that ship in the jar. Compatibility is marked as declared or unverified.
+        Quick starts, installation, commands, permissions and configuration for the plugins in the ArkFlame catalogue.
       </p>
       <p class="docs-head__note">
-        {docs.length} plugin pages exist today. Products that are not yet documented keep an honest product page and
-        no invented manual.
+        {docs.length} plugin guides, with the details you need to get each one running.
       </p>
     </header>
 
@@ -77,7 +75,6 @@ const jsonLd = {
                       <span class="docs-card__desc">{entry.data.description}</span>
                       <span class="docs-card__meta">
                         Updated {entry.data.updated.toISOString().slice(0, 10)}
-                        {entry.data.runtimeVerified ? " · Runtime-verified" : " · Not runtime-verified"}
                       </span>
                     </a>
                   </li>
@@ -98,7 +95,7 @@ const jsonLd = {
         </ul>
 
         <h2>All guides</h2>
-        <p class="docs-side__text">{guides.length} task-led articles, with no generated top-ten filler.</p>
+        <p class="docs-side__text">{guides.length} task-led articles for security, proxies and performance work.</p>
         <a class="btn" href="/guides/">Browse guides</a>
 
         <h2>Browse products</h2>

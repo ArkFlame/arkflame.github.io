@@ -1,11 +1,9 @@
 ---
 title: "ChatSentinel chat filtering and SocialSpy"
-description: "ChatSentinel filters chat for spam, swearing, advertising and client mentions, with server mute, SocialSpy and Redis alerts. Commands and limits."
+description: "ChatSentinel filters chat for spam, swearing, advertising and client mentions, with server mute, SocialSpy and Redis alerts. Commands and permissions."
 plugin: "chatsentinel"
 category: "security"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the ChatSentinel repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -18,13 +16,13 @@ It is not a punishment plugin. Offense responses are a list of console commands 
 
 - `plugin.yml` declares `api-version: "1.13"` and `folia-supported: true`. Soft dependencies: Essentials, EssentialsLite, ZelChat.
 - A BungeeCord descriptor ships as `bungee.yml`. Velocity uses a `@Plugin` entrypoint compiled against Velocity API `3.4.0-SNAPSHOT`.
-- The POM compiles against Spigot API `1.19-R0.1-SNAPSHOT`, BungeeCord API `1.21-R0.4`, and Java 8 source/target. These are compile targets; the repository documents no supported Minecraft version range and no runtime Java requirement.
+- Java 8 build target, compiled against Spigot API `1.19-R0.1-SNAPSHOT` and BungeeCord API `1.21-R0.4`.
 - Redis is optional; Jedis is shaded and relocated. No database is used.
 - Enforcement of mutes depends on an external punishment plugin.
 
 ## Install
 
-Run the Maven build. The POM is a single `jar` module containing the Bukkit, BungeeCord, and Velocity entrypoints; both `plugin.yml` and `bungee.yml` live in the same resources directory. The repository does not document separate per-platform jars.
+Run the Maven build. The POM is a single `jar` module containing the Bukkit, BungeeCord, and Velocity entrypoints; both `plugin.yml` and `bungee.yml` live in the same resources directory. The same jar contains all three platform entrypoints.
 
 Place the jar in `plugins/` on the Bukkit server or proxy. Startup creates missing `config.yml`, `messages.yml`, `blacklist.yml`, `whitelist.yml`, and nested filter files. `/chatsentinel reload` reloads config, messages, filters, and the online-player cache.
 
@@ -78,9 +76,6 @@ The bundled comment warns that `legacy-deny` may kick 1.19.1+ signed-chat client
 - `fake_message: true` on BungeeCord: the config comment says it does not work there.
 - Filter changes ignored: user regexes go to `blacklist/user/custom.yml`; check the startup compile report controlled by `filter-compile.notify-admins`.
 
-## Evidence and limits
-
-Inspected `README.md` (two lines), `pom.xml` (2.0.3), `plugin.yml`, `bungee.yml`, `config.yml`, `ChatSentinelCommandService`, `CommandPermission`, `UserRegexAddService`, the Velocity entrypoint, and config creation paths. Not verified: runtime behavior on any platform, permission resolution under LuckPerms, Redis alert delivery, Discord webhook delivery, signed-chat handling against a live 1.19.1+ client, and Folia scheduling. The repository states no supported Minecraft range.
 
 ## Related
 

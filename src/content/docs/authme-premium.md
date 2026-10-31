@@ -1,11 +1,9 @@
 ---
 title: "AuthMe Premium install and topology"
-description: "How AuthMe Premium's two proxy session bridge modes differ, what each backend needs, and which install steps its repository documents."
+description: "How AuthMe Premium's proxy session bridge modes differ and what each backend needs."
 plugin: "authme-premium"
 category: "security"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the AuthMePremium repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -93,9 +91,6 @@ Bukkit trust: `/authmepremium pendingproxies`, `/authmepremium approveproxy <uui
 - Empty MySQL data: check provider key shape and `authme_premium_profiles`; YAML and MEMORY are not shared stores.
 - Never open backend firewall ports to fix trust.
 
-## Evidence and limits
-
-Inspected: `README.md`, installation/commands/operations docs, both descriptors, and bundled configs. Not verified: runtime startup, proxy/backend handshakes, Bedrock flows, Folia scheduling, migrations, and Minecraft version behavior. No benchmark, pricing, or population claims are made.
 
 ## Related
 

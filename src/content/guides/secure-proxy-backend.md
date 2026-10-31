@@ -65,11 +65,3 @@ Do not solve a UUID or token error by opening the backend firewall. That convert
 ## BungeeGuard
 
 VeloFlame's shipped `default-velocity.toml` comments name BungeeGuard IP forwarding as one of the forwarding modes. That is the only local reference found. This guide does not evaluate or recommend it.
-
-## Limits
-
-No proxy, backend, firewall, or AuthMe handshake was executed for this review. Host commands such as `ss` and external connection tests are standard administration, not product-verified steps. Exact forwarding keys vary by proxy version; verify against the config your build generates. The FlameCord firewall's behavior on non-Debian hosts is undocumented.
-
-## Sources and review
-
-Reviewed read-only on 30 October 2026: AuthMePremium README and `docs/installation.md`, `docs/operations-and-troubleshooting.md`; FlameCord `FlameCord.java`, `FlameCordConfiguration.java`, and README; VeloFlame `default-veloflame.toml`, `default-velocity.toml`, and README. No builds or runtime tests. Product routes: [AuthMePremium](/plugins/authme-premium/), [FlameCord](/plugins/flamecord/), [VeloFlame](/plugins/veloflame/); docs at [AuthMePremium](/docs/authme-premium/).

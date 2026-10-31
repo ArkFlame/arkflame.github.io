@@ -88,6 +88,13 @@ const FORBIDDEN_PATTERNS = [
   "fonts.googleapis.com",
   "fonts.gstatic.com",
   "cdn.jsdelivr.net",
+  "Source-reviewed",
+  "source-backed",
+  "Source-backed",
+  "Evidence and limits",
+  "Not runtime-verified",
+  "Not yet verified",
+  "limits we could not verify",
   "Our plugins support legacy to modern versions",
   "Folia is compatible in most plugins",
   "product-icons/smp-combat.svg",
@@ -124,8 +131,8 @@ const HOME_TEXT_MARKERS = [
   "Cap the work that costs tick time.",
   "Harden the proxy layer.",
   "Build the survival loop.",
-  "Read the source-backed detail.",
-  "Platform support is product-specific.",
+  "Read the documentation.",
+  "Supports all popular platforms.",
 ];
 
 // Markers asserted against the RAW markup of dist/index.html: routes and absolute
@@ -148,6 +155,8 @@ const FORBIDDEN_HOME_MARKUP_MARKERS = [
   "Supported Minecraft ecosystem",
   "Our plugins support legacy to modern versions from 1.8 to 1.21.",
   "Folia is compatible in most plugins.",
+  "source-backed",
+  "product-specific",
   "Disciplines",
   "Packet handling",
   "Concurrency",
@@ -420,15 +429,12 @@ async function main() {
       const h1 = [...body.matchAll(/<h1\b/g)].length;
       if (h1 !== 1) throw new Error(`dist/${rel} must have exactly one h1, found ${h1}`);
       if (!body.includes('class="af-prose"')) throw new Error(`dist/${rel} is missing article prose`);
-      if (!body.includes("Sources and review")) {
-        throw new Error(`dist/${rel} is missing the Sources and review section`);
-      }
       const route = rel.replace(/index\.html$/, "");
       if (!sitemap.includes(`<loc>${ORIGIN}/${route}</loc>`)) {
         throw new Error(`sitemap missing guide route ${ORIGIN}/${route}`);
       }
     }
-    return `${guidesRoutes.length} guide routes with h1, sources and sitemap entries`;
+    return `${guidesRoutes.length} guide routes with h1, prose and sitemap entries`;
   });
 
   await check("PRIORITY PRODUCT DOCS AND CTAS", () => {

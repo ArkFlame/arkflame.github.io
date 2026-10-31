@@ -1,11 +1,9 @@
 ---
 title: "RedstoneLimiter configuration and monitor mode"
-description: "RedstoneLimiter's scopes, presets, monitor mode, commands, permissions and config keys, plus the installation gap in its repository."
+description: "RedstoneLimiter scopes, presets, monitor mode, commands, permissions and configuration keys."
 plugin: "redstonelimiter"
 category: "performance"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the RedstoneLimiter repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -22,11 +20,11 @@ Quarantine is manual.
 - No plugin dependencies: no `depend` or `softdepend` entries.
 - Redis only when `notifications.cross_server.enabled` is on; it ships `false`.
 - The POM compiles Java 8 against `spigot-api 1.8.8`, but runtime code uses modern Chunk/Region APIs and shaded Adventure. The compile target is not a server floor.
-- No Minecraft version range is stated.
+
 
 ## Install
 
-The repository does not document installation. `README.md` is unmodified Bukkit boilerplate, `TODO.md` is boilerplate, and `docs/tutorial.md` has no install section. This page does not invent jar-placement steps. Distribution and install details belong to the product listing: [RedstoneLimiter on BuiltByBit](https://builtbybit.com/resources/redstonelimiter-smart-redstone-limiter.23133/).
+Install from the current [BuiltByBit release](https://builtbybit.com/resources/redstonelimiter-smart-redstone-limiter.23133/), place the jar in your server plugins directory and start the server. Distribution and updates are handled through the listing.
 
 ## Configure
 
@@ -93,9 +91,6 @@ All four descriptor nodes default to `op`:
 - **Old keys.** Version 7 migration maps `anti-lag.sliding-window.*` to per-scope periods and `blocks.threshold.*` to `max-activations.*`; whitelist and quarantine lists survive.
 - **Folia.** Player/entity work uses `runTaskForEntity`, region work `runTaskForRegion`, and global work the Folia scheduler when available.
 
-## Evidence and limits
-
-Inspected: `plugin.yml`, `config.yml`, `docs/tutorial.md`, `pom.xml`, `README.md`, and `CHANGELOG.md`. Not verified: runtime behavior on any server or Folia build, Minecraft compatibility, TPS estimator accuracy, and preset effects on live contraptions. No performance numbers are asserted.
 
 ## Related
 

@@ -60,11 +60,3 @@ After building, list the output directory and run the jar you actually produced.
 5. **Cutover.** Run both proxies against a test backend, compare login, forwarding, whitelist, and firewall behavior, then change DNS. A proxy swap is not a rolling restart.
 
 The [secure proxy and backend guide](/guides/secure-proxy-backend/) covers the forwarding and trust layer that must survive the move.
-
-## What neither repo proves
-
-There are no measured TPS, player-count, or latency results in either repository. Feature lists and config defaults are not performance evidence. Select on plugin compatibility, forwarding model, and whether you can operate the firewall; then measure on your own hardware.
-
-## Sources and review
-
-Reviewed the FlameCord and VeloFlame repositories read-only on 30 October 2026. FlameCord: README, `FlameCord-Proxy/pom.xml`, bootstrap POM, `ProtocolConstants.java`, `FlameCord.java`, `FlameCordConfiguration.java`, `ModulesConfiguration.java`. VeloFlame: `settings.gradle.kts`, `gradle.properties`, `build.gradle.kts`, `ProtocolVersion.java`, `default-veloflame.toml`, `default-velocity.toml`, `VeloFlameCommand.java`, and the whitelist, firewall, and maintenance subcommands. No builds or runtime tests.

@@ -57,13 +57,3 @@ For a plugin with a large surface, repeat the checklist on a staging server with
 AuthMePremium's operational docs give the pattern for a Folia `UnsupportedOperationException`: confirm the descriptor flag, confirm the backend is running the current universal JAR, confirm `FoliaAPI initialized` appears, and route player mutations through the entity scheduler. Do not replace the failing call with a raw Bukkit scheduler call; that moves the error rather than fixing ownership.
 
 If the exception comes from a third-party plugin, capture the full stack trace before disabling anything. The class and method in the trace usually identify the owner faster than a plugin list.
-
-## Limits
-
-No Folia server was started for this review. The scheduling contract and API names are platform behavior; the adapter examples and flags come from the named repositories. Passing this checklist still does not guarantee compatibility under every world size, proxy topology, or optional hook. It only replaces "the flag says true" with observed behavior.
-
-For performance work on Folia, measure before adding limiters: the [lag diagnosis guide](/guides/diagnose-lag-before-limiters/) applies the same ownership rules to entity and redstone load. For startup failures, use the [plugin troubleshooting workflow](/guides/plugin-troubleshooting-workflow/).
-
-## Sources and review
-
-Reviewed read-only on 30 October 2026: RedstoneLimiter `docs/tutorial.md` and `FoliaAPI` usages; SMP-Regions README Folia model; EntityLimiter, BlockLimiter, and MobStacker `FoliaAPI` call sites; AuthMePremium `docs/operations-and-troubleshooting.md`; and the `folia-supported` descriptor entries in those projects. No build or runtime test. Product routes: [RedstoneLimiter](/plugins/redstonelimiter/), [SMP Regions](/plugins/smp-regions/), [EntityLimiter](/plugins/entitylimiter/).

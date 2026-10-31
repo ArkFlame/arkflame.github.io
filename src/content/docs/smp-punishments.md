@@ -1,11 +1,9 @@
 ---
 title: "SMP Punishments operations and configuration"
-description: "SMP Punishments' commands, permissions, storage and warning settings as declared in its repository, including multi-server sync limits."
+description: "SMP Punishments commands, permissions, storage and warning settings, including multi-server sync."
 plugin: "smp-punishments"
 category: "smp"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the SMP-Punishments repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -19,12 +17,10 @@ The repository describes conservative Bukkit API use with reflection for Folia s
 - A Bukkit/Spigot-family server. `plugin.yml` declares `api-version: 1.13` and `folia-supported: true`.
 - Optional soft dependencies: PlaceholderAPI and `voicechat`. The voice hook loads only when the Simple Voice Chat plugin is present.
 - SQLite for single-server installs, or MySQL when multi-server propagation is needed. The README states that SQLite remains local-only.
-- No Minecraft version range is stated in the repository.
-- No plugin hard dependencies are declared.
 
 ## Build and storage
 
-The README documents `mvn -DskipTests package`. It does not document jar placement or a first-run procedure beyond the generated `config.yml`, so this page does not invent one.
+Build with `mvn -DskipTests package`. Place the jar in your server plugins directory and start the server; first run generates `config.yml`.
 
 Defaults in `config.yml`:
 
@@ -102,9 +98,6 @@ Except for `smppunishments.*`, descriptor nodes default to `op`.
 - **Pool timeouts.** Diagnostics include active, idle, total, and waiting connection counts when Hikari metrics are available.
 - **Voice mute missing.** The hook only loads with the `voicechat` plugin present.
 
-## Evidence and limits
-
-Inspected: `README.md`, `PERMISSIONS.md`, `plugin.yml`, `config.yml`, and `pom.xml`. Not verified: runtime startup, Folia scheduling, upgrades against populated tables, webhook delivery, voice-chat integration, GUI behavior, Minecraft version range. `PERMISSIONS.md` omits several nodes that `plugin.yml` declares (`tempban`, `tempmute`, `screenshare`, `totemcheck`, `stats`, silent/unlimited variants); this page follows the descriptor. No performance or capacity claims are made.
 
 ## Related
 

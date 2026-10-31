@@ -80,11 +80,3 @@ Do not hot-unload; restart between rounds, because classloader remnants create f
 | `proxy UUID is not approved` | Approve the exact UUID on that backend; repeat per backend |
 | `token mismatch` | Compare proxy and backend token, including whitespace and learned values |
 | Folia `UnsupportedOperationException` | Descriptor flag, current JAR, `FoliaAPI initialized`, entity scheduler |
-
-## Limits
-
-A stack trace shows where execution failed, not always why. Timing-dependent plugin conflicts can disappear during a bisect and return under load. None of these fixes were validated on a running server; they follow documented startup checks and command paths.
-
-## Sources and review
-
-Reviewed read-only on 30 October 2026: ExploitFixer startup and command sources, FairPlay command and config sources, AuthMePremium `docs/operations-and-troubleshooting.md`, and the Folia notes in AuthMePremium and RedstoneLimiter documentation. No build or runtime execution. Related guides: [ExploitFixer packet tuning](/guides/exploitfixer-packet-abuse/), [FairPlay false positives](/guides/fairplay-false-positives/), [AuthMePremium topologies](/guides/authme-premium-topologies/), [Folia compatibility](/guides/folia-compatibility/).

@@ -1,11 +1,9 @@
 ---
 title: "SMP Lifesteal commands and configuration"
-description: "SMP Lifesteal's commands, permissions, storage defaults and heart-death settings as declared in its repository, with documented limits."
+description: "SMP Lifesteal commands, permissions, storage defaults and heart-death settings for survival servers."
 plugin: "smp-lifesteal"
 category: "smp"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the SMP-Lifesteal repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -101,9 +99,6 @@ Notification nodes `lifesteal.antialt.notify` and `lifesteal.antidupe.notify` de
 - **Anti-alt misses accounts.** Change the salt from the placeholder and confirm players arrive with consistent IPs. VPNs can create false relations.
 - **Folia scheduler warnings.** Update the plugin and review `Advanced-Settings.scheduler-pool-size`.
 
-## Evidence and limits
-
-Inspected: `README.md`, `plugin.yml`, `settings.yml`, `docs/COMMANDS.md`, `docs/PERMISSIONS.md`, `docs/CONFIGURATION.md`, `docs/TROUBLESHOOTING.md`, and `pom.xml`. Not verified: runtime behavior on any listed server, the 1.8.8–1.21.x claim, Folia scheduling, database failover, and conversion accuracy. Drift exists: `docs/CONFIGURATION.md` lists `default-lives: 15` while `settings.yml` ships `10`; `docs/PERMISSIONS.md` says bypass nodes default `false` while `plugin.yml` says `op`. This page follows the shipped files.
 
 ## Related
 

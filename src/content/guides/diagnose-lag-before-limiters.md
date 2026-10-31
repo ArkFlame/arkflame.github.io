@@ -60,13 +60,3 @@ Only RedstoneLimiter documents a monitor mode. For the others, enable `debug` on
 5. Apply to production at a low-traffic window, watch for player-facing removals, and keep `/rl reload` or a restart rollback ready.
 
 Running several limiters means multiple plugins can remove the same entity for different reasons. Define ownership: one plugin per category, documented in the config.
-
-## Limits
-
-No benchmark was run and no performance numbers are claimed here. Every value above is a shipped default, not a recommendation for your server. RedstoneLimiter's "region" is not a Folia scheduler region, and its TPS lookup falls back to a `1.0x` multiplier when reflection methods are missing, so TPS scaling may not behave as expected on unusual builds.
-
-For Folia ownership rules, read the [Folia compatibility guide](/guides/folia-compatibility/). For the RedstoneLimiter config surface, see the [RedstoneLimiter docs](/docs/redstonelimiter/).
-
-## Sources and review
-
-Reviewed read-only on 30 October 2026: EntityLimiter `limits.yml`, `config.yml`, and descriptor; RedstoneLimiter `docs/tutorial.md`, `config.yml`, and descriptor; MobStacker `config.yml` and descriptor; BlockLimiter `config.yml` and descriptor. Spark is referenced as external tooling and was not installed or run for this review. Product routes: [EntityLimiter](/plugins/entitylimiter/), [RedstoneLimiter](/plugins/redstonelimiter/), [MobStacker](/plugins/mobstacker/), [BlockLimiter](/plugins/blocklimiter/).

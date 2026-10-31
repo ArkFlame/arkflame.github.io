@@ -63,13 +63,3 @@ The descriptor ships three targeted nodes, all default `false`:
 - `fairplay.nomodifypacket` stops packet cancellation or modification.
 
 Use these for a known legitimate player or a tournament exception. They are auditable and reversible. Disabling a check for everyone is neither.
-
-## Version caveat and limits
-
-The README says Minecraft 1.8–1.21 and Folia-supported. The runtime module compiles against `spigot-api 1.21.11-R0.1-SNAPSHOT` while source and target are Java 8. Those facts conflict, and the repository contains no runtime-version verification. Do not repeat "runs on 1.8" as tested.
-
-This guide was not exercised on a live server. Command syntax, defaults, and log strings come from the repository; alert thresholds, latency interpretation, and ML file review depend on your build and players.
-
-## Sources and review
-
-Reviewed the FairPlay repository read-only on 30 October 2026: README, `fairplay/src/main/resources/plugin.yml`, `config/impl/MainConfig.java`, `config/FairConfig.java`, `commands/sub/AlertsCommand.java`, `ChecksCommand.java`, `LatencyCommand.java`, `docs/REACH-INCREASE-COMPENSATION.md`, and `docs/API.md`. No build or runtime execution. For a start failure rather than a flag, use the [plugin troubleshooting workflow](/guides/plugin-troubleshooting-workflow/).

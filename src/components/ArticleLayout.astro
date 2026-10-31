@@ -11,8 +11,6 @@ interface Props {
   description: string;
   updated: Date;
   author?: string;
-  runtimeVerified?: boolean;
-  evidenceNote?: string;
   headings: readonly Heading[];
   backHref: string;
   backLabel: string;
@@ -26,8 +24,6 @@ const {
   description,
   updated,
   author,
-  runtimeVerified,
-  evidenceNote,
   headings,
   backHref,
   backLabel,
@@ -63,14 +59,7 @@ const published = updated.toLocaleDateString("en-US", { year: "numeric", month: 
           <span>{author}</span>
         </>
       )}
-      {runtimeVerified !== undefined && (
-        <>
-          <span aria-hidden="true">·</span>
-          <span>{runtimeVerified ? "Runtime-verified" : "Not runtime-verified"}</span>
-        </>
-      )}
     </p>
-    {evidenceNote !== undefined && <p class="af-article__evidence">{evidenceNote}</p>}
   </header>
 
   <div class="af-article__layout">
@@ -218,17 +207,6 @@ const published = updated.toLocaleDateString("en-US", { year: "numeric", month: 
     font-size: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-  }
-
-  .af-article__evidence {
-    margin: 10px 0 0;
-    padding: 8px 11px;
-    background-color: var(--af-raised);
-    border-inline-start: 2px solid var(--af-border-strong);
-    border-radius: 0 6px 6px 0;
-    color: var(--af-muted);
-    font-size: 13px;
-    line-height: 1.5;
   }
 
   .af-article__layout {

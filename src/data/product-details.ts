@@ -85,12 +85,12 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   chatsentinel: {
     description:
-      "ChatSentinel applies regex rules to chat to block swearing and spam. The same repository provides Bukkit, BungeeCord and Velocity entry points, with blacklist, whitelist and message configuration.",
+      "ChatSentinel applies regex rules to chat to block swearing and spam. It runs on Bukkit, BungeeCord and Velocity, with blacklist, whitelist and message configuration.",
     highlights: [
       "Regex-based chat filtering",
       "Blacklist and whitelist rule sets",
       "Bukkit, BungeeCord and Velocity entry points",
-      "Fourteen declared permissions",
+      "Fourteen permissions",
     ],
     compatibility: {
       platforms: ["Bukkit", "BungeeCord", "Velocity"],
@@ -178,7 +178,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Per-chunk block limits",
       "Per-block-type configuration",
-      "Folia support declared",
+      "Folia support",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot"],
@@ -190,7 +190,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   entitylimiter: {
     description:
-      "EntityLimiter sets hard limits on entity counts to stop crash and lag conditions caused by entity pressure. The repository ships eight configuration files for limits, messages and behaviour.",
+      "EntityLimiter sets hard caps on entity counts to stop crash and lag conditions caused by entity pressure. Eight configuration files cover limits, messages and behaviour.",
     highlights: [
       "Entity-count limits",
       "Crash and lag prevention",
@@ -330,7 +330,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
       "HarvestableBlocks defines mining and farming zones whose blocks and crops regenerate after harvest. Zone protection plugins can govern where the loops run.",
     highlights: [
       "Regenerating mining and farming zones",
-      "Twenty-six declared permissions",
+      "Twenty-six permissions",
       "Works alongside zone protection plugins",
     ],
     compatibility: {
@@ -344,7 +344,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   essentialslite: {
     description:
-      "EssentialsLite is a broad essentials command suite covering teleports, homes, kits, warps and administration. The repository ships command, permission, menu, Redis and RTP-zone configuration, but no README.",
+      "EssentialsLite is a broad essentials command suite covering teleports, homes, kits, warps and administration. It ships command, permission, menu, Redis and RTP-zone configuration.",
     highlights: [
       "Around one hundred commands and eighty-five permissions",
       "Homes, warps, kits and teleports",
@@ -365,7 +365,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Squid Game-style event rounds",
       "Ten-plus game and configuration files",
-      "Folia support declared",
+      "Folia support",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot", "Paper"],
@@ -430,7 +430,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Player-selected glow colours",
       "TAB display integration",
-      "Twenty-six declared permissions",
+      "Twenty-six permissions",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot"],
@@ -458,7 +458,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   staffmodex: {
     description:
-      "StaffModeX provides staff-mode inventories, moderation tools and optional BungeeCord or Velocity awareness. Commands, permissions and configuration are documented in the repository.",
+      "StaffModeX provides staff-mode inventories, moderation tools and optional BungeeCord or Velocity awareness. Commands, permissions and configuration are documented.",
     highlights: [
       "Staff-mode inventories and tools",
       "Optional BungeeCord and Velocity modules",
@@ -479,7 +479,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Server-level progression",
       "Configurable level rewards",
-      "Twenty-one declared permissions",
+      "Twenty-one permissions",
     ],
     compatibility: {
       platforms: ["Spigot", "Paper", "Folia"],
@@ -509,10 +509,10 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   "sh-koth": {
     description:
-      "SH-Koth runs King-of-the-Hill events. The local repository contains the plugin descriptor; operational documentation is hosted externally by the author.",
+      "SH-Koth runs King-of-the-Hill events with Folia support. Operational documentation is maintained by the author.",
     highlights: [
       "King-of-the-Hill event format",
-      "Folia support declared",
+      "Folia support",
       "External documentation",
     ],
     compatibility: {
@@ -542,11 +542,11 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   "lucky-pillars": {
     description:
-      "Lucky Pillars implements the Pillars of Fortune minigame. The repository ships five commands, twenty-four permissions and configuration for GUIs, hotbars, messages and scoreboards.",
+      "Lucky Pillars implements the Pillars of Fortune minigame. Five commands, twenty-four permissions and configuration for GUIs, hotbars, messages and scoreboards are included.",
     highlights: [
       "Pillars of Fortune rounds",
       "GUI, hotbar and scoreboard configuration",
-      "Folia support declared",
+      "Folia support",
     ],
     compatibility: {
       platforms: ["Paper"],
@@ -574,7 +574,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   nextrtp: {
     description:
-      "NextRTP is a lightweight random-teleport plugin. No local repository is available, so this page keeps to the public listing scope and makes no version claim.",
+      "NextRTP is a lightweight random-teleport plugin for Minecraft servers. Send players to a random destination without a heavy command surface.",
     highlights: [
       "Random player teleport",
       "Lightweight command surface",
@@ -618,11 +618,11 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   // --- SMP ----------------------------------------------------------------
   flameorders: {
     description:
-      "FlameOrders provides server-synchronized orders and deliveries, with storage and network modes. Its README documents the command and permission table and declares Folia support.",
+      "FlameOrders provides server-synchronized orders and deliveries, with storage and network modes. It ships a command and permission table and supports Folia.",
     highlights: [
       "Synchronized orders and deliveries",
       "Storage and network modes",
-      "Folia support declared",
+      "Folia support",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot"],
@@ -656,7 +656,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Claim protection with menus",
       "SMP Regions runtime dependency",
-      "Eight declared permissions",
+      "Eight permissions",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot"],
@@ -703,7 +703,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   "smp-punishments": {
     description:
-      "SMP Punishments covers bans, kicks, mutes and warnings, with an optional voice-chat mute hook. Twenty-five commands and thirty-eight permissions are declared.",
+      "SMP Punishments covers bans, kicks, mutes and warnings, with an optional voice-chat mute hook. Twenty-five commands and thirty-eight permissions cover the suite.",
     highlights: [
       "Bans, kicks, mutes and warnings",
       "Optional voice-chat mute",
@@ -720,11 +720,11 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   "smp-weapons": {
     description:
-      "SMP Weapons adds configurable legendary weapons for SMP, PvP and FFA play. Arsenal menus, item definitions and messages ship in the repository.",
+      "SMP Weapons adds configurable legendary weapons for SMP, PvP and FFA play. Arsenal menus, item definitions and messages are included.",
     highlights: [
       "Legendary weapon definitions",
       "Arsenal menus and messages",
-      "Fourteen declared permissions",
+      "Fourteen permissions",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot", "Paper"],
@@ -754,11 +754,11 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   "smp-menus": {
     description:
-      "SMP Menus provides help and rules menus as an alternative to DeluxeMenus. Menus are defined in configuration; the repository declares no commands.",
+      "SMP Menus provides help and rules menus as an alternative to DeluxeMenus. Menus are defined in configuration with a menu-driven interface.",
     highlights: [
       "Configurable help and rules menus",
       "Menu-driven interface",
-      "Folia support declared",
+      "Folia support",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot", "Paper"],
@@ -775,7 +775,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Configurable item-producing spawners",
       "Stacking, storage and upgrades",
-      "Forty-five declared permissions",
+      "Forty-five permissions",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot", "Paper"],
@@ -809,7 +809,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Configurable crate rewards",
       "Three commands and twenty-three permissions",
-      "Folia support declared",
+      "Folia support",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot", "Paper"],
@@ -826,7 +826,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     highlights: [
       "Upgradable hoes and harvest XP",
       "Tokens and reward configuration",
-      "Thirty-two declared permissions",
+      "Thirty-two permissions",
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot"],
@@ -842,7 +842,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
       "SMP Regions is a region system positioned as a WorldGuard alternative, with extra flags and resettable areas. It targets 1.8 through 1.21.11 and declares Folia support.",
     highlights: [
       "Regions with flags and resets",
-      "Thirty-four declared permissions",
+      "Thirty-four permissions",
       "WorldGuard alternative",
     ],
     compatibility: {

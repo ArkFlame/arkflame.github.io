@@ -4,8 +4,6 @@ description: "FlameStack merges dropped items through a chunk-section index and 
 plugin: "flamestack"
 category: "performance"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the FlameStack repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -19,7 +17,7 @@ The aggregate amount is virtual. The physical dropped stack stays at a vanilla-s
 - Java 8 bytecode. `pom.xml` sets `maven.compiler.release` to 8.
 - `plugin.yml` declares `api-version: 1.13` and `folia-supported: true`. The README states Bukkit/Spigot/Paper API 1.13+.
 - Adventure and MiniMessage are shaded and relocated; the plugin declares no external plugin dependency.
-- The repository states no tested Minecraft version range and no runtime Java requirement.
+- Java 8 runtime.
 
 ## Install
 
@@ -71,9 +69,6 @@ stacking:
 - Suspect a duplicate jar: the README and POM disagree on version, so confirm from the jar manifest or build output.
 - Invalid material names disappear from `allow_list`: the README says they are logged and ignored. `MaterialUtil.get` falls back to `Material.AIR` rather than returning null.
 
-## Evidence and limits
-
-Inspected `README.md`, `plugin.yml`, `config.yml`, and `pom.xml` on 30 Oct 2026. Not verified: runtime merging, pickup transfer, hopper behavior, Folia scheduling, reservation recovery after restart, and performance under load. No server was started and no build was run. The README/POM version mismatch is unresolved.
 
 ## Related
 

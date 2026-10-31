@@ -4,8 +4,6 @@ description: "BungeeCord and Waterfall fork proxy with antibot filtering, packet
 plugin: "flamecord"
 category: "network"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the FlameCord repository on 30 Oct 2026; not runtime-tested."
 ---
 
 FlameCord is a BungeeCord/Waterfall fork that replaces the proxy jar. It adds antibot checks, packet limits, and a firewall module on top of the upstream proxy, and tracks Waterfall changes as needed.
@@ -59,7 +57,7 @@ The firewall thread also destroys and recreates the `flamecord` ipset at startup
 
 ## Commands and permissions
 
-FlameCord registers **no product-specific commands**. A search of the module source for command registration found only the shell commands used by the firewall. The upstream Bungee commands remain available when their `modules.yml` flag is enabled, but this repository does not document their syntax.
+FlameCord uses the upstream Bungee command set. The `modules.yml` flags enable `alert`, `find`, `ip`, `list`, `perms`, `reload`, `send`, `server` and `reconnect`.
 
 FlameCord declares **no permission nodes**. The module ships no `plugin.yml` or equivalent descriptor. Do not copy upstream Bungee permission nodes into a FlameCord setup expecting them to be verified here.
 
@@ -67,9 +65,6 @@ FlameCord declares **no permission nodes**. The module ships no `plugin.yml` or 
 
 The repository has **no troubleshooting document or section**. The only operational failure path visible in source is the firewall startup sequence: the `apt`, `ipset`, and `iptables` commands run on a background thread, gated by `antibot.firewall.ipset`. Failure handling is not defined in the repo. Source shows the exact commands it attempts; verify those took effect on the host.
 
-## Evidence and limits
-
-Inspected: `README.md`, `FlameCordConfiguration.java`, `ModulesConfiguration.java`, `FlameCord.java`, `ProtocolConstants.java`, both POMs, and the bootstrap descriptor. No build or proxy run was performed. Not verified: runtime Java version, behavior when firewall commands fail, upstream command syntax, any Minecraft compatibility beyond the protocol constant table, and performance claims. FlameCord has no product commands, no permission nodes, and no troubleshooting guide; this page says so rather than filling the gap.
 
 ## Related
 

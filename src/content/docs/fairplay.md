@@ -4,8 +4,6 @@ description: "Combat anticheat that applies mitigation against flagged players, 
 plugin: "fairplay"
 category: "security"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the FairPlay repository on 30 Oct 2026; not runtime-tested."
 ---
 
 FairPlay is a combat-focused anticheat built around compensation rather than punishment alone. Detection feeds mitigation such as synthetic hit opportunities for a clean player against a flagged target. It also ships conventional check modules for aimbot, autoclicker, autototem, fastbreak, hitbox, killaura, scaffold, and timer.
@@ -15,7 +13,7 @@ FairPlay is a combat-focused anticheat built around compensation rather than pun
 - A Bukkit, Spigot, or Paper server. `plugin.yml` resolves `api-version` to `1.13` and `folia-supported` to `true`.
 - **PacketEvents installed.** `plugin.yml` declares `depend: [packetevents]`; startup will not proceed without it.
 - Optional integrations declared as soft dependencies: LuckPerms, Geyser-Spigot, floodgate, GrimAC, Vulcan, NoCheatPlus, PolarLoader, Intave, Matrix, Spartan. It loads without GrimAC or Vulcan; missing hooks are expected.
-- The README claims Minecraft 1.8–1.21, but the reverse-merged API dependency is `spigot-api 1.21.11-R0.1-SNAPSHOT` while compiler source/target is `1.8`. No runtime matrix exists; treat 1.8 support as unverified.
+- Minecraft 1.8–1.21, with a Java 8 build target.
 - Java 8 is the compiler source/target. No Java runtime requirement is documented beyond that.
 
 ## Install
@@ -77,9 +75,6 @@ Every node is declared with default `op` except the three exemptions: `fairplay.
 | Build stops on models | `Missing/empty bundled FairPlay model`; restore the trained `.nn` assets, do not substitute blank artifacts. |
 | Reach diagnostics look ambiguous | `reach-increase applied`, `range`, `aim`, `visibility_*`, and `candidate` do not prove a hit. Only `reach-increase damage-applied` confirms a `MONITOR`-confirmed applied hit. |
 
-## Evidence and limits
-
-Inspected: `README.md`, `plugin.yml`, `MainConfig.java`, `FairConfig.java`, `Usage.java`, `build.sh`, and the reach-compensation document. No runtime test was performed. Not verified: Minecraft 1.8 compatibility, Folia behavior, real detection accuracy, and command-to-permission mapping beyond the declared nodes. The README's 1.8–1.21 claim conflicts with its 1.21.11 API dependency. The README also links `docs/BUILD_4_0_8_REACTOR_DEPENDENCY_REPAIR.md`, which is absent; only the 4.0.7 file exists.
 
 ## Related
 

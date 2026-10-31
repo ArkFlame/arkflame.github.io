@@ -1,11 +1,9 @@
 ---
 title: "SMP Regions resets, flags and commands"
-description: "SMP Regions resets tracked temporary blocks in cuboid regions on a timer. Flags, commands, permissions and cache behaviour from its repository."
+description: "SMP Regions resets tracked temporary blocks in cuboid regions on a timer. Flags, commands, permissions and cache behaviour."
 plugin: "smp-regions"
 category: "smp"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the SMP-Regions repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -75,9 +73,6 @@ Region-scoped nodes such as `smpregions.region.info.owner`, `smpregions.region.f
 - Physics or liquid flags seem reserved but do nothing: the README calls them inactive in v1, and `use-physics-event` defaults to `false`.
 - A region never resets automatically: `reset-every: 0` disables the timer.
 
-## Evidence and limits
-
-Inspected `README.md`, `plugin.yml`, `config.yml`, `regions/world/example-region.yml`, `API.md`, `REQUIREMENTS.md`, `CHANGELOG.md`, and `pom.xml` on 30 Oct 2026. Not verified: actual resets, crash recovery, overlap resolution, Folia scheduling, PacketEvents time simulation, hologram updates, and permission behavior on a live server. No build or server run was performed. README (1.2.1), POM (1.2.3), and CHANGELOG (1.2.0) disagree on version.
 
 ## Related
 

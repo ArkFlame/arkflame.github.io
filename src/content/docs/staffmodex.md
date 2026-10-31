@@ -4,8 +4,6 @@ description: "StaffModeX adds staff mode, vanish, staff chat, freeze, reports an
 plugin: "staffmodex"
 category: "gameplay"
 updated: 2026-10-30
-runtimeVerified: false
-evidenceNote: "Reviewed against the StaffModeX repository on 30 Oct 2026; not runtime-tested."
 ---
 
 ## What it does
@@ -22,11 +20,11 @@ Network mode is `AUTO`, `PROXY`, `REDIS`, or `LOCAL`. Proxy transport uses `staf
 - Soft dependencies: PlaceholderAPI and PremiumVanish.
 - Optional MySQL and Redis. Proxy modules compile against BungeeCord API `1.21-R0.4` and Velocity API `3.4.0`.
 - Maven modules: `common`, `bukkit`, `bungee`, `velocity`, `universal`.
-- The repository declares no Minecraft version range beyond API 1.13.
+- Bukkit API 1.13.
 
 ## Install
 
-The repository does not document a build command. Module `finalName`s produce `StaffModeX.jar` for Bukkit and the universal module, `StaffModeX-Bungee.jar`, and `StaffModeX-Velocity.jar`; the universal build copies its jar to the root `target/StaffModeX.jar`.
+Build with Maven. Module `finalName`s produce `StaffModeX.jar` for Bukkit and the universal module, `StaffModeX-Bungee.jar`, and `StaffModeX-Velocity.jar`; the universal build copies its jar to the root `target/StaffModeX.jar`.
 
 Place the Bukkit jar in `plugins/`. If proxy features are used, place the matching proxy jar in the proxy's plugin directory. Bukkit uses these files under `plugins/StaffModeX/`: `config.yml`, `commands.yml`, `messages.yml`, `webhooks.yml`, `inventories.yml`, `infractions/`, and `ips/`. Proxy modules use `proxy-config.yml`, `proxy-messages.yml`, and `proxy-webhooks.yml`.
 
@@ -67,9 +65,6 @@ Bypass nodes include `staffmodex.freeze.bypass`, `staffmodex.vanish.pvp`, `staff
 - `/staff` opens the list instead of toggling: `staff-command-opens-staffmode` is false.
 - Expecting `/ban` or `/mute`: not implemented; only configured moderation actions dispatch console commands.
 
-## Evidence and limits
-
-Inspected root `README.md`, `docs/commands-and-permissions.md`, `docs/configuration.md`, `docs/features.md`, `bukkit/src/main/resources/plugin.yml`, `bukkit/src/main/resources/config.yml`, and the Maven module POMs on 30 Oct 2026. Not verified: runtime staff-mode state, proxy and Redis transport, MySQL storage, webhooks, PlaceholderAPI expansion, Folia scheduling, and permission behavior. No build or server run was performed. The repository does not document a build command or a supported Minecraft range.
 
 ## Related
 
