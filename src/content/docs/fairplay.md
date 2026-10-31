@@ -1,0 +1,90 @@
+---
+title: "FairPlay quick start"
+description: "Combat anticheat that applies mitigation against flagged players, with built-in checks and optional GrimAC or Vulcan flag hooks."
+plugin: "fairplay"
+category: "security"
+updated: 2026-10-30
+runtimeVerified: false
+evidenceNote: "Reviewed against the FairPlay repository on 30 Oct 2026; not runtime-tested."
+---
+
+FairPlay is a combat-focused anticheat built around compensation rather than punishment alone. Detection feeds mitigation such as synthetic hit opportunities for a clean player against a flagged target. It also ships conventional check modules for aimbot, autoclicker, autototem, fastbreak, hitbox, killaura, scaffold, and timer.
+
+## Requirements
+
+- A Bukkit, Spigot, or Paper server. `plugin.yml` resolves `api-version` to `1.13` and `folia-supported` to `true`.
+- **PacketEvents installed.** `plugin.yml` declares `depend: [packetevents]`; startup will not proceed without it.
+- Optional integrations declared as soft dependencies: LuckPerms, Geyser-Spigot, floodgate, GrimAC, Vulcan, NoCheatPlus, PolarLoader, Intave, Matrix, Spartan. It loads without GrimAC or Vulcan; missing hooks are expected.
+- The README claims Minecraft 1.8–1.21, but the reverse-merged API dependency is `spigot-api 1.21.11-R0.1-SNAPSHOT` while compiler source/target is `1.8`. No runtime matrix exists; treat 1.8 support as unverified.
+- Java 8 is the compiler source/target. No Java runtime requirement is documented beyond that.
+
+## Install
+
+No numbered install guide ships in the repo. What source documents:
+
+1. Build the reactor from the parent POM; modules are `models`, `fairplay-api`, and `fairplay`.
+2. Run `./build.sh`; it refuses to build without the real bundled model files. A failure reads `ERROR: Missing/empty bundled FairPlay model: <path>`. Recover them with `FAIRPLAY_MODELS_SOURCE_JAR=/path/to/FairPlay.jar ./build.sh` or `FAIRPLAY_MODELS_SOURCE_DIR=/path/to/plugins/FairPlay/models ./build.sh`.
+3. Install only the FairPlay plugin jar in `plugins/`. Do not install the API jar as a plugin or shade its classes.
+4. First start writes `config.yml` into the plugin data folder. Training window output goes to `plugins/FairPlay/windows/global/<player>/<UTC-date-and-session>.json`.
+
+## Configure
+
+No YAML is bundled; the config is generated from annotated Java classes. Defaults come from field initializers. A missing path logs `[FairPlay] Missing config value for path '…'`.
+
+```yaml
+bedrock-check: true
+show-cancel-messages: false
+auto-update-models: true
+player-logs-enabled: true
+cancel-message-cooldown-ms: 60000
+```
+
+`machine-learning-training` only affects training error costs, not runtime detection. The deprecated `confirmation` and `client-tick-sync` blocks remain for compatibility with older configs.
+
+## Commands
+
+Root is `/fairplay`, aliases `/fp` and `/anticheat`.
+
+| Command | Purpose |
+| --- | --- |
+| `/fp checks <enable\|disable\|toggle> <check\|category>` | Toggle checks |
+| `/fp alerts <enable\|disable\|toggle\|inspect\|clear> [player]` | Alert subscriptions |
+| `/fp punishments <list\|add\|remove\|clear> [value]` | Punishment rules |
+| `/fp toggle <check\|category>` | Toggle a check or category |
+| `/fp kick <enable\|disable\|toggle>` | Kick behavior |
+| `/fp damagecancel <enable\|disable\|toggle>` | Damage cancellation |
+| `/fp blockcancel <enable\|disable\|toggle>` | Block cancellation |
+| `/fp ml <aim\|click>` | ML inspection |
+| `/fp latency <player> <seconds 1..120>` | Latency handling |
+| `/fp banwave run` | Run a ban wave |
+| `/fp ml aim window record GLOBAL` | Start global AIM window recording |
+| `/fp ml aim window stop` / `status` | Stop recording / inspect completion |
+
+The global window commands require `fairplay.command.ml.global`, default operator.
+
+## Permissions
+
+Every node is declared with default `op` except the three exemptions: `fairplay.admin`, `fairplay.train`, `fairplay.check`, `fairplay.notify`, `fairplay.command.ml`, `fairplay.command.ml.global`, `fairplay.command.damagecancel`, `fairplay.command.blockcancel`, `fairplay.command.latency`, `fairplay.command.rotations`, `fairplay.command.banwave`. The exemptions are `fairplay.exempt`, `fairplay.nosetback`, and `fairplay.nomodifypacket`, all default `false`.
+
+`fairplay.command` is referenced by the README and as a child of several nodes, but it has no standalone declaration or default in `plugin.yml`. Grant it explicitly if needed.
+
+## Troubleshooting
+
+| Symptom | Cause and diagnostic |
+| --- | --- |
+| No GrimAC or Vulcan detection | Expected when neither plugin is installed; FairPlay still loads. |
+| Missing config warning | `[FairPlay] Missing config value for path '…'`; the generated config lacks that key. |
+| Build stops on models | `Missing/empty bundled FairPlay model`; restore the trained `.nn` assets, do not substitute blank artifacts. |
+| Reach diagnostics look ambiguous | `reach-increase applied`, `range`, `aim`, `visibility_*`, and `candidate` do not prove a hit. Only `reach-increase damage-applied` confirms a `MONITOR`-confirmed applied hit. |
+
+## Evidence and limits
+
+Inspected: `README.md`, `plugin.yml`, `MainConfig.java`, `FairConfig.java`, `Usage.java`, `build.sh`, and the reach-compensation document. No runtime test was performed. Not verified: Minecraft 1.8 compatibility, Folia behavior, real detection accuracy, and command-to-permission mapping beyond the declared nodes. The README's 1.8–1.21 claim conflicts with its 1.21.11 API dependency. The README also links `docs/BUILD_4_0_8_REACTOR_DEPENDENCY_REPAIR.md`, which is absent; only the 4.0.7 file exists.
+
+## Related
+
+- [FairPlay product page](/plugins/fairplay/)
+- [FairPlay false positives](/guides/fairplay-false-positives/)
+- [ExploitFixer quick start](/docs/exploitfixer/)
+- [SMP punishments](/docs/smp-punishments/)
+- [Plugin troubleshooting workflow](/guides/plugin-troubleshooting-workflow/)

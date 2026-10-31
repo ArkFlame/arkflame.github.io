@@ -8,12 +8,24 @@ interface Props {
 
 const { primary, foreground } = Astro.props;
 const tiles = foreground.slice(0, 2);
+const primaryBase = primary.image?.replace(/\.webp$/, "");
 ---
 
 <div class="hps" aria-label={`${primary.name} and featured products`}>
   <div class="hps__frame">
     {primary.image ? (
-      <img class="hps__primary" src={primary.image} alt={`${primary.name} product preview`} />
+      <img
+        class="hps__primary"
+        src={primary.image}
+        srcset={primaryBase === undefined ? undefined : `${primaryBase}-480.webp 480w, ${primaryBase}-720.webp 720w, ${primary.image} 1672w`}
+        sizes="(max-width: 760px) 326px, 470px"
+        alt={`${primary.name} product preview`}
+        width="1672"
+        height="941"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
     ) : (
       <div class="hps__fallback" role="img" aria-label={`${primary.name} preview unavailable`}>
         {primary.name}
@@ -21,8 +33,15 @@ const tiles = foreground.slice(0, 2);
     )}
     {tiles.map((product, index) => (
       <div class:list={["hps__tile", `hps__tile--${index + 1}`]}>
-        {product.image ? (
-          <img src={product.image} alt={`${product.name} product preview`} />
+        {product.icon ?? product.image ? (
+          <img
+            src={product.icon ?? product.image}
+            alt={`${product.name} product preview`}
+            width="512"
+            height="512"
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <div class="hps__fallback" role="img" aria-label={`${product.name} preview unavailable`}>
             {product.name}
@@ -36,19 +55,19 @@ const tiles = foreground.slice(0, 2);
 <style>
   .hps {
     width: 100%;
-    max-width: 620px;
+    max-width: 470px;
     margin-inline: auto;
-    padding: 38px 42px 42px;
+    padding: 20px 24px 24px;
   }
 
   .hps__frame {
     position: relative;
     width: 100%;
-    aspect-ratio: 5 / 3;
+    aspect-ratio: 16 / 10;
     border: 1px solid rgba(116, 199, 255, 0.24);
-    border-radius: 18px;
+    border-radius: 14px;
     background: #0b1729;
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.34);
   }
 
   .hps__primary,
@@ -71,19 +90,19 @@ const tiles = foreground.slice(0, 2);
   }
 
   .hps__tile--1 {
-    top: -12%;
-    right: -9%;
-    width: 28%;
+    top: -8%;
+    right: -7%;
+    width: 25%;
     aspect-ratio: 1;
-    transform: rotate(5deg);
+    transform: rotate(4deg);
   }
 
   .hps__tile--2 {
-    bottom: -11%;
-    left: -8%;
-    width: 22%;
+    bottom: -8%;
+    left: -6%;
+    width: 20%;
     aspect-ratio: 1;
-    transform: rotate(-6deg);
+    transform: rotate(-5deg);
   }
 
   .hps__fallback {
@@ -98,8 +117,8 @@ const tiles = foreground.slice(0, 2);
   }
 
   @media (max-width: 760px) {
-    .hps { padding: 26px 26px 30px; }
-    .hps__tile--1 { width: 25%; }
+    .hps { max-width: 400px; padding: 16px 20px 20px; }
+    .hps__tile--1 { width: 23%; }
     .hps__tile--2 { display: none; }
   }
 </style>

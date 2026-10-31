@@ -1,0 +1,265 @@
+---
+import type { Product } from "@/data/products";
+import ProductCard from "@/components/ProductCard.astro";
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  products: readonly Product[];
+  allHref: string;
+  allLabel: string;
+}
+
+const { id, eyebrow, title, description, products, allHref, allLabel } = Astro.props;
+const headingId = `${id}-title`;
+---
+
+<section class="af-rail af-section" aria-labelledby={headingId}>
+  <div class="af-container">
+    <div class="af-rail__head">
+      <div class="af-rail__copy">
+        <p class="af-eyebrow">{eyebrow}</p>
+        <h2 class="af-rail__title" id={headingId}>{title}</h2>
+        <p class="af-rail__desc">{description}</p>
+      </div>
+
+      <div class="af-rail__controls" data-rail-controls hidden>
+        <button type="button" class="af-rail__arrow" data-rail-prev aria-label={`Scroll ${title} left`}>
+          <span aria-hidden="true">←</span>
+        </button>
+        <button type="button" class="af-rail__arrow" data-rail-next aria-label={`Scroll ${title} right`}>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="af-rail__viewport" data-rail tabindex="0" role="group" aria-label={`${title}: manually scrollable list`}>
+      <ul class="af-rail__track">
+        {products.map((product) => <ProductCard product={product} variant="rail" headingLevel="h3" />)}
+        <li class="af-rail__all-item">
+          <a class="af-rail__all" href={allHref}>
+            <span class="af-rail__all-label">View all</span>
+            <span class="af-rail__all-title">{allLabel}</span>
+            <span class="af-rail__all-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  const rails = document.querySelectorAll<HTMLElement>("[data-rail]");
+
+  for (const rail of rails) {
+    const section = rail.closest<HTMLElement>(".af-rail");
+    if (section === null) continue;
+
+    const prev = section.querySelector<HTMLButtonElement>("[data-rail-prev]");
+    const next = section.querySelector<HTMLButtonElement>("[data-rail-next]");
+    const controls = section.querySelector<HTMLElement>("[data-rail-controls]");
+    if (prev === null || next === null || controls === null) continue;
+
+    controls.hidden = false;
+
+    const step = (): number => {
+      const first = rail.querySelector<HTMLElement>(".af-product-card");
+      if (first === null) return rail.clientWidth * 0.8;
+      const gap = Number.parseFloat(getComputedStyle(rail.querySelector("ul") ?? rail).columnGap || "16") || 16;
+      return first.getBoundingClientRect().width + gap;
+    };
+
+    const sync = (): void => {
+      const max = rail.scrollWidth - rail.clientWidth - 2;
+      prev.disabled = rail.scrollLeft <= 2;
+      next.disabled = rail.scrollLeft >= max;
+    };
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const behavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
+
+    prev.addEventListener("click", () => rail.scrollBy({ left: -step(), behavior }));
+    next.addEventListener("click", () => rail.scrollBy({ left: step(), behavior }));
+    rail.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync, { passive: true });
+    sync();
+  }
+</script>
+
+<style>
+  .af-rail {
+    padding-block: 34px;
+  }
+
+  .af-rail + .af-rail {
+    border-block-start: 1px solid color-mix(in srgb, var(--af-border) 65%, transparent);
+  }
+
+  .af-rail__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px 24px;
+    margin-block-end: 18px;
+  }
+
+  .af-rail__copy {
+    max-width: 680px;
+  }
+
+  .af-rail__title {
+    margin: 4px 0 0;
+    font-size: clamp(1.5rem, 2.8vw, 1.95rem);
+  }
+
+  .af-rail__desc {
+    margin: 6px 0 0;
+    color: var(--af-muted);
+    font-size: 15px;
+  }
+
+  .af-rail__controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .af-rail__controls[hidden] {
+    display: none;
+  }
+
+  .af-rail__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background-color: transparent;
+    border: 1px solid var(--af-border-strong);
+    border-radius: 50%;
+    color: var(--af-text);
+    font-size: 17px;
+    cursor: pointer;
+    transition:
+      border-color var(--af-transition),
+      background-color var(--af-transition),
+      color var(--af-transition);
+  }
+
+  .af-rail__arrow:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--af-accent) 12%, transparent);
+    border-color: var(--af-accent);
+    color: var(--af-accent);
+  }
+
+  .af-rail__arrow:disabled {
+    opacity: 0.32;
+    cursor: default;
+  }
+
+  .af-rail__viewport {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--af-border-strong) transparent;
+    padding-block-end: 10px;
+    margin-block-end: -10px;
+  }
+
+  .af-rail__viewport:focus-visible {
+    outline: 2px solid var(--af-accent);
+    outline-offset: 4px;
+    border-radius: var(--af-radius);
+  }
+
+  .af-rail__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 42px) / 4);
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .af-rail__track > :global(.af-product-card) {
+    scroll-snap-align: start;
+  }
+
+  .af-rail__all-item {
+    scroll-snap-align: start;
+  }
+
+  .af-rail__all {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 300px;
+    padding: 20px;
+    background:
+      linear-gradient(150deg, color-mix(in srgb, var(--af-primary) 16%, transparent), transparent 55%),
+      var(--af-raised);
+    border: 1px dashed var(--af-border-strong);
+    border-radius: var(--af-radius);
+    transition:
+      border-color var(--af-transition),
+      background-color var(--af-transition);
+  }
+
+  .af-rail__all:hover {
+    border-color: var(--af-accent);
+    background-color: var(--af-surface);
+  }
+
+  .af-rail__all-label {
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .af-rail__all-title {
+    margin-block: auto;
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .af-rail__all-arrow {
+    font-size: 22px;
+    color: var(--af-accent);
+  }
+
+  @media (max-width: 1100px) {
+    .af-rail__track {
+      grid-auto-columns: calc((100% - 28px) / 3);
+    }
+  }
+
+  @media (max-width: 820px) {
+    .af-rail__track {
+      grid-auto-columns: calc((100% - 14px) / 2);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .af-rail {
+      padding-block: 28px;
+    }
+
+    .af-rail__track {
+      grid-auto-columns: 78vw;
+    }
+
+    .af-rail__all {
+      min-height: 280px;
+    }
+  }
+</style>

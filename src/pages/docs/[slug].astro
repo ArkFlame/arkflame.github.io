@@ -1,0 +1,267 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ArticleLayout from "@/components/ArticleLayout.astro";
+import { getCollection, getEntry, render } from "astro:content";
+import { CATEGORIES } from "@/data/categories";
+import { getProduct } from "@/data/products";
+import { SITE } from "@/data/site";
+
+export async function getStaticPaths() {
+  const docs = await getCollection("docs");
+  return docs.map((entry) => ({
+    params: { slug: entry.id },
+    props: { slug: entry.id },
+  }));
+}
+
+const { slug } = Astro.props;
+const entry = await getEntry("docs", slug);
+if (entry === undefined) throw new Error(`docs/[slug]: no entry for "${slug}"`);
+
+const { Content, headings } = await render(entry);
+const product = getProduct(entry.data.plugin);
+if (product === undefined) {
+  throw new Error(`docs/[slug]: plugin "${entry.data.plugin}" is not in the product catalogue`);
+}
+
+const docs = (await getCollection("docs")).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const grouped = CATEGORIES.map((category) => ({
+  category,
+  items: docs.filter((doc) => doc.data.category === category.slug),
+})).filter((group) => group.items.length > 0);
+
+const guides = (await getCollection("guides"))
+  .filter((guide) => guide.data.relatedPlugins.includes(product.slug))
+  .sort((a, b) => b.data.updated.getTime() - a.data.updated.getTime())
+  .slice(0, 3);
+
+const path = `/docs/${entry.id}/`;
+const url = `${SITE.siteUrl}${path}`;
+const productUrl = `${SITE.siteUrl}/plugins/${product.slug}/`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "@id": `${url}#article`,
+      headline: entry.data.title,
+      description: entry.data.description,
+      url,
+      mainEntityOfPage: url,
+      dateModified: entry.data.updated.toISOString(),
+      inLanguage: "en-US",
+      author: { "@type": "Organization", name: SITE.name, url: `${SITE.siteUrl}/` },
+      publisher: { "@id": `${SITE.siteUrl}/#organization` },
+      about: { "@type": "SoftwareApplication", name: product.name, url: productUrl },
+      isPartOf: { "@id": `${SITE.siteUrl}/#website` },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${url}#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${SITE.siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: "Documentation", item: `${SITE.siteUrl}/docs/` },
+        { "@type": "ListItem", position: 3, name: entry.data.title, item: url },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${entry.data.title} | ArkFlame Documentation`}
+  description={entry.data.description}
+  canonicalPath={path}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <ArticleLayout
+    eyebrow="Plugin documentation"
+    title={entry.data.title}
+    description={entry.data.description}
+    updated={entry.data.updated}
+    runtimeVerified={entry.data.runtimeVerified}
+    evidenceNote={entry.data.evidenceNote}
+    headings={headings}
+    backHref="/docs/"
+    backLabel="Documentation"
+    sectionLabel={entry.data.category}
+  >
+    <nav slot="sidebar" class="doc-nav" aria-label="All plugin documentation">
+      {
+        grouped.map(({ category, items }) => (
+          <div class="doc-nav__group">
+            <p class="doc-nav__label">{category.name}</p>
+            <ul>
+              {items.map((doc) => (
+                <li>
+                  <a
+                    href={`/docs/${doc.id}/`}
+                    aria-current={doc.id === entry.id ? "page" : undefined}
+                  >
+                    {getProduct(doc.data.plugin)?.name ?? doc.data.plugin}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+
+    <Content />
+
+    <div slot="footer" class="doc-footer">
+      <a class="doc-footer__product" href={`/plugins/${product.slug}/`}>
+        <span class="doc-footer__kicker">Product page</span>
+        <span class="doc-footer__title">{product.name}</span>
+        <span class="doc-footer__desc">{product.summary}</span>
+        <span class="doc-footer__link">Open product page →</span>
+      </a>
+
+      {
+        guides.length > 0 && (
+          <div class="doc-footer__guides">
+            <h2>Related guides</h2>
+            <ul>
+              {guides.map((guide) => (
+                <li>
+                  <a href={`/guides/${guide.id}/`}>{guide.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <p class="doc-footer__note">
+        This page documents the product repository as inspected on 30 October 2026. It is not a runtime
+        compatibility guarantee. For the current release and support, use the product listing.
+      </p>
+    </div>
+  </ArticleLayout>
+</BaseLayout>
+
+<style>
+  .doc-nav {
+    padding: 12px;
+    background-color: var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+  }
+
+  .doc-nav__group + .doc-nav__group {
+    margin-block-start: 14px;
+  }
+
+  .doc-nav__label {
+    margin: 0 0 4px;
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .doc-nav ul {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .doc-nav a {
+    display: block;
+    padding: 5px 7px;
+    border-radius: 5px;
+    color: var(--af-muted);
+    font-size: 13px;
+    text-transform: capitalize;
+  }
+
+  .doc-nav a:hover,
+  .doc-nav a[aria-current="page"] {
+    background-color: color-mix(in srgb, var(--af-accent) 11%, transparent);
+    color: var(--af-accent);
+  }
+
+  .doc-footer {
+    display: grid;
+    gap: 24px;
+    margin-block-start: 40px;
+    padding-block-start: 24px;
+    border-block-start: 1px solid var(--af-border);
+  }
+
+  .doc-footer__product {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    background-color: var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    transition: border-color var(--af-transition);
+  }
+
+  .doc-footer__product:hover {
+    border-color: var(--af-accent);
+  }
+
+  .doc-footer__kicker {
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .doc-footer__title {
+    color: var(--af-text);
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .doc-footer__desc {
+    color: var(--af-muted);
+    font-size: 14px;
+  }
+
+  .doc-footer__link {
+    margin-block-start: 4px;
+    color: var(--af-accent);
+    font-size: 13px;
+  }
+
+  .doc-footer__guides h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+
+  .doc-footer__guides ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .doc-footer__guides a {
+    color: var(--af-text);
+    font-size: 15px;
+  }
+
+  .doc-footer__guides a:hover {
+    color: var(--af-accent);
+  }
+
+  .doc-footer__note {
+    margin: 0;
+    color: var(--af-muted);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+</style>

@@ -1,22 +1,29 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import HeroProductStack from "@/components/HeroProductStack.astro";
-import ProductFeature from "@/components/ProductFeature.astro";
-import ProductMarquee from "@/components/ProductMarquee.astro";
-import CapabilitySection from "@/components/CapabilitySection.astro";
-import FounderStrip from "@/components/FounderStrip.astro";
-import {
-  SITE,
-  HERO,
-  PLATFORM_STRIP,
-  CAPABILITIES,
-  ENGINEERING_PROOF,
-  FINAL_CTA,
-} from "@/data/site";
-import { PRODUCTS, getProduct, getFeaturedProducts } from "@/data/products";
+import ProductRail from "@/components/ProductRail.astro";
+import { SITE, HERO, PLATFORM_STRIP } from "@/data/site";
+import { getProduct } from "@/data/products";
+import { getCollection } from "astro:content";
 
-/* Single product authority: featured products come from the frozen selector. */
-const featured = getFeaturedProducts();
+const docsCount = (await getCollection("docs")).length;
+const guideCount = (await getCollection("guides")).length;
+
+const selected = ["flamecord", "exploitfixer", "fairplay", "authme-premium", "redstonelimiter"]
+  .map((slug) => getProduct(slug))
+  .filter((product) => product !== undefined);
+const security = ["exploitfixer", "fairplay", "authme-premium", "chatsentinel"]
+  .map((slug) => getProduct(slug))
+  .filter((product) => product !== undefined);
+const performance = ["redstonelimiter", "entitylimiter", "flamepaper", "flamestack"]
+  .map((slug) => getProduct(slug))
+  .filter((product) => product !== undefined);
+const network = ["flamecord", "veloflame", "discordflow"]
+  .map((slug) => getProduct(slug))
+  .filter((product) => product !== undefined);
+const smp = ["smp-lifesteal", "smp-punishments", "smp-combat", "smp-menus", "smp-regions"]
+  .map((slug) => getProduct(slug))
+  .filter((product) => product !== undefined);
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -29,7 +36,7 @@ const jsonLd = {
       logo: `${SITE.siteUrl}${SITE.logo}`,
       image: `${SITE.siteUrl}${SITE.ogImage}`,
       description:
-        "ArkFlame Studios builds Minecraft plugins and server software for security, performance, authentication, anticheat, proxies and SMP gameplay.",
+        "ArkFlame Studios builds Minecraft server software for security, performance, proxies, anticheat and SMP gameplay.",
       sameAs: [
         SITE.githubUrl,
         SITE.builtByBitUrl,
@@ -39,7 +46,7 @@ const jsonLd = {
         getProduct("veloflame")?.officialUrl,
         getProduct("fairplay")?.officialUrl,
         SITE.founderUrl,
-      ],
+      ].filter((url): url is string => url !== undefined),
     },
     {
       "@type": "WebSite",
@@ -55,26 +62,25 @@ const jsonLd = {
 
 <BaseLayout
   title="Minecraft Plugins & Server Software | ArkFlame Studios"
-  description="Minecraft plugins and server software for security, performance, proxies, anticheat and SMP networks. Built by ArkFlame Studios."
+  description="Minecraft plugins, anticheat, authentication and proxy software for security, performance and SMP servers. Source-reviewed docs from ArkFlame Studios."
   canonicalPath="/"
   jsonLd={jsonLd}
 >
-  <!-- 2. Hero -->
-  <section class="hm af-section">
+  <section class="hm">
     <div class="af-container hm__inner">
       <div class="hm__copy">
         <p class="af-eyebrow">{HERO.eyebrow}</p>
         <h1 class="hm__title">We make <span class="hm__accent">Minecraft</span> plugins.</h1>
         <p class="hm__lead">{HERO.body}</p>
         <div class="hm__actions">
-          <a class="btn btn-primary" href="/plugins/">{HERO.primaryCta}</a>
-          <a
-            class="btn"
-            href={SITE.founderUrl}
-            target="_blank"
-            rel="noopener noreferrer">{HERO.secondaryCta}</a
-          >
+          <a class="btn btn-primary" href="/plugins/">Browse plugins</a>
+          <a class="btn" href="/docs/">Read the docs</a>
         </div>
+        <p class="hm__meta">
+          <span>{docsCount} plugin guides</span>
+          <span aria-hidden="true">·</span>
+          <a href="/guides/">{guideCount} technical articles</a>
+        </p>
       </div>
 
       <div class="hm__art">
@@ -86,110 +92,113 @@ const jsonLd = {
     </div>
   </section>
 
-  <!-- 3. Platform / proof strip -->
-  <section class="ps" aria-label="Supported platform ecosystems">
+  <div class="ps" aria-label="Platforms across the catalogue">
     <div class="af-container ps__inner">
       <ul class="ps__list">
         {
           PLATFORM_STRIP.map((platform) => (
             <li class="ps__item">
-              <img src={platform.logo} alt={platform.label} title={platform.label} loading="lazy" decoding="async" />
+              <img src={platform.logo} alt={platform.label} loading="lazy" decoding="async" width="112" height="30" />
             </li>
           ))
         }
       </ul>
-      <p class="ps__caption">Supported Minecraft ecosystem</p>
+      <p class="ps__caption">Platform support is product-specific. Each plugin page states what the source declares.</p>
     </div>
-  </section>
+  </div>
 
-  <!-- 4. Featured products -->
-  <section class="fp af-section">
-    <div class="af-container">
-      <div class="fp__head">
-        <p class="af-eyebrow">FEATURED</p>
-        <h2 class="fp__title">Selected plugins.</h2>
+  <div class="rail-stack">
+    <ProductRail
+      id="selected"
+      eyebrow="Selected"
+      title="Start with these."
+      description="The products with the deepest source-reviewed documentation and the broadest install surfaces."
+      products={selected}
+      allHref="/plugins/"
+      allLabel="All 51 plugins"
+    />
+
+    <ProductRail
+      id="security"
+      eyebrow="Security"
+      title="Stop abuse before it reaches gameplay."
+      description="Exploit filtering, combat anticheat, authentication bridges and chat moderation."
+      products={security}
+      allHref="/plugins/security/"
+      allLabel="Security plugins"
+    />
+
+    <ProductRail
+      id="performance"
+      eyebrow="Performance"
+      title="Cap the work that costs tick time."
+      description="Redstone, entity, block and item limits, plus a Paper 1.8.8 server fork."
+      products={performance}
+      allHref="/plugins/performance/"
+      allLabel="Performance plugins"
+    />
+
+    <ProductRail
+      id="network"
+      eyebrow="Network"
+      title="Harden the proxy layer."
+      description="Bungee-compatible and Velocity proxies with firewall, rate-limit and bridging tools."
+      products={network}
+      allHref="/plugins/network/"
+      allLabel="Network software"
+    />
+
+    <ProductRail
+      id="smp"
+      eyebrow="SMP"
+      title="Build the survival loop."
+      description="Claims, combat tags, lifesteal, spawners, menus, lobbies and rewards."
+      products={smp}
+      allHref="/plugins/smp/"
+      allLabel="SMP plugins"
+    />
+  </div>
+
+  <section class="closing af-section">
+    <div class="af-container closing__inner">
+      <div>
+        <p class="af-eyebrow">DOCUMENTATION</p>
+        <h2 class="closing__title">Read the source-backed detail.</h2>
+        <p class="closing__body">
+          Installation requirements, real commands, permission nodes and the limits we could not verify — written from the plugin repositories, not the store copy.
+        </p>
       </div>
-      <div class="fp__grid">
-        {featured.map((product) => <ProductFeature product={product} />)}
+      <div class="closing__actions">
+        <a class="btn btn-primary" href="/docs/">Browse docs</a>
+        <a class="btn" href="/guides/">Read guides</a>
       </div>
-    </div>
-  </section>
-
-  <!-- 5. Product ecosystem marquee -->
-  <section class="pe" aria-labelledby="pe-title">
-    <div class="af-container pe__head">
-      <p class="af-eyebrow">ECOSYSTEM</p>
-      <h2 class="pe__title" id="pe-title">The product ecosystem.</h2>
-      <a class="btn pe__cta" href="/plugins/">Browse all plugins</a>
-    </div>
-    <ProductMarquee products={PRODUCTS} />
-  </section>
-
-  <!-- 6-8. Editorial capability sections -->
-  <CapabilitySection capabilities={CAPABILITIES} />
-
-  <!-- 9. Engineering proof -->
-  <section class="ep af-section">
-    <div class="af-container">
-      <div class="ep__head">
-        <p class="af-eyebrow">ENGINEERING</p>
-        <h2 class="ep__title">{ENGINEERING_PROOF.heading}</h2>
-      </div>
-      <ul class="ep__platforms">
-        {ENGINEERING_PROOF.platforms.map((platform) => (
-          <li>
-            <a href={platform.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${platform.label}`}>
-              <img src={platform.logo} alt={platform.label} loading="lazy" decoding="async" />
-            </a>
-          </li>
-        ))}
-      </ul>
-      <p class="ep__note">{ENGINEERING_PROOF.note}</p>
-    </div>
-  </section>
-
-  <!-- 10. Founder bridge -->
-  <FounderStrip id="founder" />
-
-  <!-- 11. Final CTA -->
-  <section class="fc af-section">
-    <div class="af-container fc__inner af-card">
-      <img
-        class="fc__mark"
-        src={SITE.logo}
-        alt=""
-        width="96"
-        height="96"
-        loading="lazy"
-        decoding="async"
-      />
-      <h2 class="fc__title">{FINAL_CTA.heading}</h2>
-      <p class="fc__body">{FINAL_CTA.body}</p>
-      <a class="btn btn-primary" href="/plugins/">{FINAL_CTA.cta}</a>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  .hm {
+    padding-block: clamp(34px, 6vw, 72px) clamp(30px, 5vw, 56px);
+  }
+
   .hm__inner {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 40px;
+    gap: 28px 52px;
   }
 
   .hm__copy {
-    flex: 1 1 380px;
+    flex: 1 1 420px;
     min-width: 0;
   }
 
   .hm__title {
-    margin: 0.35em 0 0.3em;
-    font-family: var(--font-display);
-    font-size: clamp(2.3rem, 5.6vw, 3.6rem);
+    margin: 0.28em 0 0.22em;
+    font-size: clamp(2.45rem, 4.6vw, 3.6rem);
     font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
   }
 
   .hm__accent {
@@ -197,26 +206,46 @@ const jsonLd = {
   }
 
   .hm__lead {
-    max-width: 46ch;
-    margin: 0 0 26px;
+    max-width: 50ch;
+    margin: 0 0 24px;
     color: var(--af-muted);
     font-size: 17px;
+    line-height: 1.6;
   }
 
   .hm__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .hm__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 18px 0 0;
+    color: var(--af-muted);
+    font-size: 13px;
+  }
+
+  .hm__meta a {
+    color: var(--af-accent);
+  }
+
+  .hm__meta a:hover {
+    text-decoration: underline;
   }
 
   .hm__art {
-    flex: 1 1 420px;
+    flex: 1 1 360px;
     min-width: 0;
+    max-width: 500px;
+    margin-inline: auto;
   }
 
   .ps {
     border-block: 1px solid var(--af-border);
-    background-color: var(--af-raised);
+    background-color: color-mix(in srgb, var(--af-raised) 65%, transparent);
   }
 
   .ps__inner {
@@ -224,133 +253,88 @@ const jsonLd = {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 14px 24px;
-    padding-block: 22px;
+    gap: 12px 26px;
+    padding-block: 16px;
   }
 
   .ps__list {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 18px 28px;
+    gap: 14px 24px;
     margin: 0;
     padding: 0;
     list-style: none;
-  }
-
-  .ps__item {
-    display: flex;
-    align-items: center;
   }
 
   .ps__item img {
     display: block;
     width: auto;
-    max-width: 112px;
-    height: 30px;
+    max-width: 100px;
+    height: 26px;
     object-fit: contain;
+    opacity: 0.86;
   }
 
   .ps__caption {
+    max-width: 46ch;
     margin: 0;
     color: var(--af-muted);
-    font-size: 13px;
+    font-size: 12.5px;
+    line-height: 1.5;
   }
 
-  .fp__head,
-  .ep__head {
-    margin-bottom: 26px;
+  .rail-stack {
+    padding-block: 8px;
   }
 
-  .fp__title,
-  .ep__title,
-  .pe__title {
-    margin: 0.2em 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.6rem, 3.2vw, 2.1rem);
-    font-weight: 700;
-    line-height: 1.15;
+  .closing {
+    padding-block: 30px 54px;
   }
 
-  .fp__grid {
-    display: grid;
-    gap: 22px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  .pe {
-    padding-block: var(--af-section-y);
-  }
-
-  .pe__head {
+  .closing__inner {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 14px 24px;
+    gap: 22px 40px;
+    padding: 28px 30px;
+    background:
+      linear-gradient(130deg, color-mix(in srgb, var(--af-primary) 13%, transparent), transparent 60%),
+      var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
   }
 
-  .pe__cta {
-    flex: 0 0 auto;
+  .closing__title {
+    margin: 4px 0 0;
+    font-size: clamp(1.45rem, 2.6vw, 1.85rem);
   }
 
-  .ep__platforms {
+  .closing__body {
+    max-width: 64ch;
+    margin: 8px 0 0;
+    color: var(--af-muted);
+    font-size: 15px;
+  }
+
+  .closing__actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 18px 28px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    gap: 10px;
   }
 
-  .ep__platforms a {
-    display: flex;
-    align-items: center;
-    min-height: 48px;
-  }
+  @media (max-width: 760px) {
+    .hm__inner {
+      gap: 24px;
+    }
 
-  .ep__platforms img {
-    display: block;
-    width: auto;
-    max-width: 140px;
-    height: 40px;
-    object-fit: contain;
-  }
+    .hm__art {
+      max-width: 420px;
+    }
 
-  .ep__note {
-    max-width: 68ch;
-    margin: 20px 0 0;
-    color: var(--af-muted);
-    font-size: 14px;
-  }
-
-  .fc__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 46px 26px;
-    text-align: center;
-  }
-
-  .fc__mark {
-    width: 72px;
-    height: auto;
-  }
-
-  .fc__title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.7rem, 3.6vw, 2.3rem);
-    font-weight: 700;
-    line-height: 1.15;
-  }
-
-  .fc__body {
-    max-width: 52ch;
-    margin: 0 0 10px;
-    color: var(--af-muted);
-    font-size: 16px;
+    .closing__inner {
+      padding: 22px;
+    }
   }
 </style>

@@ -1,3 +1,4 @@
+@import "./fonts.css";
 @import "tailwindcss";
 @source "../../src/**/*.{astro,ts,js,mjs}";
 @plugin "daisyui" {
@@ -34,13 +35,12 @@
   --af-accent: #38d5ff;
   --af-gold: #d4af37;
 
-  --af-radius: 10px;
-  --af-container: 1200px;
+  --af-radius: 12px;
+  --af-container: 1160px;
   --af-gutter: 22px;
-  --af-section-y: 70px;
+  --af-section-y: 60px;
   --af-ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --af-transition: 0.2s var(--af-ease);
-  --af-marquee-duration: 42s;
+  --af-transition: 0.22s var(--af-ease);
 }
 
 @layer base {
@@ -77,7 +77,7 @@
     background-attachment: fixed;
     color: var(--af-text);
     font-family: var(--font-sans);
-    font-weight: 300;
+    font-weight: 400;
     font-size: 16px;
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
@@ -232,14 +232,15 @@
 .af-chip {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 18px;
+  gap: 6px;
+  padding: 5px 10px;
   background-color: var(--af-surface);
   border: 1px solid var(--af-border);
-  border-radius: var(--af-radius);
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 600;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.4;
   white-space: nowrap;
   transition: border-color var(--af-transition);
 }
@@ -260,30 +261,156 @@
   border: 0;
 }
 
-@keyframes af-marquee-scroll {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
+/* Long-form documentation and guide prose. */
+.af-prose {
+  max-width: 72ch;
+  color: var(--af-text);
+  font-size: 16px;
+  line-height: 1.75;
 }
 
-.af-marquee {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+.af-prose > :first-child {
+  margin-block-start: 0;
 }
 
-.af-marquee-track {
-  display: flex;
-  width: max-content;
-  gap: 16px;
-  animation: af-marquee-scroll var(--af-marquee-duration) linear infinite;
-  will-change: transform;
+.af-prose h2 {
+  margin: 2.1em 0 0.55em;
+  padding-block-end: 0.3em;
+  border-block-end: 1px solid var(--af-border);
+  font-size: clamp(1.4rem, 2.4vw, 1.7rem);
+  scroll-margin-top: 88px;
 }
 
-.af-marquee:hover .af-marquee-track,
-.af-marquee:focus-within .af-marquee-track {
-  animation-play-state: paused;
+.af-prose h3 {
+  margin: 1.7em 0 0.45em;
+  font-size: 1.18rem;
+  scroll-margin-top: 88px;
+}
+
+.af-prose p,
+.af-prose li {
+  color: color-mix(in srgb, var(--af-text) 86%, var(--af-muted));
+}
+
+.af-prose p {
+  margin: 0 0 1em;
+}
+
+.af-prose ul,
+.af-prose ol {
+  margin: 0 0 1.1em;
+  padding-inline-start: 1.35em;
+}
+
+.af-prose li + li {
+  margin-block-start: 0.3em;
+}
+
+.af-prose a {
+  color: var(--af-accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--af-accent) 45%, transparent);
+  text-underline-offset: 3px;
+}
+
+.af-prose a:hover {
+  text-decoration-color: var(--af-accent);
+}
+
+.af-prose strong {
+  color: var(--af-text);
+  font-weight: 600;
+}
+
+.af-prose code {
+  padding: 0.12em 0.38em;
+  background-color: var(--af-raised);
+  border: 1px solid var(--af-border);
+  border-radius: 5px;
+  color: color-mix(in srgb, var(--af-accent) 80%, var(--af-text));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  overflow-wrap: anywhere;
+}
+
+.af-prose pre {
+  position: relative;
+  margin: 0 0 1.2em;
+  padding: 16px;
+  overflow-x: auto;
+  background-color: #070d19;
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius);
+  line-height: 1.6;
+}
+
+.af-prose pre code {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: #cfe4ff;
+  font-size: 13px;
+  overflow-wrap: normal;
+}
+
+.af-prose .af-copy-code {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
+  padding: 4px 9px;
+  background-color: var(--af-surface);
+  border: 1px solid var(--af-border-strong);
+  border-radius: 5px;
+  color: var(--af-muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.af-prose .af-copy-code:hover {
+  border-color: var(--af-accent);
+  color: var(--af-accent);
+}
+
+.af-prose blockquote {
+  margin: 0 0 1.2em;
+  padding: 2px 0 2px 16px;
+  border-inline-start: 2px solid var(--af-accent);
+  color: var(--af-muted);
+}
+
+.af-prose table {
+  display: block;
+  width: 100%;
+  margin: 0 0 1.3em;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.af-prose th,
+.af-prose td {
+  padding: 8px 11px;
+  border: 1px solid var(--af-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.af-prose th {
+  background-color: var(--af-raised);
+  color: var(--af-text);
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.af-prose td {
+  color: var(--af-muted);
+}
+
+.af-prose hr {
+  margin: 2em 0;
+  border: 0;
+  border-block-start: 1px solid var(--af-border);
 }

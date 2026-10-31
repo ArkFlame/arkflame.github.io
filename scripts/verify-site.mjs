@@ -21,22 +21,23 @@ const DIST = path.resolve(REPO_ROOT, process.argv[2] ?? "dist");
 const ORIGIN = "https://arkflame.com";
 
 const CATEGORY_SLUGS = ["security", "performance", "network", "gameplay", "smp"];
-const MIN_PRODUCT_PAGES = 45;
+const MIN_PRODUCT_PAGES = 51;
+const MIN_DOCS = 8;
+const MIN_GUIDES = 8;
+const PRIORITY_PRODUCTS = [
+  "exploitfixer",
+  "fairplay",
+  "flamecord",
+  "veloflame",
+  "authme-premium",
+  "redstonelimiter",
+];
 
 const REQUIRED_FILES = [
   "index.html",
   "about/index.html",
   "global-dom-optimizer/index.html",
   "global-dom-optimizer/privacy/index.html",
-  "assets/img/global-dom-optimizer/popup.webp",
-  "assets/img/global-dom-optimizer/og-cover.webp",
-  "assets/img/global-dom-optimizer/offscreen-viewport.svg",
-  "downloads/global-dom-optimizer-0.0.6.zip",
-  "global-dom-optimizer/index.html",
-  "global-dom-optimizer/privacy/index.html",
-  "assets/img/global-dom-optimizer/popup.webp",
-  "assets/img/global-dom-optimizer/og-cover.webp",
-  "assets/img/global-dom-optimizer/offscreen-viewport.svg",
   "downloads/global-dom-optimizer-0.0.6.zip",
   "plugins/index.html",
   "plugins/security/index.html",
@@ -44,8 +45,18 @@ const REQUIRED_FILES = [
   "plugins/network/index.html",
   "plugins/gameplay/index.html",
   "plugins/smp/index.html",
+  "docs/index.html",
+  "docs/exploitfixer/index.html",
+  "docs/fairplay/index.html",
+  "docs/flamecord/index.html",
+  "docs/authme-premium/index.html",
+  "docs/redstonelimiter/index.html",
+  "guides/index.html",
+  "guides/folia-compatibility/index.html",
+  "guides/exploitfixer-packet-abuse/index.html",
   "404.html",
   "CNAME",
+  ".nojekyll",
   "robots.txt",
   "sitemap-index.xml",
   "sitemap-0.xml",
@@ -61,6 +72,10 @@ const REQUIRED_FILES = [
   "assets/img/vendor/folia.webp",
   "assets/img/vendor/bungeecord.webp",
   "assets/img/vendor/velocity.webp",
+  "fonts/outfit-400.woff2",
+  "fonts/rajdhani-700.woff2",
+  "fonts/OFL-Outfit.txt",
+  "fonts/OFL-Rajdhani.txt",
 ];
 
 const FORBIDDEN_PATTERNS = [
@@ -69,6 +84,12 @@ const FORBIDDEN_PATTERNS = [
   'id="iso"',
   "<canvas",
   "<polygon",
+  "af-marquee",
+  "fonts.googleapis.com",
+  "fonts.gstatic.com",
+  "cdn.jsdelivr.net",
+  "Our plugins support legacy to modern versions",
+  "Folia is compatible in most plugins",
   "product-icons/smp-combat.svg",
   "product-icons/smp-harvest.svg",
   "product-icons/smp-lifesteal.svg",
@@ -82,14 +103,14 @@ const CANONICAL_ROUTES = [
   "about/index.html",
   "global-dom-optimizer/index.html",
   "global-dom-optimizer/privacy/index.html",
-  "global-dom-optimizer/index.html",
-  "global-dom-optimizer/privacy/index.html",
   "plugins/index.html",
   "plugins/security/index.html",
   "plugins/performance/index.html",
   "plugins/network/index.html",
   "plugins/gameplay/index.html",
   "plugins/smp/index.html",
+  "docs/index.html",
+  "guides/index.html",
   "404.html",
 ];
 
@@ -98,28 +119,38 @@ const CANONICAL_ROUTES = [
 // splits it across tags in the raw markup, so a raw substring match would be wrong.
 const HOME_TEXT_MARKERS = [
   "We make Minecraft plugins.",
-  "Five problems, one studio",
-  "Supported Minecraft ecosystem",
-  "Our plugins support legacy to modern versions from 1.8 to 1.21. Folia is compatible in most plugins.",
+  "Start with these.",
+  "Stop abuse before it reaches gameplay.",
+  "Cap the work that costs tick time.",
+  "Harden the proxy layer.",
+  "Build the survival loop.",
+  "Read the source-backed detail.",
+  "Platform support is product-specific.",
 ];
 
 // Markers asserted against the RAW markup of dist/index.html: routes and absolute
 // URLs live in href attributes, so matching rendered text would be the wrong axis.
 const HOME_MARKUP_MARKERS = [
   "/plugins/",
+  "/plugins/security/",
+  "/plugins/performance/",
+  "/plugins/network/",
+  "/plugins/smp/",
+  "/docs/",
+  "/guides/",
   "https://linsaftw.arkflame.com/",
-  "https://papermc.io/software/paper/",
-  "https://papermc.io/software/folia/",
-  "https://papermc.io/software/velocity/",
-  "https://www.spigotmc.org/wiki/bungeecord/",
+  "https://builtbybit.com/creators/linsaftw.152552/",
 ];
 const FORBIDDEN_HOME_MARKUP_MARKERS = [
   'data-accent="network"',
   'class="cs af-section"',
+  "Five problems, one studio",
+  "Supported Minecraft ecosystem",
+  "Our plugins support legacy to modern versions from 1.8 to 1.21.",
+  "Folia is compatible in most plugins.",
   "Disciplines",
   "Packet handling",
   "Concurrency",
-  "Products span legacy and modern Minecraft environments. Verify compatibility on each product page.",
 ];
 
 let greenChecks = 0;
@@ -309,19 +340,212 @@ async function main() {
   }
   const productSlugs = [...slugs].sort();
 
+  const docsRoutes = htmlFiles.filter(
+    (rel) => /^docs\/[a-z0-9][a-z0-9-]*\/index\.html$/.test(rel),
+  );
+  const guidesRoutes = htmlFiles.filter(
+    (rel) => /^guides\/[a-z0-9][a-z0-9-]*\/index\.html$/.test(rel),
+  );
+
   await check("PRODUCT PAGE COVERAGE", () => {
-    if (productSlugs.length < MIN_PRODUCT_PAGES) {
+    if (productSlugs.length !== MIN_PRODUCT_PAGES) {
       throw new Error(
-        `product catalog discovery found only ${productSlugs.length} product slugs in ` +
-          `dist/plugins/index.html, expected at least ${MIN_PRODUCT_PAGES}`,
+        `product catalog discovery found ${productSlugs.length} product slugs in ` +
+          `dist/plugins/index.html, expected exactly ${MIN_PRODUCT_PAGES}`,
       );
     }
-    for (const slug of productSlugs) requireFile(`plugins/${slug}/index.html`);
-    return `${productSlugs.length} product pages (>= ${MIN_PRODUCT_PAGES})`;
+    for (const slug of productSlugs) {
+      const body = html.get(`plugins/${slug}/index.html`) ?? "";
+      const h1 = [...body.matchAll(/<h1\b/g)].length;
+      if (h1 !== 1) throw new Error(`dist/plugins/${slug}/index.html must have exactly one h1, found ${h1}`);
+      if (!body.includes("builtbybit.com/resources/")) {
+        throw new Error(`dist/plugins/${slug}/index.html has no BuiltByBit CTA`);
+      }
+      if (!body.includes('id="compatibility"')) {
+        throw new Error(`dist/plugins/${slug}/index.html has no compatibility section`);
+      }
+    }
+    return `${productSlugs.length} product pages with h1, store CTA and compatibility`;
+  });
+
+  await check("HOMEPAGE DISCOVERY RAILS", () => {
+    const home = html.get("index.html") ?? "";
+    const rails = [...home.matchAll(/class="af-rail af-section"/g)].length;
+    const allTiles = [...home.matchAll(/class="af-rail__all"/g)].length;
+    const productLinks = [...home.matchAll(/href="\/plugins\/[a-z0-9-]+\/"/g)].length;
+    if (rails !== 5) throw new Error(`dist/index.html must render 5 discovery rails, found ${rails}`);
+    if (allTiles !== 5) throw new Error(`dist/index.html must render one View all tile per rail, found ${allTiles}`);
+    if (productLinks < 20) throw new Error(`dist/index.html only links ${productLinks} product routes`);
+    if (home.includes("af-marquee")) throw new Error("dist/index.html still contains the autoplay marquee");
+    return `${rails} rails, ${allTiles} View-all tiles, ${productLinks} product links, no autoplay`;
+  });
+
+  await check("CATALOG CONTROLS AND FULL INVENTORY", () => {
+    const body = catalog;
+    for (const needle of ['data-catalog-sort', 'data-catalog-filters', 'data-catalog-list', 'id="catalog-search"']) {
+      if (!body.includes(needle)) throw new Error(`dist/plugins/index.html is missing ${needle}`);
+    }
+    const cards = [...body.matchAll(/data-product="[a-z0-9-]+"/g)].length;
+    if (cards !== MIN_PRODUCT_PAGES) {
+      throw new Error(`dist/plugins/index.html renders ${cards} product cards, expected ${MIN_PRODUCT_PAGES}`);
+    }
+    return `${cards} cards, search + category + sort controls`;
+  });
+
+  await check("DOCUMENTATION ROUTES", async () => {
+    if (docsRoutes.length < MIN_DOCS) {
+      throw new Error(`found ${docsRoutes.length} docs routes, expected at least ${MIN_DOCS}`);
+    }
+    const sitemap = await readDist("sitemap-0.xml");
+    for (const rel of docsRoutes) {
+      const body = html.get(rel) ?? "";
+      const h1 = [...body.matchAll(/<h1\b/g)].length;
+      if (h1 !== 1) throw new Error(`dist/${rel} must have exactly one h1, found ${h1}`);
+      if (!body.includes('class="af-prose"')) throw new Error(`dist/${rel} is missing documentation prose`);
+      const route = rel.replace(/index\.html$/, "");
+      if (!sitemap.includes(`<loc>${ORIGIN}/${route}</loc>`)) {
+        throw new Error(`sitemap missing docs route ${ORIGIN}/${route}`);
+      }
+    }
+    return `${docsRoutes.length} docs routes with h1, prose and sitemap entries`;
+  });
+
+  await check("GUIDE ROUTES", async () => {
+    if (guidesRoutes.length < MIN_GUIDES) {
+      throw new Error(`found ${guidesRoutes.length} guide routes, expected at least ${MIN_GUIDES}`);
+    }
+    const sitemap = await readDist("sitemap-0.xml");
+    for (const rel of guidesRoutes) {
+      const body = html.get(rel) ?? "";
+      const h1 = [...body.matchAll(/<h1\b/g)].length;
+      if (h1 !== 1) throw new Error(`dist/${rel} must have exactly one h1, found ${h1}`);
+      if (!body.includes('class="af-prose"')) throw new Error(`dist/${rel} is missing article prose`);
+      if (!body.includes("Sources and review")) {
+        throw new Error(`dist/${rel} is missing the Sources and review section`);
+      }
+      const route = rel.replace(/index\.html$/, "");
+      if (!sitemap.includes(`<loc>${ORIGIN}/${route}</loc>`)) {
+        throw new Error(`sitemap missing guide route ${ORIGIN}/${route}`);
+      }
+    }
+    return `${guidesRoutes.length} guide routes with h1, sources and sitemap entries`;
+  });
+
+  await check("PRIORITY PRODUCT DOCS AND CTAS", () => {
+    for (const slug of PRIORITY_PRODUCTS) {
+      const body = html.get(`plugins/${slug}/index.html`);
+      if (body === undefined) throw new Error(`missing priority product page ${slug}`);
+      if (!body.includes(`/docs/${slug}/`)) throw new Error(`${slug} product page does not link its docs`);
+      if (!body.includes("builtbybit.com/resources/")) throw new Error(`${slug} product page has no BuiltByBit CTA`);
+      if (!body.includes('id="compatibility"')) throw new Error(`${slug} product page has no compatibility section`);
+      if (body.includes("scope labels for")) throw new Error(`${slug} still renders the old scope-tags sentence`);
+    }
+    return `${PRIORITY_PRODUCTS.length} priority products with docs, store CTA and compatibility`;
+  });
+
+  await check("INTERNAL LINKS RESOLVE", () => {
+    let checked = 0;
+    const missing = [];
+    for (const [rel, body] of html) {
+      for (const match of body.matchAll(/<a\b[^>]*href=["']([^"']+)["']/g)) {
+        const raw = match[1];
+        if (!raw.startsWith("/") || raw.startsWith("//")) continue;
+        const clean = raw.split("#")[0].split("?")[0];
+        if (clean === "") continue;
+        let target = clean.replace(/^\//, "");
+        if (clean.endsWith("/")) target += "index.html";
+        if (!existsSync(path.join(DIST, target))) missing.push(`${rel} -> ${raw}`);
+        checked += 1;
+      }
+    }
+    if (missing.length > 0) {
+      throw new Error(`broken internal links:\n  ${missing.slice(0, 12).join("\n  ")}`);
+    }
+    return `${checked} internal hrefs resolve to dist files`;
+  });
+
+  await check("PRODUCT STRUCTURED DATA HAS NO FAKE COMMERCE", () => {
+    const banned = new Set(["aggregaterating", "review", "offers", "price", "ratingvalue", "reviewcount"]);
+    let blocks = 0;
+    for (const slug of productSlugs) {
+      const body = html.get(`plugins/${slug}/index.html`) ?? "";
+      for (const match of body.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
+        let parsed;
+        try {
+          parsed = JSON.parse(match[1]);
+        } catch {
+          throw new Error(`${slug} has invalid JSON-LD`);
+        }
+        blocks += 1;
+        const stack = [parsed];
+        while (stack.length > 0) {
+          const node = stack.pop();
+          if (Array.isArray(node)) {
+            stack.push(...node);
+          } else if (node !== null && typeof node === "object") {
+            for (const [key, value] of Object.entries(node)) {
+              if (banned.has(key.toLowerCase())) {
+                throw new Error(`${slug} JSON-LD contains disallowed ${key}`);
+              }
+              stack.push(value);
+            }
+          }
+        }
+      }
+    }
+    return `${productSlugs.length} product pages, ${blocks} JSON-LD blocks, no ratings/offers`;
+  });
+
+  await check("JSON-LD PARSES ON EVERY PAGE", () => {
+    let blocks = 0;
+    for (const [rel, body] of html) {
+      for (const match of body.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
+        try {
+          JSON.parse(match[1]);
+        } catch {
+          throw new Error(`dist/${rel} contains invalid JSON-LD`);
+        }
+        blocks += 1;
+      }
+    }
+    return `${blocks} structured-data blocks parse`;
+  });
+
+  await check("UNIQUE PAGE TITLES", () => {
+    const seen = new Map();
+    for (const [rel, body] of html) {
+      if (rel === "404.html") continue;
+      const title = body.match(/<title>([^<]+)<\/title>/)?.[1]?.trim();
+      if (title === undefined) throw new Error(`dist/${rel} has no title`);
+      if (seen.has(title)) throw new Error(`duplicate title "${title}" in ${seen.get(title)} and ${rel}`);
+      seen.set(title, rel);
+    }
+    return `${seen.size} unique titles`;
+  });
+
+  await check("SEO HEAD PER PAGE", () => {
+    for (const [rel, body] of html) {
+      if (rel === "404.html") continue;
+      const titles = [...body.matchAll(/<title>([^<]+)<\/title>/g)];
+      if (titles.length !== 1) throw new Error(`dist/${rel} must have exactly one <title>`);
+      if (titles[0][1].trim().length < 12) throw new Error(`dist/${rel} title is too short`);
+      const description = body.match(
+        /<meta\s+name=["']description["']\s+content=(?:"([^"]*)"|'([^']*)')/,
+      );
+      if (description === null || (description[1] ?? description[2] ?? "").trim().length < 40) {
+        throw new Error(`dist/${rel} is missing a useful meta description`);
+      }
+    }
+    return `${html.size - 1} indexable pages have title + description`;
   });
 
   await check("CANONICAL ORIGIN", () => {
-    const routes = [...CANONICAL_ROUTES, `plugins/${productSlugs[0]}/index.html`];
+    const routes = [
+      ...CANONICAL_ROUTES,
+      ...docsRoutes,
+      ...guidesRoutes,
+      `plugins/${productSlugs[0]}/index.html`,
+    ];
     for (const rel of routes) assertCanonical(rel);
     return `${routes.length} routes pinned to ${ORIGIN}`;
   });

@@ -3,6 +3,7 @@ import type { CategoryInfo } from "@/data/categories";
 import { getCategory } from "@/data/categories";
 import { getProductsByCategory } from "@/data/products";
 import ProductCard from "@/components/ProductCard.astro";
+import Icon from "@/components/Icon.astro";
 
 interface Props {
   category: CategoryInfo;
@@ -31,7 +32,7 @@ const related = category.related
 
   <section class="af-category-page__products" aria-labelledby="category-products-heading">
     <h2 class="af-category-page__heading" id="category-products-heading">
-      <i class={`bi ${category.icon}`} aria-hidden="true" />
+      <Icon name={category.icon} size={20} />
       {category.name} plugins
     </h2>
 

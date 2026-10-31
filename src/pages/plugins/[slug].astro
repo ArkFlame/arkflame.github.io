@@ -7,6 +7,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import CategoryPage from "@/components/CategoryPage.astro";
 import ProductPage from "@/components/ProductPage.astro";
 import { SITE } from "@/data/site";
+import { getProductDetail } from "@/data/product-details";
 
 /**
  * Single dynamic route owning both `/plugins/<category>/` and `/plugins/<product>/`.
@@ -48,6 +49,13 @@ const CATEGORY_TITLE_PHRASE: Readonly<Record<ProductCategory, string>> = {
 };
 
 const abs = (path: string): string => new URL(path, SITE.siteUrl).href;
+
+/** Richer, still truthful meta description for product routes. */
+function metaDescription(summary: string, description: string): string {
+  const full = `${summary} ${description}`.replace(/\s+/g, " ").trim();
+  if (full.length <= 155) return full;
+  return `${full.slice(0, 152).replace(/\s+\S*$/, "")}…`;
+}
 const homeUrl = `${SITE.siteUrl}/`;
 const websiteId = `${SITE.siteUrl}/#website`;
 const organizationId = `${SITE.siteUrl}/#organization`;
@@ -110,6 +118,8 @@ if ("category" in rest) {
         "description": product.summary,
         "image": `${SITE.siteUrl}${imagePath}`,
         "keywords": product.tags.join(", "),
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Minecraft server",
         "isPartOf": { "@id": websiteId },
         "publisher": { "@id": organizationId },
       },
@@ -140,7 +150,7 @@ if ("category" in rest) {
   ) : (
     <BaseLayout
       title={`${rest.product.name} — ${CATEGORY_TITLE_PHRASE[rest.product.category]} | ArkFlame`}
-      description={rest.product.summary}
+      description={metaDescription(rest.product.summary, getProductDetail(rest.product).description)}
       canonicalPath={`/plugins/${rest.product.slug}/`}
       image={rest.product.image ?? SITE.ogImage}
       jsonLd={jsonLd}

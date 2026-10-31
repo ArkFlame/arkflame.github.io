@@ -1,116 +1,97 @@
 # ArkFlame Studios — arkflame.com
 
-This repository is the production static website for ArkFlame Studios: the public company and product hub for the studio's Minecraft plugin catalogue. It is built with Astro and deployed to GitHub Pages at `arkflame.com`.
+Production static site for ArkFlame Studios: the company hub and catalogue for the studio's Minecraft server software. Astro static output, deployed to GitHub Pages at `arkflame.com`.
 
 ## Stack
 
 - Astro 7.3.4 (`output: 'static'`)
 - Tailwind CSS 4.3.3 via `@tailwindcss/vite` 4.3.3
-- daisyUI 5.7.38 (primitives only)
+- daisyUI 5.7.38 primitives only
 - `@astrojs/sitemap` 3.7.4
-- TypeScript (`astro/tsconfigs/strict`, extended by `tsconfig.json`)
-- Node 24 baseline for CI
-- npm as the package manager
-
-## Requirements
-
-Node 24 and npm.
+- TypeScript (`astro/tsconfigs/strict`)
+- Self-hosted Outfit and Rajdhani (SIL Open Font License 1.1)
+- Node 24 in CI, npm
 
 ## Commands
 
 ```bash
-npm ci                    # install exact dependencies from package-lock.json
-npm run dev               # local development server
-npm run build             # emits the static site into dist/
-npm run verify            # checks the generated dist/ against the production invariants
-npm run preview           # serve the built dist/ locally
+npm ci                  # exact dependencies from package-lock.json
+npm run dev             # local development server
+npm run build           # emit static output to dist/
+npm run verify          # post-build release gate
+npm run check           # build + verify
+npm run preview         # serve dist/
 ```
 
-`verify` must be run against a **fresh build**. It inspects the generated output, so run it as:
+`verify` inspects generated HTML, so always run it after a fresh build. It checks URLs, canonical tags, structured data, the 51-product catalogue, docs/guide routes, internal links and sitemap coverage.
 
-```bash
-npm run build && npm run verify
-```
+## Routes
+
+| Route | Source |
+| --- | --- |
+| `/` | `src/pages/index.astro` |
+| `/plugins/` | catalogue with search, category filter and sort |
+| `/plugins/<category>/` | `src/pages/plugins/[slug].astro` category branch |
+| `/plugins/<product>/` | same route, product branch |
+| `/docs/` and `/docs/<product>/` | Astro content collection `docs` |
+| `/guides/` and `/guides/<slug>/` | Astro content collection `guides` |
+| `/global-dom-optimizer/` | browser extension page |
+| `/global-dom-optimizer/privacy/` | extension privacy policy |
+| `/about/` | studio and founder background |
+| `/404.html` | not-found page |
+
+`public/CNAME`, `public/.nojekyll`, the extension download and the privacy route are release-critical. Keep them unchanged.
+
+## Data and content authority
+
+- `src/data/products.ts` — the only product identity authority. 51 records with slug, name, category, summary, tags, optional artwork, official URL, store URL and the editorial `featured` flag.
+- `src/data/product-details.ts` — keyed rich copy: a two-sentence description, source-backed highlights and optional compatibility. It validates at import time that every product has exactly one entry and that no orphan entries exist.
+- `src/data/categories.ts` — five category routes and their copy.
+- `src/data/site.ts` — company, platform names and shared constants.
+- `src/data/artwork.ts` — measured intrinsic dimensions of the shipped WebP artwork.
+
+Rules:
+
+- Add or remove a product only in `src/data/products.ts`, then update `src/data/product-details.ts`; the integrity guards fail the build otherwise.
+- Compatibility may only come from the product repository or an explicit public listing claim. `runtimeVerified: false` stays false unless the plugin was actually exercised on that runtime.
+- Never add a price, rating, review count, download count, sales rank or invented benchmark. Omit the field instead.
+- `featured` is editorial, not a popularity metric. Do not label it "Popular" or "Trending".
+- Tags are product scope, not a compatibility matrix.
+
+## Documentation and guides
+
+`src/content.config.ts` defines two collections:
+
+- `docs` — one entry per plugin with enough repository evidence. It carries `plugin`, `category`, `updated`, `runtimeVerified` and an evidence note. The route is `/docs/<filename>/`.
+- `guides` — task-led articles with an author, related product slugs and topics. The route is `/guides/<filename>/`.
+
+Only publish commands, permissions, config keys, versions and dependencies that exist in the source repository or its public listing. Mark declarations separately from runtime-tested facts. Do not publish secrets, bridge tokens, customer data or proprietary source code.
 
 ## Project structure
 
 ```text
-astro.config.mjs                  site URL, static output, sitemap, Tailwind Vite plugin
-tsconfig.json                     TypeScript configuration (extends astro/tsconfigs/strict)
-src/styles/global.css             Tailwind entry point
-src/data/
-  site.ts                         company, founder and editorial constants
-  categories.ts                   the five category routes and their copy
-  products.ts                     single product authority
-src/layouts/BaseLayout.astro      document shell, head, SEO and structured data
-src/components/                   reusable UI: header, footer, product and section components
-src/pages/
-  index.astro                     home
-  about.astro                     about
-  global-dom-optimizer/index.astro          browser extension overview
-  global-dom-optimizer/privacy.astro        extension privacy disclosures
-  global-dom-optimizer/index.astro          browser extension overview
-  global-dom-optimizer/privacy.astro        extension privacy disclosures
-  404.astro                       not found
-  plugins/index.astro             full catalogue index
-  plugins/[slug].astro            per-product detail route, generated from products.ts
-public/
-  CNAME                           custom domain (arkflame.com)
-  robots.txt                      crawler policy, points at the sitemap index
-  .nojekyll                       bypasses Jekyll processing on GitHub Pages
-  site.webmanifest                PWA manifest
-  favicon.ico, favicon.webp       favicons
-  assets/img/                     approved brand, founder, product artwork and product icons
-scripts/verify-site.mjs           production invariant checks run against dist/
+astro.config.mjs                  site URL, static output, sitemap, Tailwind
+src/styles/global.css             tokens, layout utilities, prose styles
+src/styles/fonts.css              self-hosted font faces
+src/data/                         products, details, categories, artwork, site constants
+src/layouts/BaseLayout.astro      document shell, SEO, OG/Twitter, JSON-LD
+src/components/                   header, footer, product cards/rails/catalog/page, article shell
+src/content/docs/                 plugin quick starts
+src/content/guides/               technical articles
+src/pages/                        home, catalog, dynamic product/category, docs, guides, extension, about, 404
+public/                           CNAME, robots.txt, .nojekyll, manifest, artwork, fonts, extension ZIP
+scripts/verify-site.mjs           post-build release gate
 .github/workflows/deploy.yml      GitHub Pages deployment
 ```
 
-## Content authority
+## Fonts
 
-`src/data/products.ts` is the single product authority. Each record carries `slug`, `name`, `category`, `summary`, `tags`, optional `image` and `icon`, `officialUrl`, `storeUrl` and `featured`.
-
-`src/data/categories.ts` owns the five category routes and their copy. `src/data/site.ts` owns company, founder and editorial constants.
-
-Rules:
-
-- Add a product only in `src/data/products.ts`.
-- Never duplicate a product list in a component or a page; read it from the data module.
-- Never introduce price, rating, purchase/download count, Minecraft-version badge or any unverified compatibility claim. Omit a field rather than guess it.
-
-## Assets
-
-Use the existing approved imagery under `public/assets/img/` (brand logo and OG image, founder portrait, product artwork, product icons).
-
-- Existing Minecraft product artwork remains unchanged; the Global DOM Optimizer page has its own static SVG/WebP explanatory assets.
-- Never embed base64 or `data:` images.
-- Never add the legacy generated `product-icons/smp-*.svg` icons.
+Outfit and Rajdhani are self-hosted from `public/fonts/` as Latin-subset WOFF2 files. Both are licensed under the SIL Open Font License 1.1; the license texts are shipped alongside the files. The layout preloads the body and display faces, so no third-party font request blocks rendering.
 
 ## Deployment
 
-The site is deployed to GitHub Pages by the workflow in `.github/workflows/deploy.yml`, triggered by a push to `master`.
+GitHub Pages, `master` branch, `withastro/action` builds the site and `deploy-pages` publishes it. The build must remain static: no server endpoints, no live scraping, no authenticated API calls. The custom domain is `arkflame.com` (`public/CNAME`).
 
-The custom domain comes from `public/CNAME` (`arkflame.com`), and `public/.nojekyll` bypasses Jekyll processing.
+## Supporting sources
 
-Astro is configured with `site: https://arkflame.com` and **no `base` path**, so generated URLs are root-relative.
-
-`sitemap-index.xml` and `sitemap-0.xml` are generated by `@astrojs/sitemap`; `public/robots.txt` points at the sitemap index.
-
-In the repository Settings -> Pages, the source must be set to build and deploy with GitHub Actions. DNS and custom-domain configuration lives outside this repository.
-
-## Global DOM Optimizer pages
-
-- `/global-dom-optimizer/` offers an overview, real popup preview with illustrative counters, a locally downloadable unpacked-install ZIP, and an SVG of viewport containment. The Chrome Web Store listing URL is intentionally omitted until published.
-- `/global-dom-optimizer/privacy/` holds the public v0.0.6 privacy policy, matching the uploaded extension manifest and local-only behavior.
-- `@astrojs/sitemap` generates both routes into `sitemap-0.xml` on build; the checked-in `dist/` is also supplied with both pages and sitemap entries for direct static deployment.
-- WebP preview, SVG, and Open Graph image live under `public/assets/img/global-dom-optimizer/`.
-
-For a fresh production rebuild: `npm ci && npm run check` (Node 24 or newer per the project CI baseline).
-
-## Global DOM Optimizer pages
-
-- `/global-dom-optimizer/` offers an overview, actual popup preview with illustrative counters, a locally downloadable unpacked-install ZIP, and an SVG of viewport containment. The Chrome Web Store listing URL is intentionally omitted until published.
-- `/global-dom-optimizer/privacy/` holds the public v0.0.6 privacy policy, matching the uploaded extension manifest and local-only behavior.
-- `@astrojs/sitemap` generates both routes into `sitemap-0.xml` on build; the checked-in `dist/` is also supplied with both pages and sitemap entries for direct static deployment.
-- WebP preview, SVG, and Open Graph image live under `public/assets/img/global-dom-optimizer/`.
-
-For a fresh production rebuild: `npm ci && npm run check` (Node 24 or newer per the project CI baseline).
+The plugin documentation was reviewed read-only against the local repositories under `ArkFlame/` and `Smarts-Hub/` on 30 October 2026. Where a repository was missing, private or incomplete, the site keeps a truthful listing-level page and records the gap in the product page instead of inventing a manual.

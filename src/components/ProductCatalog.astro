@@ -2,6 +2,7 @@
 import type { Product } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
 import ProductCard from "@/components/ProductCard.astro";
+import Icon from "@/components/Icon.astro";
 
 interface Props {
   products: readonly Product[];
@@ -9,212 +10,266 @@ interface Props {
 
 const { products } = Astro.props;
 
-const groups = CATEGORIES.map((category) => ({
-  category,
-  items: products.filter((product) => product.category === category.slug),
-})).filter((group) => group.items.length > 0);
+const initial = [...products].sort((a, b) => {
+  if (a.featured !== b.featured) return a.featured ? -1 : 1;
+  return a.name.localeCompare(b.name);
+});
 ---
 
 <section class="af-container af-section af-catalog" data-catalog>
-  <p class="af-eyebrow">Plugins</p>
-  <h1>Minecraft Plugins</h1>
-  <p class="af-catalog__intro">
-    Security, performance, proxy and gameplay software from ArkFlame Studios.
-  </p>
+  <header class="af-catalog__head">
+    <p class="af-eyebrow">Plugins</p>
+    <h1>Minecraft plugins</h1>
+    <p class="af-catalog__intro">
+      {products.length} products across security, performance, proxies, gameplay and SMP. Search by name or tag, filter by category, and sort by evidence we actually hold.
+    </p>
+  </header>
 
   <div class="af-catalog__controls">
     <div class="af-catalog__search">
       <label class="af-sr-only" for="catalog-search">Search plugins</label>
+      <Icon name="search" class="af-catalog__search-icon" />
       <input
         class="input"
         type="search"
         name="q"
         id="catalog-search"
-        placeholder="Search by name, summary or tag"
+        placeholder="Search name, summary or tag"
         autocomplete="off"
       />
     </div>
 
-    <div
-      class="af-catalog__filters"
-      role="group"
-      aria-label="Filter plugins by category"
-      data-catalog-filters
-    >
-      <button type="button" class="af-catalog__filter" data-category="all" aria-pressed="true">
-        All
-      </button>
-      {
-        CATEGORIES.map((category) => (
-          <button
-            type="button"
-            class="af-catalog__filter"
-            data-category={category.slug}
-            aria-pressed="false"
-          >
-            {category.name}
-          </button>
-        ))
-      }
+    <div class="af-catalog__sort">
+      <label for="catalog-sort">Sort by</label>
+      <select id="catalog-sort" class="input" data-catalog-sort>
+        <option value="featured">Featured first</option>
+        <option value="name">Name A–Z</option>
+        <option value="category">Category</option>
+      </select>
     </div>
   </div>
 
-  <p class="af-catalog__count" data-catalog-count aria-live="polite">{products.length} plugins</p>
-
-  <p class="af-catalog__empty" data-catalog-empty hidden>No plugins match your search.</p>
-
-  {
-    groups.length === 0 ? (
-      <p class="af-catalog__empty">No plugins to show.</p>
-    ) : (
-      groups.map(({ category, items }) => (
-        <section class="af-catalog__group" data-catalog-group aria-labelledby={`catalog-group-${category.slug}`}>
-          <h2 class="af-catalog__group-title" id={`catalog-group-${category.slug}`}>
-            <i class={`bi ${category.icon}`} aria-hidden="true" />
-            {category.name}
-          </h2>
-          <ul class="af-catalog__list">
-            {items.map((product) => (
-              <ProductCard product={product} />
-            ))}
-          </ul>
-        </section>
+  <div class="af-catalog__filters" role="group" aria-label="Filter plugins by category" data-catalog-filters>
+    <button type="button" class="af-catalog__filter" data-category="all" aria-pressed="true">All</button>
+    {
+      CATEGORIES.map((category) => (
+        <button type="button" class="af-catalog__filter" data-category={category.slug} aria-pressed="false">
+          {category.name}
+          <span class="af-catalog__filter-count">{products.filter((product) => product.category === category.slug).length}</span>
+        </button>
       ))
-    )
-  }
+    }
+  </div>
+
+  <div class="af-catalog__status">
+    <p class="af-catalog__count" data-catalog-count aria-live="polite">{products.length} plugins</p>
+    <p class="af-catalog__empty" data-catalog-empty hidden>
+      No plugins match those filters.
+      <button type="button" class="af-catalog__clear" data-catalog-clear>Clear filters</button>
+    </p>
+    <p class="af-catalog__note">Featured is an editorial selection, not a sales ranking.</p>
+  </div>
+
+  <ul class="af-catalog__list" data-catalog-list>
+    {initial.map((product) => <ProductCard product={product} headingLevel="h2" />)}
+  </ul>
 </section>
 
 <script>
-  const catalog = document.querySelector("[data-catalog]");
+  const catalog = document.querySelector<HTMLElement>("[data-catalog]");
 
-  if (catalog) {
+  if (catalog !== null) {
     const search = catalog.querySelector<HTMLInputElement>("#catalog-search");
+    const sort = catalog.querySelector<HTMLSelectElement>("[data-catalog-sort]");
     const count = catalog.querySelector<HTMLElement>("[data-catalog-count]");
     const empty = catalog.querySelector<HTMLElement>("[data-catalog-empty]");
-    const filterGroup = catalog.querySelector("[data-catalog-filters]");
-    const buttons = filterGroup
-      ? Array.from(filterGroup.querySelectorAll<HTMLButtonElement>("[data-category]"))
-      : [];
-    const groups = Array.from(catalog.querySelectorAll("[data-catalog-group]"));
+    const clear = catalog.querySelector<HTMLButtonElement>("[data-catalog-clear]");
+    const list = catalog.querySelector<HTMLElement>("[data-catalog-list]");
+    const buttons = Array.from(
+      catalog.querySelectorAll<HTMLButtonElement>("[data-catalog-filters] [data-category]"),
+    );
+    const known = new Set(buttons.map((button) => button.dataset.category ?? "all"));
+    const knownSorts = new Set(["featured", "name", "category"]);
 
-    if (search !== null && buttons.length > 0) {
-      const known = new Set(buttons.map((button) => button.dataset.category ?? "all"));
+    if (search !== null && sort !== null && list !== null && buttons.length > 0) {
+      const cards = Array.from(list.querySelectorAll<HTMLElement>("[data-product]"));
 
       let query = "";
       let category = "all";
+      let sortBy = "featured";
 
-      const syncUrl = (): void => {
-        const url = new URL(window.location.href);
-        if (query !== "") {
-          url.searchParams.set("q", query);
-        } else {
-          url.searchParams.delete("q");
-        }
-        if (category !== "all") {
-          url.searchParams.set("category", category);
-        } else {
-          url.searchParams.delete("category");
-        }
-        window.history.replaceState(null, "", `${url.pathname}${url.search}`);
+      const readUrl = (): void => {
+        const params = new URL(window.location.href).searchParams;
+        query = params.get("q") ?? "";
+        const nextCategory = params.get("category");
+        category = nextCategory !== null && known.has(nextCategory) ? nextCategory : "all";
+        const nextSort = params.get("sort");
+        sortBy = nextSort !== null && knownSorts.has(nextSort) ? nextSort : "featured";
+        search.value = query;
+        sort.value = sortBy;
       };
 
-      const apply = (): void => {
+      const writeUrl = (push: boolean): void => {
+        const url = new URL(window.location.href);
+        if (query !== "") url.searchParams.set("q", query);
+        else url.searchParams.delete("q");
+        if (category !== "all") url.searchParams.set("category", category);
+        else url.searchParams.delete("category");
+        if (sortBy !== "featured") url.searchParams.set("sort", sortBy);
+        else url.searchParams.delete("sort");
+        const next = `${url.pathname}${url.search}`;
+        if (next === `${window.location.pathname}${window.location.search}`) return;
+        window.history[push ? "pushState" : "replaceState"](null, "", next);
+      };
+
+      const compare = (a: HTMLElement, b: HTMLElement): number => {
+        if (sortBy === "name") {
+          return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+        }
+        if (sortBy === "category") {
+          const byCategory = (a.dataset.category ?? "").localeCompare(b.dataset.category ?? "");
+          if (byCategory !== 0) return byCategory;
+          return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+        }
+        const featured = Number(b.dataset.featured ?? "0") - Number(a.dataset.featured ?? "0");
+        if (featured !== 0) return featured;
+        return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+      };
+
+      const apply = (push: boolean): void => {
         const needle = query.trim().toLowerCase();
         let visible = 0;
 
-        for (const group of groups) {
-          let groupVisible = 0;
-          const cards = Array.from(group.querySelectorAll<HTMLElement>("[data-product]"));
+        cards.sort(compare);
+        for (const card of cards) list.append(card);
 
-          for (const card of cards) {
-            const matchesCategory = category === "all" || card.dataset.category === category;
-            const haystack = `${card.dataset.name ?? ""} ${card.dataset.summary ?? ""} ${
-              card.dataset.tags ?? ""
-            }`.toLowerCase();
-            const matchesQuery = needle === "" || haystack.includes(needle);
-            const matches = matchesCategory && matchesQuery;
-
-            card.hidden = !matches;
-            if (matches) {
-              groupVisible += 1;
-            }
-          }
-
-          group.hidden = groupVisible === 0;
-          visible += groupVisible;
+        for (const card of cards) {
+          const matchesCategory = category === "all" || card.dataset.category === category;
+          const haystack = `${card.dataset.name ?? ""} ${card.dataset.summary ?? ""} ${card.dataset.tags ?? ""}`.toLowerCase();
+          const matchesQuery = needle === "" || haystack.includes(needle);
+          const matches = matchesCategory && matchesQuery;
+          card.hidden = !matches;
+          if (matches) visible += 1;
         }
 
-        if (count !== null) {
-          count.textContent = `${visible} plugin${visible === 1 ? "" : "s"}`;
-        }
-        if (empty !== null) {
-          empty.hidden = visible !== 0;
-        }
+        if (count !== null) count.textContent = `${visible} plugin${visible === 1 ? "" : "s"}`;
+        if (empty !== null) empty.hidden = visible !== 0;
 
         for (const button of buttons) {
           button.setAttribute("aria-pressed", String((button.dataset.category ?? "all") === category));
         }
 
-        syncUrl();
+        writeUrl(push);
       };
-
-      const initial = new URL(window.location.href).searchParams;
-      const initialCategory = initial.get("category");
-      query = initial.get("q") ?? "";
-      if (initialCategory !== null && known.has(initialCategory)) {
-        category = initialCategory;
-      }
-      search.value = query;
 
       search.addEventListener("input", () => {
         query = search.value;
-        apply();
+        apply(false);
       });
 
-      search.form?.addEventListener("submit", (event) => {
-        event.preventDefault();
-      });
+      search.form?.addEventListener("submit", (event) => event.preventDefault());
 
       for (const button of buttons) {
         button.addEventListener("click", () => {
           category = button.dataset.category ?? "all";
-          apply();
+          apply(true);
         });
       }
 
-      apply();
+      sort.addEventListener("change", () => {
+        sortBy = sort.value;
+        apply(true);
+      });
+
+      clear?.addEventListener("click", () => {
+        query = "";
+        category = "all";
+        sortBy = "featured";
+        search.value = "";
+        sort.value = "featured";
+        apply(true);
+        search.focus();
+      });
+
+      window.addEventListener("popstate", () => {
+        readUrl();
+        apply(false);
+      });
+
+      readUrl();
+      apply(false);
     }
   }
 </script>
 
 <style>
   .af-catalog h1 {
-    margin-top: 6px;
-    font-size: clamp(2.1rem, 5vw, 3rem);
+    margin: 4px 0 0;
+    font-size: clamp(2.2rem, 4.6vw, 3.1rem);
   }
 
   .af-catalog__intro {
-    margin: 12px 0 0;
-    max-width: 62ch;
+    max-width: 72ch;
+    margin: 10px 0 0;
     color: var(--af-muted);
+    font-size: 16px;
   }
 
   .af-catalog__controls {
     display: grid;
-    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-    align-items: start;
-    gap: 14px;
-    margin-top: 28px;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+    gap: 12px;
+    margin-block-start: 26px;
+  }
+
+  .af-catalog__search {
+    position: relative;
+  }
+
+  .af-catalog__search-icon {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 15px;
+    z-index: 1;
+    transform: translateY(-50%);
+    color: var(--af-muted);
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  .af-catalog__search .input {
+    padding-inline-start: 42px;
+    background-color: var(--af-raised);
+  }
+
+  .af-catalog__sort label {
+    display: block;
+    margin-block-end: 5px;
+    color: var(--af-muted);
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .af-catalog__sort .input {
+    height: 47px;
+    background-color: var(--af-raised);
   }
 
   .af-catalog__filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 7px;
+    margin-block-start: 18px;
   }
 
   .af-catalog__filter {
-    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 7px 13px;
     background-color: transparent;
     border: 1px solid var(--af-border-strong);
     border-radius: 999px;
@@ -222,10 +277,12 @@ const groups = CATEGORIES.map((category) => ({
     font-family: var(--font-display);
     font-size: 14px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: border-color var(--af-transition), background-color var(--af-transition);
+    transition:
+      border-color var(--af-transition),
+      background-color var(--af-transition);
   }
 
   .af-catalog__filter:hover {
@@ -238,58 +295,93 @@ const groups = CATEGORIES.map((category) => ({
     color: #ffffff;
   }
 
+  .af-catalog__filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding-inline: 5px;
+    background-color: color-mix(in srgb, var(--af-bg) 28%, transparent);
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  .af-catalog__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 20px;
+    min-height: 28px;
+    margin-block-start: 18px;
+  }
+
   .af-catalog__count {
-    margin: 22px 0 0;
-    font-family: var(--font-display);
-    font-size: 15px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    margin: 0;
     color: var(--af-muted);
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .af-catalog__note {
+    margin: 0 0 0 auto;
+    color: var(--af-muted);
+    font-size: 12.5px;
   }
 
   .af-catalog__empty {
-    margin: 22px 0 0;
-    padding: 18px;
-    border: 1px dashed var(--af-border-strong);
-    border-radius: var(--af-radius);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
     color: var(--af-muted);
+    font-size: 14px;
   }
 
   .af-catalog__empty[hidden] {
     display: none;
   }
 
-  .af-catalog__group {
-    margin-top: 34px;
-  }
-
-  .af-catalog__group[hidden] {
-    display: none;
-  }
-
-  .af-catalog__group-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--af-border);
-    font-size: 22px;
+  .af-catalog__clear {
+    padding: 5px 10px;
+    background: transparent;
+    border: 1px solid var(--af-border-strong);
+    border-radius: 6px;
     color: var(--af-accent);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
   }
 
   .af-catalog__list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 12px;
-    margin: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 20px 0 0;
     padding: 0;
     list-style: none;
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 1080px) {
+    .af-catalog__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
     .af-catalog__controls {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .af-catalog__note {
+      flex-basis: 100%;
+      margin: 0;
     }
 
     .af-catalog__list {

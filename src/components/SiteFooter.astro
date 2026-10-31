@@ -1,20 +1,17 @@
 ---
 import { SITE } from "../data/site";
 import { CATEGORIES } from "../data/categories";
+import Icon from "../components/Icon.astro";
 ---
 
 <footer class="site-footer">
   <div class="af-container">
     <div class="footer-top">
       <a class="brand" href="/">
-        <img
-          src="/assets/img/arkflame-logo.webp"
-          alt="ArkFlame Studios"
-          width="24"
-          height="24"
-        />
+        <img src="/assets/img/arkflame-logo.webp" alt="" width="24" height="24" />
         <span class="brand-line">{SITE.brandLine}</span>
       </a>
+      <a class="footer-cta" href="/plugins/">Browse all plugins <span aria-hidden="true">→</span></a>
     </div>
 
     <div class="footer-grid">
@@ -32,6 +29,16 @@ import { CATEGORIES } from "../data/categories";
         </ul>
       </section>
 
+      <section class="group" aria-labelledby="footer-learn">
+        <h2 id="footer-learn" class="group-title">Learn</h2>
+        <ul class="group-list">
+          <li><a href="/docs/">Documentation</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li><a href="/plugins/">Plugin catalogue</a></li>
+          <li><a href="/about/">About ArkFlame</a></li>
+        </ul>
+      </section>
+
       <section class="group" aria-labelledby="footer-browser-tools">
         <h2 id="footer-browser-tools" class="group-title">Browser tools</h2>
         <ul class="group-list">
@@ -43,27 +50,26 @@ import { CATEGORIES } from "../data/categories";
       <section class="group" aria-labelledby="footer-elsewhere">
         <h2 id="footer-elsewhere" class="group-title">Elsewhere</h2>
         <ul class="group-list">
-          <li><a href="/about/">About</a></li>
-          <li>
-            <a href={SITE.founderUrl} target="_blank" rel="noopener noreferrer">Founder</a>
-          </li>
           <li>
             <a href={SITE.githubUrl} target="_blank" rel="noopener noreferrer">
-              <i class="bi bi-github" aria-hidden="true"></i>
+              <Icon name="github" size={15} />
               GitHub
             </a>
           </li>
           <li>
             <a href={SITE.discordUrl} target="_blank" rel="noopener noreferrer">
-              <i class="bi bi-discord" aria-hidden="true"></i>
+              <Icon name="discord" size={15} />
               Discord
             </a>
           </li>
           <li>
             <a href={SITE.builtByBitUrl} target="_blank" rel="noopener noreferrer">
-              <i class="bi bi-basket" aria-hidden="true"></i>
-              View all BuiltByBit resources
+              <Icon name="basket" size={15} />
+              BuiltByBit resources
             </a>
+          </li>
+          <li>
+            <a href={SITE.founderUrl} target="_blank" rel="noopener noreferrer">Founder site</a>
           </li>
         </ul>
       </section>
@@ -75,14 +81,19 @@ import { CATEGORIES } from "../data/categories";
 
 <style>
   .site-footer {
-    margin-block-start: var(--af-section-y);
-    padding-block: 48px 34px;
-    background-color: color-mix(in srgb, var(--af-raised) 70%, transparent);
+    margin-block-start: 24px;
+    padding-block: 42px 30px;
+    background-color: color-mix(in srgb, var(--af-raised) 72%, transparent);
     border-block-start: 1px solid var(--af-border);
   }
 
   .footer-top {
-    padding-block-end: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding-block-end: 22px;
     border-block-end: 1px solid var(--af-border);
   }
 
@@ -103,17 +114,30 @@ import { CATEGORIES } from "../data/categories";
     font-weight: 500;
   }
 
+  .footer-cta {
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .footer-cta:hover {
+    text-decoration: underline;
+  }
+
   .footer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 32px;
-    padding-block: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 28px;
+    padding-block: 26px;
   }
 
   .group-title {
-    margin: 0 0 14px;
+    margin: 0 0 12px;
     font-family: var(--font-display);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -122,7 +146,7 @@ import { CATEGORIES } from "../data/categories";
 
   .group-list {
     display: grid;
-    gap: 9px;
+    gap: 8px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -133,7 +157,7 @@ import { CATEGORIES } from "../data/categories";
     align-items: center;
     gap: 8px;
     color: var(--af-muted);
-    font-size: 15px;
+    font-size: 14.5px;
     transition: color var(--af-transition);
   }
 
@@ -143,7 +167,7 @@ import { CATEGORIES } from "../data/categories";
 
   .disclaimer {
     margin: 0;
-    padding-block-start: 22px;
+    padding-block-start: 18px;
     border-block-start: 1px solid var(--af-border);
     color: var(--af-muted);
     font-size: 13px;
@@ -151,7 +175,7 @@ import { CATEGORIES } from "../data/categories";
 
   @media (max-width: 560px) {
     .footer-grid {
-      gap: 26px;
+      gap: 24px;
     }
   }
 </style>

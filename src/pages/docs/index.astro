@@ -1,0 +1,270 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { CATEGORIES } from "@/data/categories";
+import Icon from "@/components/Icon.astro";
+import { SITE } from "@/data/site";
+
+const docs = (await getCollection("docs")).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+const guides = (await getCollection("guides")).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+
+const grouped = CATEGORIES.map((category) => ({
+  category,
+  items: docs.filter((entry) => entry.data.category === category.slug),
+})).filter((group) => group.items.length > 0);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${SITE.siteUrl}/docs/#collection`,
+      name: "ArkFlame plugin documentation",
+      url: `${SITE.siteUrl}/docs/`,
+      description: "Quick starts, requirements, commands and limits for ArkFlame Minecraft plugins.",
+      isPartOf: { "@id": `${SITE.siteUrl}/#website` },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${SITE.siteUrl}/docs/#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${SITE.siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: "Documentation", item: `${SITE.siteUrl}/docs/` },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Plugin Documentation | ArkFlame Studios"
+  description="Source-backed quick starts for ArkFlame Minecraft plugins: requirements, installation, commands, permissions, configuration and known limits."
+  canonicalPath="/docs/"
+  jsonLd={jsonLd}
+>
+  <div class="af-container af-section">
+    <header class="docs-head">
+      <p class="af-eyebrow">Documentation</p>
+      <h1>Plugin quick starts</h1>
+      <p class="docs-head__intro">
+        Each page is written from the plugin repository: manifest dependencies, real command syntax, declared
+        permissions and the defaults that ship in the jar. Compatibility is marked as declared or unverified.
+      </p>
+      <p class="docs-head__note">
+        {docs.length} plugin pages exist today. Products that are not yet documented keep an honest product page and
+        no invented manual.
+      </p>
+    </header>
+
+    <div class="docs-layout">
+      <div class="docs-main">
+        {
+          grouped.map(({ category, items }) => (
+            <section class="docs-group" aria-labelledby={`docs-${category.slug}`}>
+              <h2 id={`docs-${category.slug}`}>
+                <Icon name={category.icon} size={20} />
+                {category.name}
+              </h2>
+              <ul class="docs-list">
+                {items.map((entry) => (
+                  <li>
+                    <a class="docs-card" href={`/docs/${entry.id}/`}>
+                      <h3 class="docs-card__title">{entry.data.title}</h3>
+                      <span class="docs-card__desc">{entry.data.description}</span>
+                      <span class="docs-card__meta">
+                        Updated {entry.data.updated.toISOString().slice(0, 10)}
+                        {entry.data.runtimeVerified ? " · Runtime-verified" : " · Not runtime-verified"}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+
+      <div class="docs-side">
+        <h2 id="docs-side-title">Start by task</h2>
+        <ul>
+          <li><a href="/guides/exploitfixer-packet-abuse/">Reading packet-abuse reports</a></li>
+          <li><a href="/guides/diagnose-lag-before-limiters/">Diagnosing lag before limiters</a></li>
+          <li><a href="/guides/flamecord-vs-veloflame/">Choosing a proxy architecture</a></li>
+          <li><a href="/guides/secure-proxy-backend/">Securing proxy-to-backend trust</a></li>
+        </ul>
+
+        <h2>All guides</h2>
+        <p class="docs-side__text">{guides.length} task-led articles, with no generated top-ten filler.</p>
+        <a class="btn" href="/guides/">Browse guides</a>
+
+        <h2>Browse products</h2>
+        <p class="docs-side__text">Every plugin links to its docs and its current BuiltByBit listing.</p>
+        <a class="btn" href="/plugins/">All plugins</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .docs-head {
+    max-width: 780px;
+  }
+
+  .docs-head h1 {
+    margin: 4px 0 0;
+    font-size: clamp(2.2rem, 4.6vw, 3.1rem);
+  }
+
+  .docs-head__intro {
+    margin: 12px 0 0;
+    color: var(--af-muted);
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .docs-head__note {
+    margin: 10px 0 0;
+    color: var(--af-muted);
+    font-size: 13.5px;
+  }
+
+  .docs-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    gap: clamp(26px, 4vw, 56px);
+    margin-block-start: 38px;
+    align-items: start;
+  }
+
+  .docs-group + .docs-group {
+    margin-block-start: 34px;
+  }
+
+  .docs-group h2 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-block-end: 8px;
+    border-block-end: 1px solid var(--af-border);
+    color: var(--af-accent);
+    font-size: 21px;
+  }
+
+  .docs-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .docs-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 100%;
+    padding: 15px;
+    background-color: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    transition: border-color var(--af-transition), background-color var(--af-transition);
+  }
+
+  .docs-card:hover {
+    border-color: var(--af-border-strong);
+    background-color: var(--af-surface-2);
+  }
+
+  .docs-card__title {
+    color: var(--af-text);
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .docs-card__desc {
+    color: var(--af-muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .docs-card__meta {
+    margin-block-start: auto;
+    padding-block-start: 8px;
+    color: var(--af-muted);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .docs-side {
+    position: sticky;
+    inset-block-start: 84px;
+    padding: 16px;
+    background-color: var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+  }
+
+  .docs-side h2 {
+    margin: 0 0 8px;
+    color: var(--af-accent);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .docs-side h2:not(:first-child) {
+    margin-block-start: 20px;
+    padding-block-start: 16px;
+    border-block-start: 1px solid var(--af-border);
+  }
+
+  .docs-side ul {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .docs-side li a {
+    display: block;
+    padding: 5px 6px;
+    border-radius: 5px;
+    color: var(--af-muted);
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  .docs-side li a:hover {
+    color: var(--af-accent);
+    background-color: color-mix(in srgb, var(--af-accent) 10%, transparent);
+  }
+
+  .docs-side__text {
+    margin: 0 0 10px;
+    color: var(--af-muted);
+    font-size: 13px;
+  }
+
+  @media (max-width: 960px) {
+    .docs-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .docs-side {
+      position: static;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .docs-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

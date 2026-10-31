@@ -1,68 +1,67 @@
 ---
 import type { Product } from "@/data/products";
 import { getCategory } from "@/data/categories";
+import { getProductDetail } from "@/data/product-details";
+import { getArtworkSize, getResponsiveSrcSet } from "@/data/artwork";
+import Icon from "@/components/Icon.astro";
 
 interface Props {
   product: Product;
   headingLevel?: "h2" | "h3";
+  variant?: "grid" | "rail";
 }
 
-const { product, headingLevel = "h3" } = Astro.props;
+const { product, headingLevel = "h3", variant = "grid" } = Astro.props;
 const Heading = headingLevel;
 
 const category = getCategory(product.category);
-
-/**
- * Verified intrinsic dimensions of the shipped artwork (public/assets).
- * Only slugs present here get width/height; nothing is guessed.
- */
-const ARTWORK_SIZE: Readonly<Record<string, { width: number; height: number }>> = {
-  exploitfixer: { width: 512, height: 512 },
-  fairplay: { width: 512, height: 512 },
-  "authme-premium": { width: 512, height: 512 },
-  redstonelimiter: { width: 1200, height: 720 },
-  entitylimiter: { width: 1200, height: 720 },
-  flamepaper: { width: 1200, height: 720 },
-  flamecord: { width: 1200, height: 720 },
-  veloflame: { width: 512, height: 512 },
-  flamepractice: { width: 1200, height: 720 },
-  essentialslite: { width: 2000, height: 1000 },
-  "smp-lifesteal": { width: 1774, height: 887 },
-  "smp-punishments": { width: 2000, height: 1000 },
-  "smp-combat": { width: 2000, height: 1000 },
-  "smp-menus": { width: 1774, height: 887 },
-  "smp-harvest": { width: 2000, height: 1000 },
-  "smp-regions": { width: 2000, height: 1000 },
-};
-
-const size = ARTWORK_SIZE[product.slug];
+const detail = getProductDetail(product);
+const size = getArtworkSize(product.slug);
+const srcSet = product.image !== undefined ? getResponsiveSrcSet(product.image, size) : undefined;
 const href = `/plugins/${product.slug}/`;
-const chips = product.tags.slice(0, 4);
-const showIcon = product.image === undefined && product.icon !== undefined;
+const hasImage = product.image !== undefined;
+const isSquare = size !== undefined && size.width === size.height;
+const platforms = detail.compatibility?.platforms?.slice(0, 3).join(" · ");
+const metadata = platforms ?? product.tags[0];
+const showIcon = !hasImage && product.icon !== undefined;
 ---
 
 <li
-  class="af-card af-product-card"
+  class:list={["af-product-card", `af-product-card--${variant}`]}
   data-product={product.slug}
   data-name={product.name}
   data-summary={product.summary}
   data-tags={product.tags.join(" ")}
   data-category={product.category}
+  data-featured={product.featured ? "1" : "0"}
 >
-  <div class="af-product-card__media">
+  <div class:list={["af-product-card__media", { "af-product-card__media--square": isSquare }]}>
     {
-      product.image !== undefined ? (
+      hasImage ? (
         <img
           src={product.image}
-          alt={`${product.name} artwork`}
+          srcset={srcSet}
+          sizes="(max-width: 620px) 78vw, (max-width: 820px) 45vw, (max-width: 1100px) 31vw, 300px"
+          alt=""
           loading="lazy"
           decoding="async"
           width={size?.width}
           height={size?.height}
         />
       ) : (
-        <div class="af-product-card__placeholder">
-          {category !== undefined && <i class={`bi ${category.icon}`} aria-hidden="true" />}
+        <div class="af-product-card__placeholder" aria-hidden="true">
+          {showIcon && (
+            <img
+              class="af-product-card__placeholder-icon"
+              src={product.icon}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              width="48"
+              height="48"
+            />
+          )}
+          {category !== undefined && <Icon name={category.icon} size={30} />}
           <span>{category?.name ?? product.category}</span>
         </div>
       )
@@ -71,19 +70,6 @@ const showIcon = product.image === undefined && product.icon !== undefined;
 
   <div class="af-product-card__body">
     <Heading class="af-product-card__title">
-      {
-        showIcon && product.icon !== undefined && (
-          <img
-            class="af-product-card__icon"
-            src={product.icon}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            width={40}
-            height={40}
-          />
-        )
-      }
       <a href={href}>{product.name}</a>
     </Heading>
 
@@ -99,30 +85,31 @@ const showIcon = product.image === undefined && product.icon !== undefined;
           <span class="af-product-card__category">{product.category}</span>
         )
       }
+      {metadata && <span class="af-product-card__dot" aria-hidden="true">·</span>}
+      {metadata && <span class="af-product-card__platform">{metadata}</span>}
     </p>
-
-    {
-      chips.length > 0 && (
-        <ul class="af-product-card__tags">
-          {chips.map((tag) => (
-            <li class="af-chip">{tag}</li>
-          ))}
-        </ul>
-      )
-    }
   </div>
 
-  <a class="af-card-link" href={href}>View<span class="af-sr-only"> {product.name}</span></a>
+  <a class="af-card-link" href={href}>
+    View<span class="af-sr-only"> {product.name}</span>
+    <span aria-hidden="true">→</span>
+  </a>
 </li>
 
 <style>
   .af-product-card {
-    display: grid;
-    grid-template-columns: 88px minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 14px;
-    padding: 14px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background-color: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    transition:
+      border-color var(--af-transition),
+      background-color var(--af-transition),
+      transform var(--af-transition);
   }
 
   .af-product-card[hidden] {
@@ -132,16 +119,29 @@ const showIcon = product.image === undefined && product.icon !== undefined;
   .af-product-card:hover {
     border-color: var(--af-border-strong);
     background-color: var(--af-surface-2);
+    transform: translateY(-2px);
+  }
+
+  .af-product-card__media {
+    position: relative;
+    flex: none;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background:
+      radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--af-primary) 22%, transparent), transparent 60%),
+      var(--af-raised);
+    border-block-end: 1px solid var(--af-border);
   }
 
   .af-product-card__media img {
-    width: 88px;
-    height: auto;
-    max-height: 88px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border: 1px solid var(--af-border);
-    border-radius: 6px;
-    background-color: var(--af-raised);
+  }
+
+  .af-product-card__media--square img {
+    object-fit: contain;
+    padding: 18px;
   }
 
   .af-product-card__placeholder {
@@ -149,59 +149,66 @@ const showIcon = product.image === undefined && product.icon !== undefined;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    width: 88px;
-    min-height: 88px;
-    padding: 8px 4px;
-    background-color: var(--af-raised);
-    border: 1px solid var(--af-border);
-    border-radius: 6px;
+    gap: 7px;
+    width: 100%;
+    height: 100%;
+    padding: 18px;
     color: var(--af-muted);
     font-family: var(--font-display);
-    font-size: 11px;
-    letter-spacing: 0.08em;
+    font-size: 12px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     text-align: center;
   }
 
-  .af-product-card__placeholder i {
-    font-size: 24px;
+  .af-product-card__placeholder .af-icon {
     color: var(--af-accent);
   }
 
+  .af-product-card__placeholder-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
   .af-product-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     min-width: 0;
+    padding: 16px 18px 12px;
   }
 
   .af-product-card__title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 20px;
+    font-size: 21px;
+    line-height: 1.15;
   }
 
   .af-product-card__title a:hover {
     color: var(--af-accent);
   }
 
-  .af-product-card__icon {
-    width: 40px;
-    height: 40px;
-    flex: none;
-    object-fit: contain;
-    border-radius: 6px;
-    background-color: var(--af-raised);
-  }
-
   .af-product-card__summary {
-    margin: 6px 0 0;
-    font-size: 14px;
-    line-height: 1.5;
+    display: -webkit-box;
+    margin: 7px 0 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     color: var(--af-muted);
+    font-size: 14px;
+    line-height: 1.55;
   }
 
   .af-product-card__meta {
-    margin: 8px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: auto 0 0;
+    padding-block-start: 12px;
+    color: var(--af-muted);
+    font-family: var(--font-display);
     font-size: 12px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -215,52 +222,38 @@ const showIcon = product.image === undefined && product.icon !== undefined;
     text-decoration: underline;
   }
 
-  .af-product-card__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 10px 0 0;
-    padding: 0;
-    list-style: none;
+  .af-product-card__dot {
+    color: var(--af-border-strong);
   }
 
-  .af-product-card__tags .af-chip {
-    padding: 3px 10px;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 400;
-    white-space: normal;
+  .af-product-card__platform {
+    color: var(--af-muted);
   }
 
   .af-card-link {
-    align-self: center;
-    font-family: var(--font-display);
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    margin: 0 18px 16px;
+    padding-block: 4px;
     color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   .af-card-link:hover {
     text-decoration: underline;
   }
 
-  @media (max-width: 480px) {
-    .af-product-card {
-      grid-template-columns: 56px minmax(0, 1fr);
-    }
+  .af-product-card--rail {
+    min-width: 0;
+  }
 
-    .af-product-card__media img,
-    .af-product-card__placeholder {
-      width: 56px;
-      min-height: 56px;
-      max-height: 56px;
-    }
-
-    .af-card-link {
-      grid-column: 2;
-      justify-self: start;
-      margin-top: 8px;
-    }
+  .af-product-card--rail .af-product-card__title {
+    font-size: 19px;
   }
 </style>

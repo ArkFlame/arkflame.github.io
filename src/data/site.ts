@@ -17,13 +17,17 @@ export const SITE = {
 } as const;
 
 export const HERO = {
-  eyebrow: "MINECRAFT INFRASTRUCTURE",
+  eyebrow: "MINECRAFT SERVER SOFTWARE",
   h1: "We make Minecraft plugins.",
-  body: "Security, performance, proxy infrastructure and gameplay systems for production Minecraft servers.",
+  body: "Security, performance, proxy infrastructure and gameplay systems for production Minecraft servers. Documented from the source, with the limits stated.",
   primaryCta: "Browse plugins",
-  secondaryCta: "Meet the founder",
+  secondaryCta: "Read the docs",
 } as const;
 
+/**
+ * Platform names, not a blanket compatibility promise. The homepage caption and
+ * every product page make the product-specific scope explicit.
+ */
 export const PLATFORM_STRIP = [
   { key: "bukkit", label: "Bukkit", logo: "/assets/img/vendor/bukkit.webp" },
   { key: "spigot", label: "Spigot", logo: "/assets/img/vendor/spigot.webp" },
@@ -32,61 +36,3 @@ export const PLATFORM_STRIP = [
   { key: "bungeecord", label: "BungeeCord", logo: "/assets/img/vendor/bungeecord.webp" },
   { key: "velocity", label: "Velocity", logo: "/assets/img/vendor/velocity.webp" },
 ] as const;
-
-export const CAPABILITIES = [
-  {
-    key: "security",
-    label: "SECURITY",
-    href: "/plugins/security/",
-    icon: "shield-lock",
-  },
-  {
-    key: "performance",
-    label: "PERFORMANCE",
-    href: "/plugins/performance/",
-    icon: "speedometer2",
-  },
-  {
-    key: "network",
-    label: "NETWORK",
-    href: "/plugins/network/",
-    icon: "diagram-3",
-  },
-  {
-    key: "gameplay",
-    label: "GAMEPLAY",
-    href: "/plugins/gameplay/",
-    icon: "controller",
-  },
-  {
-    key: "smp",
-    label: "SMP",
-    href: "/plugins/smp/",
-    icon: "boxes",
-  },
-] as const;
-
-export const ENGINEERING_PROOF = {
-  heading: "Built across the Minecraft server ecosystem.",
-  platforms: [
-    { key: "paper", label: "Paper", logo: "/assets/img/vendor/papermc.webp", url: "https://papermc.io/software/paper/" },
-    { key: "folia", label: "Folia", logo: "/assets/img/vendor/folia.webp", url: "https://papermc.io/software/folia/" },
-    { key: "velocity", label: "Velocity", logo: "/assets/img/vendor/velocity.webp", url: "https://papermc.io/software/velocity/" },
-    { key: "bungeecord", label: "BungeeCord", logo: "/assets/img/vendor/bungeecord.webp", url: "https://www.spigotmc.org/wiki/bungeecord/" },
-  ],
-  note: "Our plugins support legacy to modern versions from 1.8 to 1.21. Folia is compatible in most plugins.",
-} as const;
-
-export const FOUNDER = {
-  eyebrow: "FOUNDER",
-  name: "LinsaFTW",
-  fullName: "Juan Cruz Linsalata — Founder & Developer",
-  body: "Argentine software developer and the builder behind ArkFlame Studios and its Minecraft infrastructure products.",
-  cta: "Meet LinsaFTW",
-} as const;
-
-export const FINAL_CTA = {
-  heading: "Build a stronger Minecraft server.",
-  body: "Explore security, performance and infrastructure software from ArkFlame Studios.",
-  cta: "Browse plugins",
-} as const;

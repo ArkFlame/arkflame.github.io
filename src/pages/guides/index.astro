@@ -1,0 +1,195 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { SITE } from "@/data/site";
+
+const guides = (await getCollection("guides")).sort(
+  (a, b) => b.data.updated.getTime() - a.data.updated.getTime(),
+);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${SITE.siteUrl}/guides/#collection`,
+      name: "ArkFlame technical guides",
+      url: `${SITE.siteUrl}/guides/`,
+      description: "Task-led guides for Minecraft server security, proxies, Folia and performance work.",
+      isPartOf: { "@id": `${SITE.siteUrl}/#website` },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${SITE.siteUrl}/guides/#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${SITE.siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: "Guides", item: `${SITE.siteUrl}/guides/` },
+      ],
+    },
+    {
+      "@type": "ItemList",
+      itemListElement: guides.map((guide, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: guide.data.title,
+        url: `${SITE.siteUrl}/guides/${guide.id}/`,
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Technical Guides | ArkFlame Studios"
+  description="Task-led Minecraft server guides: packet-abuse triage, proxy architecture, AuthMe topologies, FairPlay diagnostics, Folia verification and lag measurement."
+  canonicalPath="/guides/"
+  jsonLd={jsonLd}
+>
+  <div class="af-container af-section">
+    <header class="guides-head">
+      <p class="af-eyebrow">Guides</p>
+      <h1>Work through the problem.</h1>
+      <p class="guides-head__intro">
+        Each article answers one operational question, with the source evidence behind it and the parts we could
+        not verify. No listicles, no invented benchmarks.
+      </p>
+    </header>
+
+    <ul class="guides-grid">
+      {
+        guides.map((guide) => (
+          <li>
+            <a class="guide-card" href={`/guides/${guide.id}/`}>
+              <span class="guide-card__meta">
+                {guide.data.topics[0] ?? "Guide"}
+                <span aria-hidden="true">·</span>
+                {guide.data.updated.toISOString().slice(0, 10)}
+              </span>
+              <h2 class="guide-card__title">{guide.data.title}</h2>
+              <span class="guide-card__desc">{guide.data.description}</span>
+              <span class="guide-card__link">Read guide →</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <aside class="guides-cta">
+      <div>
+        <h2>Need the plugin-level detail?</h2>
+        <p>Quick starts cover requirements, commands, permissions and the exact defaults that ship in each jar.</p>
+      </div>
+      <a class="btn btn-primary" href="/docs/">Browse documentation</a>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .guides-head {
+    max-width: 760px;
+  }
+
+  .guides-head h1 {
+    margin: 4px 0 0;
+    font-size: clamp(2.2rem, 4.6vw, 3.1rem);
+  }
+
+  .guides-head__intro {
+    margin: 12px 0 0;
+    color: var(--af-muted);
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .guides-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .guide-card {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    height: 100%;
+    padding: 20px;
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--af-primary) 8%, transparent), transparent 55%),
+      var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    transition: border-color var(--af-transition), background-color var(--af-transition);
+  }
+
+  .guide-card:hover {
+    border-color: var(--af-border-strong);
+    background-color: var(--af-surface-2);
+  }
+
+  .guide-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .guide-card__title {
+    color: var(--af-text);
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .guide-card__desc {
+    color: var(--af-muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .guide-card__link {
+    margin-block-start: auto;
+    padding-block-start: 10px;
+    color: var(--af-accent);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+
+  .guides-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px 30px;
+    margin-block-start: 34px;
+    padding: 22px;
+    background-color: var(--af-raised);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+  }
+
+  .guides-cta h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .guides-cta p {
+    max-width: 62ch;
+    margin: 5px 0 0;
+    color: var(--af-muted);
+    font-size: 14px;
+  }
+
+  @media (max-width: 720px) {
+    .guides-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
