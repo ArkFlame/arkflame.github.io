@@ -64,6 +64,9 @@ const REQUIRED_FILES = [
   "assets/img/products/exploitfixer.webp",
   "assets/img/products/fairplay.webp",
   "assets/img/linsaftw-profile.webp",
+  "assets/img/founder/linsaftw-480.webp",
+  "assets/img/founder/linsaftw-720.webp",
+  "assets/img/founder/linsaftw-1080.webp",
   "assets/img/arkflame-logo.webp",
   "assets/img/og-image.webp",
   "assets/img/vendor/bukkit.webp",
@@ -129,7 +132,6 @@ const HOME_TEXT_MARKERS = [
   "Most popular.",
   "Browse by category.",
   "Read the documentation.",
-  "Platforms we ship for.",
 ];
 
 // Markers asserted against the RAW markup of dist/index.html: routes and absolute

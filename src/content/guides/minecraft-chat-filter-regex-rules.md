@@ -30,7 +30,7 @@ The Bukkit module declares an api-version of 1.13 and Folia support in its manif
 
 ## Write a rule you can test
 
-Regex is powerful, and a careless pattern can flag ordinary words. Write rules in small steps:
+A careless regex can flag ordinary words. Write rules in small steps:
 
 1. Start with a short blacklist of the words you actually see in your chat. Do not copy a long list from the internet.
 2. Test each pattern against a set of sample messages. Include messages that should pass, such as a harmless word that contains a banned fragment.

@@ -58,7 +58,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
     ],
     compatibility: {
       platforms: ["Bukkit", "Spigot", "Paper"],
-      minecraft: "README states 1.8–1.21; the build targets spigot-api 1.21.11, so treat the range as a claim rather than a runtime result",
+      minecraft: "README states 1.8–1.21. The build targets spigot-api 1.21.11. The range is a declared claim, not a tested result.",
       java: "Compile target Java 8; not runtime guidance",
       folia: "declared",
       note: `${INSPECTED}. PacketEvents is a hard dependency. No runtime-version matrix ships with the repository.`,

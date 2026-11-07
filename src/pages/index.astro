@@ -39,7 +39,7 @@ const popularQuestions: { q: string; a: string; href?: string; label?: string }[
   },
   {
     q: "Where are the install steps?",
-    a: "Install steps, commands and permissions are in the docs. Each product page links its BuiltByBit listing for the artifact and requirements.",
+    a: "Install steps, commands and permissions are in the docs. Each product page links to its BuiltByBit listing.",
     href: "/docs/",
     label: "Browse the docs",
   },
@@ -124,15 +124,13 @@ const jsonLd = graph(
       <ul class="ps__list">
         {PLATFORM_STRIP.map((platform) => <li class="ps__item">{platform.label}</li>)}
       </ul>
-      <p class="ps__caption">Platforms we ship for.</p>
     </div>
   </div>
 
   <section class="pop af-container af-section" aria-labelledby="popular-title">
     <div class="pop__head">
-      <p class="af-eyebrow">Sold on BuiltByBit</p>
       <h2 class="pop__title" id="popular-title">Most popular.</h2>
-      <p class="pop__desc">Top eight by purchases on BuiltByBit, snapshot as of {asOf}.</p>
+      <p class="pop__desc">Top eight by BuiltByBit purchases, as of {asOf}.</p>
     </div>
     <ul class="pop__grid">
       {popular.map((product) => <ProductCard product={product} headingLevel="h3" />)}
@@ -313,14 +311,6 @@ const jsonLd = graph(
     border-radius: 999px;
     color: var(--af-text);
     font-size: 14px;
-  }
-
-  .ps__caption {
-    max-width: 46ch;
-    margin: 0;
-    color: var(--af-muted);
-    font-size: 13px;
-    line-height: 1.5;
   }
 
   .cats,

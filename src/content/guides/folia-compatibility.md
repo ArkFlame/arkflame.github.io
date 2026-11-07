@@ -1,6 +1,6 @@
 ---
 title: "What folia-supported: true proves, and how to verify"
-description: "A folia-supported flag is a declaration, not a scheduler audit; check region ownership, entity tasks and FoliaAPI adapters, not just the flag."
+description: "A folia-supported flag is a declaration, not a scheduler audit. Check region ownership, entity tasks and FoliaAPI adapters."
 updated: 2026-10-30
 author: "LinsaFTW"
 relatedPlugins: ["redstonelimiter", "smp-regions", "entitylimiter"]

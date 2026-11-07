@@ -7,6 +7,8 @@ import { ORG_ID, absUrl, breadcrumb, graph, webPage } from "@/data/schema";
 const description =
   "ArkFlame Studios builds Minecraft server, security, performance and gameplay software. It is built by LinsaFTW, an Argentine software developer.";
 
+const founderPhoto = "/assets/img/founder/linsaftw";
+
 const buildAreas = [
   {
     label: "Security",
@@ -31,10 +33,10 @@ const buildAreas = [
 ];
 
 const milestones = [
-  "FlameCord — verified public BuiltByBit launch: 2020-02-01",
-  "VeloFlame — verified public BuiltByBit launch: 2025-10-27",
-  "Public article consolidating “ArkFlame Studios as the main hub” — 2026-05-28",
-  "FairPlay — verified public BuiltByBit launch: 2026-06-12",
+  "FlameCord: first public BuiltByBit release, 2020-02-01",
+  "VeloFlame: first public BuiltByBit release, 2025-10-27",
+  "2026-05-28: public article naming ArkFlame Studios the main hub",
+  "FairPlay: first public BuiltByBit release, 2026-06-12",
 ];
 
 const jsonLd = graph(
@@ -46,6 +48,19 @@ const jsonLd = graph(
     description,
     { mainEntity: { "@id": ORG_ID } },
   ),
+  {
+    "@type": "Person",
+    "@id": `${absUrl("/about/")}#founder`,
+    name: SITE.founderName,
+    alternateName: SITE.founderHandle,
+    jobTitle: "Founder & Developer",
+    description: "Argentine software developer and founder of ArkFlame Studios.",
+    url: SITE.founderUrl,
+    image: absUrl(`${founderPhoto}-720.webp`),
+    nationality: "Argentina",
+    worksFor: { "@id": ORG_ID },
+    sameAs: [SITE.founderUrl, SITE.builtByBitUrl],
+  },
   breadcrumb(`${absUrl("/about/")}#breadcrumb`, [{ name: "About", url: absUrl("/about/") }]),
 );
 ---
@@ -65,25 +80,23 @@ const jsonLd = graph(
     </nav>
   </div>
 
-  <section class="af-section ab-lead" aria-labelledby="ab-about-heading">
+  <section class="af-section ab-lead" aria-label="About ArkFlame Studios">
     <div class="af-container">
-      <p class="af-eyebrow">ABOUT</p>
       <h1>About ArkFlame Studios</h1>
-      <h2 id="ab-about-heading">ArkFlame Studios</h2>
       <p class="ab-lede">
         ArkFlame Studios builds Minecraft infrastructure, security, performance,
         authentication, anticheat and gameplay software.
       </p>
       <p class="ab-copy">
-        We build infrastructure software, not resource packs, shaders or client
-        mods. Our products run on the server or proxy, where abuse filtering,
-        load control and network entry protection have to happen.
+        We build server and proxy software, not resource packs, shaders or client
+        mods. Our products run where abuse filtering, load control and entry
+        protection happen: on the server or the proxy.
       </p>
       <p class="ab-copy">
-        Each product page lists its own supported platforms and versions. Check
-        that page before you deploy. Nothing here is a guarantee for an
-        environment you haven't tested. Minecraft is a trademark of Mojang
-        Studios. ArkFlame Studios is not affiliated with Mojang or Microsoft.
+        Each product page lists its supported platforms and versions. Check
+        that page before you deploy. Nothing here guarantees an environment you
+        haven't tested. Minecraft is a trademark of Mojang Studios. ArkFlame
+        Studios is not affiliated with Mojang or Microsoft.
       </p>
     </div>
   </section>
@@ -91,13 +104,6 @@ const jsonLd = graph(
   <section class="af-section" aria-labelledby="ab-build-heading">
     <div class="af-container">
       <h2 id="ab-build-heading">What we build</h2>
-      <p class="ab-copy">
-        Our catalogue has four areas. Authentication and anticheat sit under
-        security. Proxy and ingress control sit under network. Security
-        products cover crash and dupe exploit protection, packet abuse
-        filtering, combat anticheat and premium authentication bridges. Network
-        software guards the entry point of a network, not a single server.
-      </p>
       <ul class="ab-areas">
         {
           buildAreas.map((area) => (
@@ -109,10 +115,12 @@ const jsonLd = graph(
         }
       </ul>
       <p class="ab-copy">
-        Products cover legacy and modern Minecraft, including Paper, Folia,
-        Velocity and BungeeCord. Our work focuses on packet handling,
-        concurrency, cross-version compatibility, runtime cost and security
-        boundaries.
+        Authentication and anticheat sit under security. Proxy and ingress
+        control sit under network, guarding the entry point of a whole network
+        rather than a single server. Products cover legacy and modern Minecraft,
+        including Paper, Folia, Velocity and BungeeCord. Our work focuses on
+        packet handling, concurrency, cross-version compatibility, runtime cost
+        and security boundaries.
       </p>
     </div>
   </section>
@@ -130,12 +138,8 @@ const jsonLd = graph(
           <dd>Minecraft server plugins and proxy software for security, performance, network and SMP gameplay.</dd>
         </div>
         <div>
-          <dt>Founder</dt>
-          <dd>Juan Cruz Linsalata (LinsaFTW), Argentine software developer</dd>
-        </div>
-        <div>
           <dt>Since</dt>
-          <dd>ArkFlame-branded activity is documented from 2013-11-29. The company start date is not stated in this site.</dd>
+          <dd>ArkFlame-branded activity is documented from 2013-11-29. This site does not state a company start date.</dd>
         </div>
         <div>
           <dt>Catalogue</dt>
@@ -156,50 +160,32 @@ const jsonLd = graph(
     </div>
   </section>
 
-  <section class="af-section" aria-labelledby="ab-roots-heading">
-    <div class="af-container">
-      <h2 id="ab-roots-heading">Public roots</h2>
-      <p class="ab-copy">
-        ArkFlame Network independently documents ArkFlame-branded Minecraft
-        activity from 2013-11-29. That shows the brand's public roots. It does
-        not say when the current company started.
-      </p>
-      <p class="ab-copy">Public product and hub milestones:</p>
-      <ol class="ab-milestones">
-        {milestones.map((milestone) => <li>{milestone}</li>)}
-      </ol>
-      <p class="ab-copy">
-        Each BuiltByBit entry is the first public release date listed on that
-        product's marketplace page. The 2026-05-28 entry is the public article
-        that made ArkFlame Studios the main hub for the surrounding work. These
-        are release and publication dates, not corporate milestones.
-      </p>
-    </div>
-  </section>
-
   <section class="af-section" aria-labelledby="ab-founder-heading">
     <div class="af-container">
       <div class="ab-founder af-card">
         <img
-          src={SITE.founderImage}
-          alt="Juan Cruz Linsalata (LinsaFTW)"
-          width="512"
-          height="512"
-          loading="eager"
+          class="ab-founder-photo"
+          src={`${founderPhoto}-480.webp`}
+          srcset={`${founderPhoto}-480.webp 480w, ${founderPhoto}-720.webp 720w, ${founderPhoto}-1080.webp 1080w`}
+          sizes="(max-width: 560px) 160px, 220px"
+          alt="Juan Cruz Linsalata (LinsaFTW), founder of ArkFlame Studios, holding a small netbook that shows a terminal."
+          width="480"
+          height="640"
+          loading="lazy"
           decoding="async"
         />
         <div class="ab-founder-copy">
-          <h2 id="ab-founder-heading">Founder</h2>
-          <p class="ab-founder-role">Founder &amp; Developer</p>
+          <h2 id="ab-founder-heading">Meet the founder</h2>
+          <p class="ab-founder-role">Juan Cruz Linsalata, LinsaFTW</p>
           <p class="ab-copy">
-            Juan Cruz Linsalata, known online as LinsaFTW, is an Argentine
-            software developer and the builder behind ArkFlame Studios.
+            LinsaFTW is an Argentine software developer. He designs, builds and
+            releases the products listed here, and he has been coding since
+            2010 by his own account. That is his personal history, not a start
+            date for this company.
           </p>
           <p class="ab-copy">
-            LinsaFTW says he has been coding since 2010. That's his personal
-            history, not a start date for this company. He designs, builds and
-            releases the products listed here. Support questions go through the
-            public channels linked on each product page.
+            Support questions go through the public channels linked on each
+            product page.
           </p>
           <a
             class="btn btn-primary"
@@ -211,6 +197,25 @@ const jsonLd = graph(
           </a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="af-section" aria-labelledby="ab-roots-heading">
+    <div class="af-container">
+      <h2 id="ab-roots-heading">Public roots</h2>
+      <p class="ab-copy">
+        ArkFlame Network independently documents ArkFlame-branded Minecraft
+        activity from 2013-11-29. That shows the brand's public roots, not when
+        the current company started.
+      </p>
+      <ol class="ab-milestones">
+        {milestones.map((milestone) => <li>{milestone}</li>)}
+      </ol>
+      <p class="ab-copy">
+        BuiltByBit dates are the first public release listed on each product's
+        marketplace page. They are release and publication dates, not corporate
+        milestones.
+      </p>
     </div>
   </section>
 
@@ -245,14 +250,6 @@ const jsonLd = graph(
   .ab-lead h1 {
     margin: 8px 0 34px;
     font-size: clamp(38px, 6vw, 60px);
-  }
-
-  .ab-lead h2 {
-    margin: 0 0 18px;
-    font-size: clamp(22px, 3vw, 28px);
-    color: var(--af-accent);
-    font-family: var(--font-display);
-    letter-spacing: 0.02em;
   }
 
   .ab-lede {
@@ -354,7 +351,7 @@ const jsonLd = graph(
   .ab-milestones {
     display: grid;
     gap: 10px;
-    margin: 0;
+    margin: 0 0 14px;
     padding-left: 22px;
     max-width: 62ch;
     color: var(--af-muted);
@@ -373,11 +370,13 @@ const jsonLd = graph(
     gap: 32px;
   }
 
-  .ab-founder img {
+  .ab-founder-photo {
     flex: 0 0 auto;
-    width: 196px;
-    height: 196px;
+    width: 220px;
+    height: auto;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
+    object-position: top;
     border: 1px solid var(--af-border-strong);
     border-radius: 22px;
   }
@@ -401,9 +400,8 @@ const jsonLd = graph(
   }
 
   @media (max-width: 560px) {
-    .ab-founder img {
-      width: 132px;
-      height: 132px;
+    .ab-founder-photo {
+      width: 160px;
     }
   }
 </style>
