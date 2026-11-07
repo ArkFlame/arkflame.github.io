@@ -55,7 +55,7 @@ const primaryBase = primary.image?.replace(/\.webp$/, "");
 </div>
 
 <style>
-  .hps__link { display: contents; }
+  .hps__link { display: block; width: 100%; height: 100%; border-radius: inherit; overflow: hidden; }
   a.hps__tile { display: block; }
   .hps {
     width: 100%;
@@ -85,10 +85,14 @@ const primaryBase = primary.image?.replace(/\.webp$/, "");
 
   .hps__tile {
     position: absolute;
-    overflow: hidden;
-    border: 1px solid rgba(173, 218, 255, 0.38);
-    border-radius: 12px;
-    background: #101f34;
+    overflow: visible;
+    border: 0;
+    background: none;
+  }
+
+  .hps__tile img {
+    object-fit: contain;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.4));
   }
 
   .hps__tile--1 {
