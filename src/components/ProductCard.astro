@@ -104,9 +104,24 @@ const hasStats = price !== undefined || rating !== undefined || sold !== undefin
   </div>
 </li>
 
+<script>
+  // Whole card is a click target; real links inside keep their own behaviour.
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element) || event.defaultPrevented || event.button !== 0) return;
+    const card = target.closest<HTMLElement>(".af-product-card");
+    if (card === null || target.closest("a, button")) return;
+    const link = card.querySelector<HTMLAnchorElement>(".af-product-card__link");
+    if (link === null) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey) window.open(link.href, "_blank", "noopener");
+    else window.location.assign(link.href);
+  });
+</script>
+
 <style>
   .af-product-card {
     position: relative;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     min-width: 0;
