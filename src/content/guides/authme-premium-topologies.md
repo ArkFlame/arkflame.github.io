@@ -1,5 +1,5 @@
 ---
-title: "AuthMePremium Mode A vs Mode B: install matrix and trust boundaries"
+title: "AuthMePremium Mode A vs Mode B: install and trust"
 description: "Choose AuthMePremium Mode A or Mode B by proxy type and AuthMe version, then wire proxy UUID approval, bridge tokens and private backend ports correctly."
 updated: 2026-10-30
 author: "LinsaFTW"
@@ -68,3 +68,17 @@ Don't open a backend port to the internet to fix a UUID or token error. That ski
 - Parent POM version is `2.7.2`. The universal `finalName` produces `authmepremium-2.7.2.jar`. The README still names `authmepremium-2.2.1-SNAPSHOT.jar`, so trust the build output over the README.
 - Bukkit descriptor: `api-version: "1.20"`, `folia-supported: true`. The API level is not a Minecraft version guarantee.
 - Proxy permission nodes are described in the docs but have no descriptor defaults. Grant them in your permissions plugin.
+
+## Frequently asked questions
+
+### Which mode should I choose?
+
+Mode A works with Bungee-compatible or Velocity proxies. Mode B requires Velocity and AuthMe 6.0.0 or newer on the backends.
+
+### Does forwarding authorize a backend connection?
+
+No. Forwarding identifies the player. The backend still needs its own trust check.
+
+### Should backend ports be reachable from the internet?
+
+No. Keep them private, so only the proxy reaches them.

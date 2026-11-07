@@ -53,3 +53,17 @@ For the scheduling rules, read the [Folia compatibility guide](/guides/folia-com
 Keep EssentialsX if you depend on a feature this guide does not cover, or if you have not tested the Folia behaviour above. A swap that breaks teleports or kits costs more than the plugin change saves.
 
 For related checks, see the [EssentialsLite product page](/plugins/essentialslite/).
+
+## Frequently asked questions
+
+### Is EssentialsLite verified on Folia?
+
+No. Its listing advertises Folia support and its descriptor declares it. Verify it on your own server before you move production players.
+
+### Does a Folia declaration prove the commands are safe?
+
+No. A declaration is not a test. Check the commands that touch world state on your build.
+
+### When should I keep EssentialsX?
+
+Read the section on that topic before you switch. It describes the cases where the guide recommends keeping it.

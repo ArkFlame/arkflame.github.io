@@ -585,6 +585,36 @@ await check("HOMEPAGE DISCOVERY RAILS", () => {
     return `${seen.size} unique titles`;
   });
 
+  // Dist-independent source checks: run on src/ so they hold before a build.
+  await check("SOURCE SEO (llms.txt, guide FAQs, title and description lengths)", async () => {
+    const problems = [];
+    if (!existsSync(path.join(REPO_ROOT, "src/pages/llms.txt.ts"))) problems.push("src/pages/llms.txt.ts missing");
+    for (const dir of ["guides", "docs"]) {
+      const dirPath = path.join(REPO_ROOT, "src/content", dir);
+      for (const file of (await readdir(dirPath)).filter((f) => f.endsWith(".md"))) {
+        const text = await readFile(path.join(dirPath, file), "utf8");
+        const fm = text.match(/^---\n([\s\S]*?)\n---/);
+        if (fm === null) {
+          problems.push(`${dir}/${file}: no frontmatter`);
+          continue;
+        }
+        const title = fm[1].match(/^title:\s*"(.*)"\s*$/m)?.[1] ?? "";
+        const description = fm[1].match(/^description:\s*"(.*)"\s*$/m)?.[1] ?? "";
+        if (title.length === 0 || title.length > 60) problems.push(`${dir}/${file}: title is ${title.length} chars`);
+        if (description.length < 70 || description.length > 160) {
+          problems.push(`${dir}/${file}: description is ${description.length} chars`);
+        }
+        if (dir === "guides" && !/^## Frequently asked questions\s*$/m.test(text)) {
+          problems.push(`${dir}/${file}: no FAQ section`);
+        }
+      }
+    }
+    if (problems.length > 0) {
+      throw new Error(`source SEO: ${problems.slice(0, 5).join("; ")}${problems.length > 5 ? ` (+${problems.length - 5} more)` : ""}`);
+    }
+    return "llms.txt route present; every guide has FAQ; titles <= 60; descriptions 70-160";
+  });
+
   await check("SEO HEAD PER PAGE", () => {
     for (const [rel, body] of html) {
       if (rel === "404.html") continue;

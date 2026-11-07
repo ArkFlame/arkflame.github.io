@@ -71,3 +71,17 @@ If the logs show many refusals from one source, the firewall layer is the right 
 No setting makes a proxy immune to a large attack. These controls limit the damage and keep backends usable. For a large attack, add upstream protection at your hosting provider or network edge. That layer is outside these plugins.
 
 For product details, see the [VeloFlame product page](/plugins/veloflame/) and the [FlameCord product page](/plugins/flamecord/).
+
+## Frequently asked questions
+
+### Does one setting stop a bot attack?
+
+No. The guide uses a stack of controls, each catching what the layer above missed.
+
+### Which proxy should I use on Velocity?
+
+VeloFlame is the Velocity fork. Use FlameCord only on BungeeCord or Waterfall networks.
+
+### Does this guide cover everything?
+
+No. Read the section on what the guide does not cover.

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { SITE } from "@/data/site";
+import { PRODUCTS } from "@/data/products";
 
 const description =
   "ArkFlame Studios builds Minecraft server, security, performance and gameplay software. It is built by LinsaFTW, an Argentine software developer.";
@@ -132,6 +133,45 @@ const jsonLd = {
         concurrency, cross-version compatibility, runtime cost and security
         boundaries.
       </p>
+    </div>
+  </section>
+
+  <section class="af-section" aria-labelledby="ab-facts-heading">
+    <div class="af-container">
+      <h2 id="ab-facts-heading">At a glance</h2>
+      <dl class="ab-facts">
+        <div>
+          <dt>Name</dt>
+          <dd>ArkFlame Studios (ArkFlame)</dd>
+        </div>
+        <div>
+          <dt>What</dt>
+          <dd>Minecraft server plugins and proxy software for security, performance, network and SMP gameplay.</dd>
+        </div>
+        <div>
+          <dt>Founder</dt>
+          <dd>Juan Cruz Linsalata (LinsaFTW), Argentine software developer</dd>
+        </div>
+        <div>
+          <dt>Since</dt>
+          <dd>ArkFlame-branded activity is documented from 2013-11-29. The company start date is not stated in this site.</dd>
+        </div>
+        <div>
+          <dt>Catalogue</dt>
+          <dd>{PRODUCTS.length} products listed on the plugins index.</dd>
+        </div>
+        <div>
+          <dt>Official links</dt>
+          <dd>
+            <ul class="ab-links">
+              <li><a href={SITE.builtByBitUrl} target="_blank" rel="noopener noreferrer">BuiltByBit creator page</a></li>
+              <li><a href={SITE.githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a href={SITE.discordUrl} target="_blank" rel="noopener noreferrer">Discord</a></li>
+              <li><a href={SITE.founderUrl} target="_blank" rel="noopener noreferrer">Founder site</a></li>
+            </ul>
+          </dd>
+        </div>
+      </dl>
     </div>
   </section>
 
@@ -273,6 +313,61 @@ const jsonLd = {
     margin: 0;
     color: var(--af-muted);
     line-height: 1.6;
+  }
+
+  .ab-facts {
+    display: grid;
+    gap: 0;
+    max-width: 72ch;
+    margin: 0;
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    overflow: hidden;
+  }
+
+  .ab-facts > div {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 14px;
+    padding: 12px 16px;
+  }
+
+  .ab-facts > div + div {
+    border-block-start: 1px solid var(--af-border);
+  }
+
+  .ab-facts dt {
+    color: var(--af-muted);
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .ab-facts dd {
+    margin: 0;
+    color: var(--af-text);
+    line-height: 1.55;
+  }
+
+  .ab-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ab-links a {
+    color: var(--af-accent);
+  }
+
+  @media (max-width: 560px) {
+    .ab-facts > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
   }
 
   .ab-milestones {

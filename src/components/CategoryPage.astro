@@ -28,7 +28,7 @@ const related = category.related
   </nav>
 
   <h1>{category.h1}</h1>
-  <p class="af-category-page__intro">{category.intro}</p>
+  <p class="af-category-page__intro">{category.overview}</p>
 
   <section class="af-category-page__products" aria-labelledby="category-products-heading">
     <h2 class="af-category-page__heading" id="category-products-heading">
@@ -48,8 +48,6 @@ const related = category.related
       )
     }
   </section>
-
-  <p class="af-category-page__closing">{category.closing}</p>
 
   <nav class="af-category-page__nav" aria-label="Plugin categories">
     <a class="btn" href="/plugins/">All plugins</a>
@@ -122,12 +120,6 @@ const related = category.related
 
   .af-category-page__note {
     margin: 16px 0 0;
-    color: var(--af-muted);
-  }
-
-  .af-category-page__closing {
-    margin: 40px 0 0;
-    max-width: 70ch;
     color: var(--af-muted);
   }
 

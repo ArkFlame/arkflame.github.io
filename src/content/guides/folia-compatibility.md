@@ -1,5 +1,5 @@
 ---
-title: "What folia-supported: true actually proves, and how to verify it"
+title: "What folia-supported: true proves, and how to verify"
 description: "A folia-supported flag is a declaration, not a scheduler audit; check region ownership, entity tasks and FoliaAPI adapters, not just the flag."
 updated: 2026-10-30
 author: "LinsaFTW"
@@ -7,7 +7,7 @@ relatedPlugins: ["redstonelimiter", "smp-regions", "entitylimiter"]
 topics: ["folia", "compatibility", "scheduling"]
 ---
 
-`folia-supported: true` in `plugin.yml` says the author intends the plugin to run on Folia. It is not proof that it works. Folia replaces the single main-thread tick loop with region-owned scheduling. The real question is whether every world, block and entity access happens on the thread that owns that state.
+`folia-supported: true` in `plugin.yml` says the author intends the plugin to run on Folia. It is not proof that it works. Folia replaces the single main-thread tick loop with region-owned scheduling. What matters is whether every world, block and entity access happens on the thread that owns that state.
 
 ## What the flag does and doesn't do
 
@@ -57,3 +57,17 @@ For a large plugin, repeat the checklist on a staging server with the same optio
 AuthMePremium's operational docs give the fix pattern for a Folia `UnsupportedOperationException`. Confirm the descriptor flag, confirm the backend runs the current universal JAR, confirm `FoliaAPI initialized` appears, and route player changes through the entity scheduler. Don't swap the failing call for a raw Bukkit scheduler call. That moves the error instead of fixing ownership.
 
 If a third-party plugin throws, capture the full stack trace before disabling anything. The class and method in the trace usually name the owner faster than a plugin list.
+
+## Frequently asked questions
+
+### Does the folia-supported flag prove the plugin works on Folia?
+
+No. It declares intent. Test region ownership on your own build.
+
+### Does Folia check the code that runs after load?
+
+No. Folia reads the flag at load time. It does not inspect the code that runs afterward.
+
+### Can a plugin pass the load check and still fail?
+
+Yes. The guide gives an example of a plugin that calls the global scheduler or touches a block in another region after loading.

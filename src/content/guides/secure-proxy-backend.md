@@ -1,5 +1,5 @@
 ---
-title: "Locking backend ports to the proxy without breaking AuthMePremium trust"
+title: "Lock backend ports to the proxy, keep AuthMePremium trust"
 description: "Separate backend reachability from proxy trust: bind and firewall backend ports, verify forwarding, then fix AuthMe UUID approval or token mismatches."
 updated: 2026-10-30
 author: "LinsaFTW"
@@ -65,3 +65,17 @@ Don't fix a UUID or token error by opening the backend firewall. That turns a co
 ## BungeeGuard
 
 VeloFlame's shipped `default-velocity.toml` comments name BungeeGuard IP forwarding as one forwarding mode. That is the only local reference. This guide doesn't evaluate or recommend it.
+
+## Frequently asked questions
+
+### Does forwarding secure a backend?
+
+No. Forwarding is identity, not authorization. Lock the backend's reachability as well.
+
+### Does a proxy firewall replace a backend access list?
+
+No. The guide describes the proxy firewall as separate from a backend access list.
+
+### Is backend locking a plugin feature?
+
+No. It is host configuration. The guide covers it as a separate layer.

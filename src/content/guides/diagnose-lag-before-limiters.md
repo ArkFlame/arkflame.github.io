@@ -60,3 +60,17 @@ Only RedstoneLimiter documents a monitor mode. For the others, turn on `debug` o
 5. Apply to production during low traffic. Watch for player-facing removals. Keep `/rl reload` or a restart ready as rollback.
 
 Running several limiters means several plugins can remove the same entity for different reasons. Assign ownership: one plugin per category, written down in the config.
+
+## Frequently asked questions
+
+### Should I install all four limiters at once?
+
+No. Installing them together hides the cause and makes rollback harder.
+
+### Is TPS enough to find the cause?
+
+No. TPS shows that the server is behind. Tick duration and a profiler sample show what costs the ticks.
+
+### Does the profiler name the plugin that owns the entity?
+
+No. It names the expensive method. Use that method to find the owner.

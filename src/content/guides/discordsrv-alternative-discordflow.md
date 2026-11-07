@@ -1,6 +1,6 @@
 ---
 title: "DiscordSRV alternative: DiscordFlow"
-description: "What DiscordFlow covers for Minecraft and Discord linking (role sync, chat sync, proximity voice, console access), its platform scope, and how to test it before you switch."
+description: "DiscordFlow as a DiscordSRV alternative: role sync, chat sync, proximity voice and console access, with platform scope and a test plan."
 updated: 2026-11-07
 author: "LinsaFTW"
 relatedPlugins: ["discordflow"]
@@ -61,3 +61,17 @@ Run each test in this order. Stop at the first failure and fix it before you go 
 If your setup depends on a DiscordSRV feature that is not in the list above, keep DiscordSRV until you have confirmed a replacement. A missing feature found after the switch is harder to fix than one found on a test server.
 
 For the product details, see the [DiscordFlow product page](/plugins/discordflow/).
+
+## Frequently asked questions
+
+### Does DiscordFlow cover what DiscordSRV does?
+
+It covers role sync, chat sync, proximity voice and console access. The guide does not compare the two feature by feature, so make that comparison with your current config.
+
+### Which Java version does DiscordFlow need?
+
+The repository requires Java 11 or newer.
+
+### When is DiscordSRV still the better choice?
+
+Read the section on that topic before you switch. It lists the cases where the guide recommends keeping DiscordSRV.

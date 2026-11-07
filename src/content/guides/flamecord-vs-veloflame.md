@@ -60,3 +60,17 @@ After a build, list the output directory and run the jar you actually built. For
 5. **Cutover.** Run both proxies against a test backend. Compare login, forwarding, whitelist and firewall behavior. Then change DNS. A proxy swap is not a rolling restart.
 
 The [secure proxy and backend guide](/guides/secure-proxy-backend/) covers the forwarding and trust layer that has to survive the move.
+
+## Frequently asked questions
+
+### Can I run FlameCord on Velocity?
+
+No. FlameCord is a BungeeCord and Waterfall fork. VeloFlame is the Velocity fork.
+
+### How should I choose between them?
+
+Choose by proxy ecosystem. Your plugins, forwarding setup and staff commands should decide the move.
+
+### Does FlameCord need root?
+
+Its default firewall module runs ipset and iptables, so it needs a Linux host with root. The firewall is enabled by default.

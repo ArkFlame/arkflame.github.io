@@ -1,5 +1,5 @@
 ---
-title: "A plugin won't start: reproduce, capture, check dependencies, then bisect"
+title: "A plugin won't start: reproduce, capture, bisect"
 description: "Work from a full stack trace and exact versions, verify hard dependencies and config paths, check permission nodes, then bisect plugin jars."
 updated: 2026-10-30
 author: "LinsaFTW"
@@ -80,3 +80,17 @@ Don't hot-unload. Restart between rounds, or classloader leftovers will give fal
 | `proxy UUID is not approved` | Approve the exact UUID on that backend; repeat per backend |
 | `token mismatch` | Compare proxy and backend token, including whitespace and learned values |
 | Folia `UnsupportedOperationException` | Descriptor flag, current JAR, `FoliaAPI initialized`, entity scheduler |
+
+## Frequently asked questions
+
+### Is the plugin named on the first stack trace line the cause?
+
+Not always. It is often the plugin that noticed the failure. Check the dependencies and configs before you blame it.
+
+### Should I change several settings at once?
+
+No. Change one thing, then test. Copy the configs and the jar list first, so you can reverse a bisect.
+
+### How should I treat a Folia exception?
+
+Treat it as a region-ownership error. The guide covers how to isolate the plugin that causes it.

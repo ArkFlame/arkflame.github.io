@@ -10,7 +10,39 @@ import { STORE_STATS, STATS_AS_OF } from "@/data/store-stats";
 import { getCollection } from "astro:content";
 
 const docsCount = (await getCollection("docs")).length;
-const guideCount = (await getCollection("guides")).length;
+const allGuides = await getCollection("guides");
+const guideCount = allGuides.length;
+const topGuides = [
+  "anti-bot-setup-bungeecord-velocity",
+  "crash-and-dupe-protection-checklist",
+  "diagnose-lag-before-limiters",
+  "folia-compatible-plugins",
+]
+  .map((slug) => allGuides.find((entry) => entry.id === slug))
+  .filter((entry): entry is (typeof allGuides)[number] => entry !== undefined);
+
+const popularQuestions: { q: string; a: string; href?: string; label?: string }[] = [
+  {
+    q: "Are ArkFlame products plugins or proxy software?",
+    a: "Most are Bukkit, Spigot or Paper plugins. FlameCord and VeloFlame are proxy software for BungeeCord, Waterfall or Velocity. FlamePaper is a Paper 1.8.8 server fork that replaces the server jar.",
+  },
+  {
+    q: "Do the products support Folia?",
+    a: "ExploitFixer, FairPlay and FlameStack declare Folia support in their repositories, and several store listings advertise it. A declaration is not a runtime test, so check it on your own Folia server.",
+  },
+  {
+    q: "What stops bot floods on a proxy?",
+    a: "FlameCord (BungeeCord or Waterfall) and VeloFlame (Velocity) include anti-bot modules. The anti-bot setup guide covers the proxy and the backend lock-down.",
+    href: "/guides/anti-bot-setup-bungeecord-velocity/",
+    label: "Read the anti-bot setup guide",
+  },
+  {
+    q: "Where are the install steps?",
+    a: "Install steps, commands and permissions are in the docs. Each product page links its BuiltByBit listing for the artifact and requirements.",
+    href: "/docs/",
+    label: "Browse the docs",
+  },
+];
 
 const purchasesOf = (slug: string): number => STORE_STATS[slug]?.purchases ?? 0;
 
@@ -135,6 +167,25 @@ const jsonLd = {
     <p class="pop__all"><a href="/plugins/?sort=purchases">All {PRODUCTS.length} plugins →</a></p>
   </section>
 
+  <section class="pq af-container af-section" aria-labelledby="pq-title">
+    <h2 class="pq__title" id="pq-title">Popular questions.</h2>
+    <dl class="pq__list">
+      {
+        popularQuestions.map((item) => (
+          <div class="pq__item">
+            <dt>{item.q}</dt>
+            <dd>
+              {item.a}
+              {item.href !== undefined && item.label !== undefined && (
+                <> <a href={item.href}>{item.label} →</a></>
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
   <section class="cats af-container af-section" aria-labelledby="cats-title">
     <h2 class="cats__title" id="cats-title">Browse by category.</h2>
     <ul class="cats__list">
@@ -160,6 +211,13 @@ const jsonLd = {
       <div>
         <h2 class="docs__title" id="docs-title">Read the documentation.</h2>
         <p class="docs__body">Installation, commands, permissions and configuration.</p>
+        <ul class="docs__guides">
+          {
+            topGuides.map((guide) => (
+              <li><a href={`/guides/${guide.id}/`}>{guide.data.title}</a></li>
+            ))
+          }
+        </ul>
       </div>
       <ul class="docs__links">
         <li><a class="btn btn-primary" href="/docs/">Docs ({docsCount})</a></li>
@@ -380,6 +438,53 @@ const jsonLd = {
     margin: 6px 0 0;
     color: var(--af-muted);
     font-size: 15px;
+  }
+
+  .docs__guides {
+    display: grid;
+    gap: 6px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 15px;
+  }
+
+  .docs__guides a {
+    color: var(--af-accent);
+  }
+
+  .docs__guides a:hover {
+    text-decoration: underline;
+  }
+
+  .pq__title {
+    margin: 0 0 16px;
+    font-size: clamp(1.5rem, 2.8vw, 1.95rem);
+  }
+
+  .pq__list {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+  }
+
+  .pq__item {
+    max-width: 72ch;
+  }
+
+  .pq__item dt {
+    color: var(--af-text);
+    font-weight: 600;
+  }
+
+  .pq__item dd {
+    margin: 4px 0 0;
+    color: var(--af-muted);
+    line-height: 1.6;
+  }
+
+  .pq__item dd a {
+    color: var(--af-accent);
   }
 
   .docs__links {

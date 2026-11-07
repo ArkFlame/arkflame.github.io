@@ -26,12 +26,61 @@ const docs = (await getCollection("docs")).filter((doc) =>
   entry.data.relatedPlugins.includes(doc.data.plugin),
 );
 
+const relatedGuides = (await getCollection("guides"))
+  .filter((guide) => guide.id !== entry.id)
+  .map((guide) => ({
+    guide,
+    score:
+      guide.data.topics.filter((topic) => entry.data.topics.includes(topic)).length +
+      guide.data.relatedPlugins.filter((plugin) => entry.data.relatedPlugins.includes(plugin)).length,
+  }))
+  .filter((item) => item.score > 0)
+  .sort((a, b) => b.score - a.score || a.guide.data.title.localeCompare(b.guide.data.title))
+  .slice(0, 3)
+  .map((item) => item.guide);
+
+/** FAQ entries come from a "## Frequently asked questions" section: "### question" then the answer. */
+function parseFaq(body: string | undefined) {
+  if (body === undefined) return [];
+  const start = body.search(/^## Frequently asked questions\s*$/m);
+  if (start < 0) return [];
+  const rest = body.slice(start).replace(/^## .*\r?\n/, "");
+  const end = rest.search(/^## /m);
+  const section = end < 0 ? rest : rest.slice(0, end);
+  return section
+    .split(/^### /m)
+    .slice(1)
+    .map((block) => {
+      const [question, ...answer] = block.split(/\r?\n/);
+      return {
+        question: question.trim(),
+        answer: answer.join(" ").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim(),
+      };
+    })
+    .filter((item) => item.question !== "" && item.answer !== "");
+}
+
+const faq = parseFaq(entry.body);
+
 const path = `/guides/${entry.id}/`;
 const url = `${SITE.siteUrl}${path}`;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
+    ...(faq.length > 0
+      ? [
+          {
+            "@type": "FAQPage",
+            "@id": `${url}#faq`,
+            mainEntity: faq.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
+          },
+        ]
+      : []),
     {
       "@type": "Article",
       "@id": `${url}#article`,
@@ -118,6 +167,21 @@ const jsonLd = {
                     {product.name} <span aria-hidden="true">→</span>
                   </a>
                   <p>{product.summary}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        relatedGuides.length > 0 && (
+          <div>
+            <h2>Related guides</h2>
+            <ul>
+              {relatedGuides.map((guide) => (
+                <li>
+                  <a href={`/guides/${guide.id}/`}>{guide.data.title}</a>
+                  <p>{guide.data.description}</p>
                 </li>
               ))}
             </ul>

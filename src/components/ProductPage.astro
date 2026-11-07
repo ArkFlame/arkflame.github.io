@@ -37,6 +37,10 @@ const related = getProductsByCategory(product.category)
   .slice(0, 3);
 
 const compatibility = detail.compatibility;
+const compatLine =
+  compatibility?.platforms !== undefined
+    ? `Platforms: ${compatibility.platforms.join(", ")}.${compatibility.folia === "declared" ? " Folia support is declared in the repository." : ""} Check the details below before you deploy.`
+    : "Built for standard Minecraft server platforms. Check the details below before you deploy.";
 
 function cleanVersion(value: string | undefined, prefixes: readonly string[]): string | undefined {
   if (value === undefined) return undefined;
@@ -229,7 +233,9 @@ const faqLdPayload = JSON.stringify(faqLd).replace(/</g, "\\u003c");
     <div class="af-product__sections">
       <section id="overview" class="af-product__section">
         <h2>Overview</h2>
-        <p>{detail.description}</p>
+        <p><strong>What it is.</strong> {detail.description}</p>
+        <p><strong>Who it's for.</strong> {category?.audience}</p>
+        <p><strong>Compatibility.</strong> {compatLine}</p>
       </section>
 
       <section id="features" class="af-product__section">

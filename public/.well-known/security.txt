@@ -1,0 +1,4 @@
+Contact: https://discord.com/invite/gF36AT3
+Canonical: https://arkflame.com/.well-known/security.txt
+Preferred-Languages: en
+Expires: 2027-11-07T00:00:00.000Z

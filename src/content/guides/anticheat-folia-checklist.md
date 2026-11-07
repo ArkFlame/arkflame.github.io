@@ -66,3 +66,17 @@ Reload and restart the server with the anticheat enabled. Watch the console for 
 Passing these steps shows the anticheat starts, schedules work on the expected path and produces alerts you can review. It does not prove the anticheat is accurate on your player base. That needs a review period on live players.
 
 For the product details, see the [FairPlay product page](/plugins/fairplay/).
+
+## Frequently asked questions
+
+### Does FairPlay work on Folia?
+
+The repository declares Folia support. Verify scheduling and alerts on your own Folia build before you rely on it.
+
+### Is GrimAC required?
+
+No. GrimAC is an optional hook. FairPlay runs without it.
+
+### Should alerts run before punishments?
+
+Yes. Start with alerts, then add punishments once you have checked the flags.

@@ -1,5 +1,5 @@
 ---
-title: "FairPlay false positives: inspect alerts, trace latency, change one check"
+title: "FairPlay false positives: inspect, trace, change one check"
 description: "Use /fp alerts inspect and /fp latency diagnostics to verify a FairPlay flag before disabling checks, changing exemptions or recording an ML window."
 updated: 2026-10-30
 author: "LinsaFTW"
@@ -63,3 +63,17 @@ The descriptor ships three targeted nodes, all default `false`:
 - `fairplay.nomodifypacket` stops packet cancellation or modification.
 
 Use these for a known legitimate player or a tournament exception. They're auditable and reversible. Disabling a check for everyone is neither.
+
+## Frequently asked questions
+
+### Is a FairPlay alert a verdict?
+
+No. It is a signal. Check which check fired, which player it names and what the latency trace shows.
+
+### Should I disable a check when it fires?
+
+Not first. Verify the flag, then prefer an exemption over a global disable.
+
+### Which command controls alerts?
+
+`/fp alerts <enable|disable|toggle|inspect|clear> [player]`. The command applies to the staff member who runs it.

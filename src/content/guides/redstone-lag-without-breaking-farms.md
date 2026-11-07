@@ -67,3 +67,17 @@ RedstoneLimiter declares Folia support, and its tutorial documents Folia schedul
 For the product details, see the [RedstoneLimiter product page](/plugins/redstonelimiter/), the [FlameStack product page](/plugins/flamestack/) and the [EntityLimiter product page](/plugins/entitylimiter/).
 
 For a wider method, see [diagnose lag before limiters](/guides/diagnose-lag-before-limiters/).
+
+## Frequently asked questions
+
+### Why do farms break when I fix redstone lag?
+
+A limit that is too broad stops working farms along with the lag machine. Cap the machines that cost the most.
+
+### Which plugins does this guide use?
+
+RedstoneLimiter, FlameStack and EntityLimiter. Use only the ones your lag report points to.
+
+### Where should I start?
+
+Measure in monitor mode first, then cap the machines that cost the most.
