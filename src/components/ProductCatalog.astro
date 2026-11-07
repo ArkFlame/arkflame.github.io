@@ -1,6 +1,7 @@
 ---
 import type { Product } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
+import { STORE_STATS } from "@/data/store-stats";
 import ProductCard from "@/components/ProductCard.astro";
 import Icon from "@/components/Icon.astro";
 
@@ -10,10 +11,11 @@ interface Props {
 
 const { products } = Astro.props;
 
-const initial = [...products].sort((a, b) => {
-  if (a.featured !== b.featured) return a.featured ? -1 : 1;
-  return a.name.localeCompare(b.name);
-});
+const revenue = (slug: string): number => {
+  const stat = STORE_STATS[slug];
+  return (stat?.price ?? 0) * (stat?.purchases ?? 0);
+};
+const initial = [...products].sort((a, b) => revenue(b.slug) - revenue(a.slug) || a.name.localeCompare(b.name));
 ---
 
 <section class="af-container af-section af-catalog" data-catalog>
@@ -144,8 +146,8 @@ const initial = [...products].sort((a, b) => {
           if (byRatings !== 0) return byRatings;
           return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
         }
-        const featured = Number(b.dataset.featured ?? "0") - Number(a.dataset.featured ?? "0");
-        if (featured !== 0) return featured;
+        const byRevenue = Number(b.dataset.revenue ?? "0") - Number(a.dataset.revenue ?? "0");
+        if (byRevenue !== 0) return byRevenue;
         return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
       };
 
