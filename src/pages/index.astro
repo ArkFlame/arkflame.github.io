@@ -116,10 +116,6 @@ const jsonLd = graph(
         <dt>Average rating</dt>
         <dd>★ {averageRating.toFixed(1)}</dd>
       </div>
-      <div>
-        <dt>Snapshot as of</dt>
-        <dd><time datetime={STATS_AS_OF}>{asOf}</time></dd>
-      </div>
     </dl>
   </section>
 
@@ -254,7 +250,7 @@ const jsonLd = graph(
 
   .nums__list {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
     margin: 0;
     border: 1px solid var(--af-border);
