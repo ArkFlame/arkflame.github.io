@@ -29,48 +29,48 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       <article class="privacy-article">
         <section class="privacy-summary" aria-label="Privacy summary">
           <span class="privacy-check" aria-hidden="true">✓</span>
-          <div><h2>Rendering stays on your device.</h2><p>Global DOM Optimizer processes page structure for rendering optimization inside your browser. The extension has no telemetry or analytics endpoint and does not upload page content to ArkFlame Studios.</p></div>
+          <div><h2>Rendering stays on your device.</h2><p>Global DOM Optimizer reads page structure only to optimize rendering, and it does that inside your browser. The extension has no telemetry or analytics endpoint and doesn't upload page content to ArkFlame Studios.</p></div>
         </section>
         <section id="processing">
           <h2>1. Purpose and local processing</h2>
-          <p>Global DOM Optimizer improves rendering efficiency on eligible webpages. Its content script inspects document structure, text lengths, element dimensions, scroll containers, and viewport or scroll positions to find elements that can safely use native CSS offscreen rendering containment. It restores rendering as content approaches the visible region.</p>
-          <p>This processing occurs inside the browser. The extension does not upload or copy page text, images, personal communications, or other webpage contents to ArkFlame Studios.</p>
+          <p>Global DOM Optimizer makes rendering more efficient on eligible pages. Its content script checks document structure, text lengths, element sizes, scroll containers, and viewport or scroll positions. It finds elements that can safely use native CSS offscreen rendering containment, and restores rendering as content nears the visible area.</p>
+          <p>This runs inside the browser. The extension doesn't upload or copy page text, images, personal messages or other page content to ArkFlame Studios.</p>
         </section>
         <section id="storage">
           <h2>2. Information stored locally</h2>
-          <p>The extension uses <code>chrome.storage.local</code> for its global enabled/disabled preference and website hostnames explicitly excluded by the user. These settings remain on the device and are not synchronized by the extension.</p>
-          <p>Its popup displays current-tab diagnostics, including managed or hidden block counts, scroll-region information and scan timings. These values are exchanged through browser-internal messaging, not uploaded to the publisher or stored as a browsing-history log.</p>
+          <p>The extension uses <code>chrome.storage.local</code> for the global on/off setting and the hostnames the user excludes. These settings stay on the device. The extension doesn't sync them.</p>
+          <p>The popup shows current-tab diagnostics: managed or hidden block counts, scroll-region info and scan timings. These values pass through browser-internal messaging. They aren't uploaded to the publisher or saved as a browsing history.</p>
         </section>
         <section id="sharing">
           <h2>3. Collection, sharing and retention</h2>
-          <p>ArkFlame Studios does not receive webpage contents, personal communications, browsing histories, scrolling activity, authentication information, or diagnostic metrics from the extension. Version 0.0.6 contains no tracking, analytics, advertising SDK, external API calls or remotely executed code. It does not sell or share extension user data with third parties.</p>
-          <p>Local settings persist until users change them, clear extension data using their browser controls, or uninstall the extension subject to browser storage behavior.</p>
+          <p>ArkFlame Studios doesn't receive page contents, personal communications, browsing history, scrolling activity, authentication information or diagnostic metrics from the extension. Version 0.0.6 has no tracking, analytics, ad SDK, external API calls or remotely executed code. It doesn't sell or share extension user data with third parties.</p>
+          <p>Local settings stay until you change them, clear extension data in your browser, or uninstall the extension. Browser storage rules apply.</p>
         </section>
         <section id="permissions">
           <h2>4. Permissions and website access</h2>
-          <p>The extension runs local content scripts on HTTP and HTTPS pages to inspect eligible elements and apply rendering styles. This cross-site access is necessary because its primary function is automatic optimization across webpages.</p>
+          <p>The extension runs local content scripts on HTTP and HTTPS pages to inspect eligible elements and apply rendering styles. It needs this cross-site access because its main job is automatic optimization across pages.</p>
           <ul>
-            <li><strong>storage:</strong> saves the global switch and user-selected website exclusions locally.</li>
-            <li><strong>activeTab:</strong> supports the user-opened popup's access to the current site's hostname and local diagnostics.</li>
+            <li><strong>storage:</strong> saves the global switch and the sites you exclude, locally.</li>
+            <li><strong>activeTab:</strong> lets the popup, which you open, read the current site's hostname and local diagnostics.</li>
             <li><strong>HTTP/HTTPS content scripts:</strong> identify eligible offscreen DOM sections and adjust their rendering containment.</li>
           </ul>
-          <p>The extension does not request cookies, browser history, network interception, or downloads permissions. Chrome blocks content scripts on certain internal or restricted pages.</p>
+          <p>The extension doesn't request cookies, browser history, network interception or downloads permissions. Chrome blocks content scripts on some internal or restricted pages.</p>
         </section>
         <section id="controls">
           <h2>5. Your controls</h2>
-          <p>You can turn optimization off globally or for the current website using the extension popup. Either option reverses the styles managed by the extension. Some elements and entire websites may be left unchanged where safe containment is not possible.</p>
+          <p>Use the popup to turn optimization off everywhere or for the current site. Either choice reverses the styles the extension manages. Some elements and whole sites may stay unchanged when safe containment isn't possible.</p>
         </section>
         <section id="limited-use">
           <h2>6. Limited Use and security</h2>
-          <p>Information accessed by Global DOM Optimizer is used solely for its stated offscreen-rendering feature and related on-device diagnostics. Use of information received from Google APIs will adhere to the <a href="https://developer.chrome.com/docs/webstore/program-policies/limited-use" target="_blank" rel="noopener noreferrer">Chrome Web Store User Data Policy, including its Limited Use requirements</a>. The extension does not execute remotely hosted scripts.</p>
+          <p>Global DOM Optimizer uses the information it accesses only for its offscreen-rendering feature and related on-device diagnostics. Its use of information received from Google APIs follows the <a href="https://developer.chrome.com/docs/webstore/program-policies/limited-use" target="_blank" rel="noopener noreferrer">Chrome Web Store User Data Policy, including its Limited Use requirements</a>. The extension doesn't run remotely hosted scripts.</p>
         </section>
         <section id="external">
           <h2>7. External publisher link</h2>
-          <p>The popup includes an optional link to <a href="https://arkflame.com/">ArkFlame Studios</a>. Opening it navigates to the publisher's website; the extension does not transmit page content or diagnostic data as part of that navigation. Website access is separate from the extension's local processing.</p>
+          <p>The popup has an optional link to <a href="https://arkflame.com/">ArkFlame Studios</a>. Clicking it opens the publisher's website. The extension doesn't send page content or diagnostic data with that navigation. Site access is separate from the extension's local processing.</p>
         </section>
         <section id="contact">
           <h2>8. Updates and contact</h2>
-          <p>Material changes to the extension's data practices will be reflected in this policy and the Chrome Web Store disclosures before they are published. For questions, contact ArkFlame Studios through <a href="https://arkflame.com/">arkflame.com</a>.</p>
+          <p>Material changes to the extension's data practices will appear in this policy and in the Chrome Web Store disclosures before they are published. For questions, contact ArkFlame Studios through <a href="https://arkflame.com/">arkflame.com</a>.</p>
           <p class="privacy-note">This policy describes Global DOM Optimizer version 0.0.6. Other ArkFlame Studios services may operate under separate notices.</p>
         </section>
       </article>

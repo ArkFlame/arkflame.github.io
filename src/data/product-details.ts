@@ -49,7 +49,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   fairplay: {
     description:
-      "FairPlay is a PacketEvents-based combat anticheat for aim, reach and rotation checks. It integrates with GrimAC and Vulcan when they are installed, and runs without either.",
+      "AI combat anticheat with 169+ checks that hooks into Grim. It requires PacketEvents and runs without Grim installed.",
     highlights: [
       "Combat checks with per-check and per-category toggles",
       "Optional GrimAC and Vulcan hooks",
@@ -632,6 +632,23 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
       note: `${INSPECTED}. A legacy DonutOrders descriptor also exists in the tree.`,
     },
     evidence: "repository",
+  },
+  flameshop: {
+    description:
+      "FlameShop adds inventory shops, a sell basket, a worth catalog and cross-shop search for Economy SMP servers. Its store listing describes Vault economy support and Folia scheduling.",
+    highlights: [
+      "Inventory shops with buy and sell menus",
+      "Sell basket and worth catalog",
+      "Search, favourites and top sellers",
+      "Permission-based price modifiers",
+    ],
+    compatibility: {
+      platforms: ["Bukkit", "Spigot", "Paper", "Folia", "Purpur"],
+      minecraft: "Store listing states 1.8 to 26.3; not verified against a repository",
+      folia: "declared",
+      note: "Public BuiltByBit listing only, read 7 Nov 2026. No repository or runtime check.",
+    },
+    evidence: "listing",
   },
   "smp-lifesteal": {
     description:

@@ -21,7 +21,7 @@ const DIST = path.resolve(REPO_ROOT, process.argv[2] ?? "dist");
 const ORIGIN = "https://arkflame.com";
 
 const CATEGORY_SLUGS = ["security", "performance", "network", "gameplay", "smp"];
-const MIN_PRODUCT_PAGES = 51;
+const MIN_PRODUCT_PAGES = 52;
 const MIN_DOCS = 8;
 const MIN_GUIDES = 8;
 const PRIORITY_PRODUCTS = [
@@ -124,15 +124,12 @@ const CANONICAL_ROUTES = [
 // Markers asserted against the RENDERED TEXT of dist/index.html. Typography may
 // legally wrap part of the phrase in an inline element (e.g. an accent span), which
 // splits it across tags in the raw markup, so a raw substring match would be wrong.
+// The h1 is derived from HERO.h1 in src/data/site.ts at check time (the data file is never imported).
 const HOME_TEXT_MARKERS = [
-  "We make Minecraft plugins.",
-  "Start with these.",
-  "Stop abuse before it reaches gameplay.",
-  "Cap the work that costs tick time.",
-  "Harden the proxy layer.",
-  "Build the survival loop.",
+  "Most popular.",
+  "Browse by category.",
   "Read the documentation.",
-  "Supports all popular platforms.",
+  "Platforms we ship for.",
 ];
 
 // Markers asserted against the RAW markup of dist/index.html: routes and absolute
@@ -161,6 +158,7 @@ const FORBIDDEN_HOME_MARKUP_MARKERS = [
   "Packet handling",
   "Concurrency",
 ];
+const HOME_TEXT_FORBIDDEN = ["Supports all popular platforms."];
 
 let greenChecks = 0;
 
@@ -282,10 +280,19 @@ async function main() {
     return `${ORIGIN}/sitemap-index.xml`;
   });
 
-  await check("HOME CONTENT MARKERS", () => {
+  await check("HOME CONTENT MARKERS", async () => {
     const home = html.get("index.html");
     if (home === undefined) throw new Error("missing required dist file: dist/index.html");
     const rendered = visibleText(home);
+    const siteTs = await readFile(path.join(REPO_ROOT, "src/data/site.ts"), "utf8");
+    const heroH1 = siteTs.match(/export const HERO = \{[\s\S]*?\bh1: "([^"]+)"/)?.[1];
+    if (heroH1 === undefined) throw new Error("src/data/site.ts must define HERO.h1");
+    if (!rendered.includes(heroH1)) {
+      throw new Error(`dist/index.html h1 text ${JSON.stringify(heroH1)} (HERO.h1) is missing`);
+    }
+    for (const needle of HOME_TEXT_FORBIDDEN) {
+      if (rendered.includes(needle)) throw new Error(`dist/index.html still shows ${JSON.stringify(needle)}`);
+    }
     for (const needle of HOME_TEXT_MARKERS) {
       if (!rendered.includes(needle)) {
         throw new Error(`dist/index.html is missing required visible text ${JSON.stringify(needle)}`);
@@ -377,16 +384,45 @@ async function main() {
     return `${productSlugs.length} product pages with h1, store CTA and compatibility`;
   });
 
-  await check("HOMEPAGE DISCOVERY RAILS", () => {
+  await check("STORE STATS COVER EVERY PRODUCT", async () => {
+  // Source-level check: store-stats.ts is a dated snapshot, not rendered HTML.
+  const products = await readFile(path.join(REPO_ROOT, "src/data/products.ts"), "utf8");
+  const stats = await readFile(path.join(REPO_ROOT, "src/data/store-stats.ts"), "utf8");
+  const slugs = [...products.matchAll(/^\s*slug: "([a-z0-9-]+)"/gm)].map((m) => m[1]);
+  const statKeys = [...stats.matchAll(/^\s*"?([a-z0-9-]+)"?: \{/gm)].map((m) => m[1]);
+  if (!/export const STATS_AS_OF = "\d{4}-\d{2}-\d{2}";/.test(stats)) {
+    throw new Error("store-stats.ts must export STATS_AS_OF as YYYY-MM-DD");
+  }
+  if (!/export function formatPrice\(/.test(stats)) {
+    throw new Error("store-stats.ts must export formatPrice");
+  }
+  const keySet = new Set(statKeys);
+  const missing = slugs.filter((slug) => !keySet.has(slug));
+  const orphans = statKeys.filter((key) => !slugs.includes(key));
+  if (missing.length || orphans.length) {
+    throw new Error(
+      `store-stats.ts must have one entry per product (use {} to omit fields). ` +
+        `missing: ${missing.join(", ") || "none"}; orphan: ${orphans.join(", ") || "none"}`,
+    );
+  }
+  return `${slugs.length} products, ${statKeys.length} store stat entries`;
+});
+
+await check("HOMEPAGE DISCOVERY RAILS", () => {
     const home = html.get("index.html") ?? "";
-    const rails = [...home.matchAll(/class="af-rail af-section"/g)].length;
-    const allTiles = [...home.matchAll(/class="af-rail__all"/g)].length;
+    const popular = [...home.matchAll(/class="pop af-container af-section"/g)].length;
+    const popularCards = [...home.matchAll(/class="af-product-card"/g)].length;
+    const allLinks = [...home.matchAll(/class="pop__all"/g)].length;
+    if (popular !== 1) throw new Error(`dist/index.html must render 1 "Most popular" section, found ${popular}`);
+    if (popularCards !== 8) throw new Error(`dist/index.html must render 8 popular cards, found ${popularCards}`);
+    if (allLinks !== 1) throw new Error(`dist/index.html must render one "All plugins" link, found ${allLinks}`);
+    if (!home.includes('aria-labelledby="popular-title"')) {
+      throw new Error('dist/index.html "Most popular" section is missing its heading');
+    }
     const productLinks = [...home.matchAll(/href="\/plugins\/[a-z0-9-]+\/"/g)].length;
-    if (rails !== 5) throw new Error(`dist/index.html must render 5 discovery rails, found ${rails}`);
-    if (allTiles !== 5) throw new Error(`dist/index.html must render one View all tile per rail, found ${allTiles}`);
-    if (productLinks < 20) throw new Error(`dist/index.html only links ${productLinks} product routes`);
+    if (productLinks < 8) throw new Error(`dist/index.html only links ${productLinks} product routes`);
     if (home.includes("af-marquee")) throw new Error("dist/index.html still contains the autoplay marquee");
-    return `${rails} rails, ${allTiles} View-all tiles, ${productLinks} product links, no autoplay`;
+    return `${popular} popular grid, ${popularCards} cards, ${productLinks} product links, no autoplay`;
   });
 
   await check("CATALOG CONTROLS AND FULL INVENTORY", () => {
@@ -470,9 +506,18 @@ async function main() {
     return `${checked} internal hrefs resolve to dist files`;
   });
 
-  await check("PRODUCT STRUCTURED DATA HAS NO FAKE COMMERCE", () => {
-    const banned = new Set(["aggregaterating", "review", "offers", "price", "ratingvalue", "reviewcount"]);
+  await check("PRODUCT STRUCTURED DATA HAS NO FAKE COMMERCE", async () => {
+    // Ratings are never emitted (self-published ratings risk a search penalty). Offer is allowed only
+    // when store-stats.ts has a price, and then must match that snapshot exactly.
+    const banned = new Set(["aggregaterating", "review", "ratingvalue", "reviewcount"]);
+    const statsSource = await readFile(path.join(REPO_ROOT, "src/data/store-stats.ts"), "utf8");
+    const priceOf = (slug) => {
+      const line = statsSource.match(new RegExp(`^\\s*"?${slug}"?: \\{[^}]*\\}`, "m"))?.[0];
+      const price = line?.match(/price: ([0-9.]+)/)?.[1];
+      return price === undefined ? undefined : Number(price);
+    };
     let blocks = 0;
+    let offersChecked = 0;
     for (const slug of productSlugs) {
       const body = html.get(`plugins/${slug}/index.html`) ?? "";
       for (const match of body.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
@@ -493,13 +538,24 @@ async function main() {
               if (banned.has(key.toLowerCase())) {
                 throw new Error(`${slug} JSON-LD contains disallowed ${key}`);
               }
+              if (key === "offers") {
+                const expected = priceOf(slug);
+                if (expected === undefined) throw new Error(`${slug} JSON-LD has offers but store-stats has no price`);
+                const offer = Array.isArray(value) ? value[0] : value;
+                if (Array.isArray(value) && value.length !== 1) throw new Error(`${slug} must have exactly one Offer`);
+                if (offer?.["@type"] !== "Offer" || offer.priceCurrency !== "USD" || offer.price !== expected.toFixed(2)) {
+                  throw new Error(`${slug} Offer must be {price: "${expected.toFixed(2)}", priceCurrency: "USD"}`);
+                }
+                offersChecked += 1;
+                continue;
+              }
               stack.push(value);
             }
           }
         }
       }
     }
-    return `${productSlugs.length} product pages, ${blocks} JSON-LD blocks, no ratings/offers`;
+    return `${productSlugs.length} product pages, ${blocks} JSON-LD blocks, ${offersChecked} price-matched Offers, no ratings`;
   });
 
   await check("JSON-LD PARSES ON EVERY PAGE", () => {

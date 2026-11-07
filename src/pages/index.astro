@@ -1,29 +1,35 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import HeroProductStack from "@/components/HeroProductStack.astro";
-import ProductRail from "@/components/ProductRail.astro";
+import ProductCard from "@/components/ProductCard.astro";
+import Icon from "@/components/Icon.astro";
 import { SITE, HERO, PLATFORM_STRIP } from "@/data/site";
-import { getProduct } from "@/data/products";
+import { PRODUCTS, getProduct, getProductsByCategory } from "@/data/products";
+import { CATEGORIES } from "@/data/categories";
+import { STORE_STATS, STATS_AS_OF } from "@/data/store-stats";
 import { getCollection } from "astro:content";
 
 const docsCount = (await getCollection("docs")).length;
 const guideCount = (await getCollection("guides")).length;
 
-const selected = ["flamecord", "exploitfixer", "fairplay", "authme-premium", "redstonelimiter"]
-  .map((slug) => getProduct(slug))
-  .filter((product) => product !== undefined);
-const security = ["exploitfixer", "fairplay", "authme-premium", "chatsentinel"]
-  .map((slug) => getProduct(slug))
-  .filter((product) => product !== undefined);
-const performance = ["redstonelimiter", "entitylimiter", "flamepaper", "flamestack"]
-  .map((slug) => getProduct(slug))
-  .filter((product) => product !== undefined);
-const network = ["flamecord", "veloflame", "discordflow"]
-  .map((slug) => getProduct(slug))
-  .filter((product) => product !== undefined);
-const smp = ["smp-lifesteal", "smp-punishments", "smp-combat", "smp-menus", "smp-regions"]
-  .map((slug) => getProduct(slug))
-  .filter((product) => product !== undefined);
+const purchasesOf = (slug: string): number => STORE_STATS[slug]?.purchases ?? 0;
+
+const totalSold = PRODUCTS.reduce((sum, product) => sum + purchasesOf(product.slug), 0);
+const ratings = PRODUCTS.flatMap((product) => {
+  const rating = STORE_STATS[product.slug]?.rating;
+  return rating === undefined ? [] : [rating];
+});
+const averageRating = ratings.length === 0 ? 0 : ratings.reduce((a, b) => a + b, 0) / ratings.length;
+const asOf = new Date(`${STATS_AS_OF}T00:00:00Z`).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+const popular = [...PRODUCTS]
+  .sort((a, b) => purchasesOf(b.slug) - purchasesOf(a.slug))
+  .slice(0, 8);
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -70,17 +76,12 @@ const jsonLd = {
     <div class="af-container hm__inner">
       <div class="hm__copy">
         <p class="af-eyebrow">{HERO.eyebrow}</p>
-        <h1 class="hm__title">We make <span class="hm__accent">Minecraft</span> plugins.</h1>
+        <h1 class="hm__title">{HERO.h1}</h1>
         <p class="hm__lead">{HERO.body}</p>
         <div class="hm__actions">
-          <a class="btn btn-primary" href="/plugins/">Browse plugins</a>
-          <a class="btn" href="/docs/">Read the docs</a>
+          <a class="btn btn-primary" href="/plugins/">{HERO.primaryCta}</a>
+          <a class="btn" href="/docs/">{HERO.secondaryCta}</a>
         </div>
-        <p class="hm__meta">
-          <span>{docsCount} plugin guides</span>
-          <span aria-hidden="true">·</span>
-          <a href="/guides/">{guideCount} technical articles</a>
-        </p>
       </div>
 
       <div class="hm__art">
@@ -92,93 +93,86 @@ const jsonLd = {
     </div>
   </section>
 
-  <div class="ps" aria-label="Platforms across the catalogue">
+  <section class="nums af-container" aria-label="Catalogue numbers">
+    <dl class="nums__list">
+      <div>
+        <dt>Plugins</dt>
+        <dd>{PRODUCTS.length}</dd>
+      </div>
+      <div>
+        <dt>Sales on BuiltByBit</dt>
+        <dd>{totalSold.toLocaleString("en-US")}</dd>
+      </div>
+      <div>
+        <dt>Average rating</dt>
+        <dd>★ {averageRating.toFixed(1)}</dd>
+      </div>
+      <div>
+        <dt>Snapshot as of</dt>
+        <dd><time datetime={STATS_AS_OF}>{asOf}</time></dd>
+      </div>
+    </dl>
+  </section>
+
+  <div class="ps" aria-label="Platforms">
     <div class="af-container ps__inner">
       <ul class="ps__list">
-        {
-          PLATFORM_STRIP.map((platform) => (
-            <li class="ps__item">
-              <img src={platform.logo} alt={platform.label} loading="lazy" decoding="async" width="112" height="30" />
-            </li>
-          ))
-        }
+        {PLATFORM_STRIP.map((platform) => <li class="ps__item">{platform.label}</li>)}
       </ul>
-      <p class="ps__caption">Supports all popular platforms.</p>
+      <p class="ps__caption">Platforms we ship for.</p>
     </div>
   </div>
 
-  <div class="rail-stack">
-    <ProductRail
-      id="selected"
-      eyebrow="Selected"
-      title="Start with these."
-      description="Our strongest plugins, across security, performance and network infrastructure."
-      products={selected}
-      allHref="/plugins/"
-      allLabel="All 51 plugins"
-    />
+  <section class="pop af-container af-section" aria-labelledby="popular-title">
+    <div class="pop__head">
+      <p class="af-eyebrow">Sold on BuiltByBit</p>
+      <h2 class="pop__title" id="popular-title">Most popular.</h2>
+      <p class="pop__desc">Top eight by purchases on BuiltByBit, snapshot as of {asOf}.</p>
+    </div>
+    <ul class="pop__grid">
+      {popular.map((product) => <ProductCard product={product} headingLevel="h3" />)}
+    </ul>
+    <p class="pop__all"><a href="/plugins/?sort=purchases">All {PRODUCTS.length} plugins →</a></p>
+  </section>
 
-    <ProductRail
-      id="security"
-      eyebrow="Security"
-      title="Stop abuse before it reaches gameplay."
-      description="Exploit filtering, combat anticheat, authentication bridges and chat moderation."
-      products={security}
-      allHref="/plugins/security/"
-      allLabel="Security plugins"
-    />
+  <section class="cats af-container af-section" aria-labelledby="cats-title">
+    <h2 class="cats__title" id="cats-title">Browse by category.</h2>
+    <ul class="cats__list">
+      {
+        CATEGORIES.map((category) => (
+          <li>
+            <a class="cats__card" href={`/plugins/${category.slug}/`}>
+              <span class="cats__head">
+                <Icon name={category.icon} size={20} />
+                <span class="cats__name">{category.name}</span>
+                <span class="cats__count">{getProductsByCategory(category.slug).length}</span>
+              </span>
+              <span class="cats__desc">{category.intro}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 
-    <ProductRail
-      id="performance"
-      eyebrow="Performance"
-      title="Cap the work that costs tick time."
-      description="Redstone, entity, block and item controls, plus a Paper 1.8.8 server fork."
-      products={performance}
-      allHref="/plugins/performance/"
-      allLabel="Performance plugins"
-    />
-
-    <ProductRail
-      id="network"
-      eyebrow="Network"
-      title="Harden the proxy layer."
-      description="Bungee-compatible and Velocity proxies with firewall, rate-limit and bridging tools."
-      products={network}
-      allHref="/plugins/network/"
-      allLabel="Network software"
-    />
-
-    <ProductRail
-      id="smp"
-      eyebrow="SMP"
-      title="Build the survival loop."
-      description="Claims, combat tags, lifesteal, spawners, menus, lobbies and rewards."
-      products={smp}
-      allHref="/plugins/smp/"
-      allLabel="SMP plugins"
-    />
-  </div>
-
-  <section class="closing af-section">
-    <div class="af-container closing__inner">
+  <section class="docs af-container af-section" aria-labelledby="docs-title">
+    <div class="docs__inner">
       <div>
-        <p class="af-eyebrow">DOCUMENTATION</p>
-        <h2 class="closing__title">Read the documentation.</h2>
-        <p class="closing__body">
-          Installation, commands, permissions and configuration for the plugins you run.
-        </p>
+        <h2 class="docs__title" id="docs-title">Read the documentation.</h2>
+        <p class="docs__body">Installation, commands, permissions and configuration.</p>
       </div>
-      <div class="closing__actions">
-        <a class="btn btn-primary" href="/docs/">Browse docs</a>
-        <a class="btn" href="/guides/">Read guides</a>
-      </div>
+      <ul class="docs__links">
+        <li><a class="btn btn-primary" href="/docs/">Docs ({docsCount})</a></li>
+        <li><a class="btn" href="/guides/">Guides ({guideCount})</a></li>
+      </ul>
     </div>
   </section>
+
 </BaseLayout>
 
 <style>
   .hm {
-    padding-block: clamp(34px, 6vw, 72px) clamp(30px, 5vw, 56px);
+    padding-block: clamp(34px, 6vw, 72px) clamp(24px, 4vw, 40px);
   }
 
   .hm__inner {
@@ -195,18 +189,15 @@ const jsonLd = {
 
   .hm__title {
     margin: 0.28em 0 0.22em;
-    font-size: clamp(2.45rem, 4.6vw, 3.6rem);
+    font-size: clamp(2.2rem, 4.4vw, 3.4rem);
     font-weight: 700;
-    line-height: 1.02;
+    line-height: 1.05;
     letter-spacing: -0.025em;
-  }
-
-  .hm__accent {
-    color: var(--af-accent);
+    text-wrap: balance;
   }
 
   .hm__lead {
-    max-width: 50ch;
+    max-width: 52ch;
     margin: 0 0 24px;
     color: var(--af-muted);
     font-size: 17px;
@@ -219,23 +210,6 @@ const jsonLd = {
     gap: 10px;
   }
 
-  .hm__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 18px 0 0;
-    color: var(--af-muted);
-    font-size: 13px;
-  }
-
-  .hm__meta a {
-    color: var(--af-accent);
-  }
-
-  .hm__meta a:hover {
-    text-decoration: underline;
-  }
-
   .hm__art {
     flex: 1 1 360px;
     min-width: 0;
@@ -243,7 +217,43 @@ const jsonLd = {
     margin-inline: auto;
   }
 
+  .nums__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin: 0;
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    background: var(--af-raised);
+  }
+
+  .nums__list > div {
+    padding: 14px 18px;
+    min-width: 0;
+  }
+
+  .nums__list > div + div {
+    border-inline-start: 1px solid var(--af-border);
+  }
+
+  .nums dt {
+    color: var(--af-muted);
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .nums dd {
+    margin: 2px 0 0;
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
   .ps {
+    margin-block-start: 28px;
     border-block: 1px solid var(--af-border);
     background-color: color-mix(in srgb, var(--af-raised) 65%, transparent);
   }
@@ -254,74 +264,178 @@ const jsonLd = {
     align-items: center;
     justify-content: space-between;
     gap: 12px 26px;
-    padding-block: 16px;
+    padding-block: 14px;
   }
 
   .ps__list {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 14px 24px;
+    gap: 8px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .ps__item img {
-    display: block;
-    width: auto;
-    max-width: 100px;
-    height: 26px;
-    object-fit: contain;
-    opacity: 0.86;
+  .ps__item {
+    padding: 6px 12px;
+    border: 1px solid var(--af-border-strong);
+    border-radius: 999px;
+    color: var(--af-text);
+    font-size: 14px;
   }
 
   .ps__caption {
     max-width: 46ch;
     margin: 0;
     color: var(--af-muted);
-    font-size: 12.5px;
+    font-size: 13px;
     line-height: 1.5;
   }
 
-  .rail-stack {
-    padding-block: 8px;
+  .cats,
+  .docs {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
   }
 
-  .closing {
-    padding-block: 30px 54px;
+  .cats__title,
+  .docs__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 2.8vw, 1.95rem);
   }
 
-  .closing__inner {
+  .cats__list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cats__card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    padding: 16px;
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    color: var(--af-text);
+    text-decoration: none;
+    transition: border-color var(--af-transition), background-color var(--af-transition);
+  }
+
+  .cats__card:hover {
+    border-color: var(--af-accent);
+    background-color: var(--af-surface-2);
+  }
+
+  .cats__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    color: var(--af-accent);
+  }
+
+  .cats__name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--af-text);
+  }
+
+  .cats__count {
+    margin-inline-start: auto;
+    color: var(--af-muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cats__desc {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--af-muted);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .docs__inner {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 22px 40px;
-    padding: 28px 30px;
-    background:
-      linear-gradient(130deg, color-mix(in srgb, var(--af-primary) 13%, transparent), transparent 60%),
-      var(--af-raised);
+    gap: 16px 30px;
+    padding: 22px 26px;
+    background: var(--af-raised);
     border: 1px solid var(--af-border);
     border-radius: var(--af-radius);
   }
 
-  .closing__title {
-    margin: 4px 0 0;
-    font-size: clamp(1.45rem, 2.6vw, 1.85rem);
-  }
-
-  .closing__body {
-    max-width: 64ch;
-    margin: 8px 0 0;
+  .docs__body {
+    margin: 6px 0 0;
     color: var(--af-muted);
     font-size: 15px;
   }
 
-  .closing__actions {
+  .docs__links {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pop__head {
+    display: grid;
+    gap: 6px;
+  }
+
+  .pop__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 2.8vw, 1.95rem);
+  }
+
+  .pop__desc {
+    margin: 0;
+    color: var(--af-muted);
+    font-size: 15px;
+  }
+
+  .pop__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pop__all {
+    margin: 18px 0 0;
+  }
+
+  .pop__all a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--af-accent);
+    font-weight: 600;
+  }
+
+  .pop__all a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 1080px) {
+    .cats__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 760px) {
@@ -333,8 +447,37 @@ const jsonLd = {
       max-width: 420px;
     }
 
-    .closing__inner {
-      padding: 22px;
+    .nums__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .nums__list > div:nth-child(3) {
+      border-inline-start: 0;
+    }
+
+    .nums__list > div:nth-child(n + 3) {
+      border-block-start: 1px solid var(--af-border);
+    }
+
+    .cats__list,
+    .pop__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .docs__inner {
+      padding: 20px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .pop__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 420px) {
+    .cats__list {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

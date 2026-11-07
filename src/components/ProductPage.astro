@@ -7,6 +7,8 @@ import { getArtworkSize, getResponsiveSrcSet } from "@/data/artwork";
 import ProductCard from "@/components/ProductCard.astro";
 import Icon from "@/components/Icon.astro";
 import { getCollection } from "astro:content";
+import { SITE } from "@/data/site";
+import { STATS_AS_OF, STORE_STATS, formatPrice } from "@/data/store-stats";
 
 interface Props {
   product: Product;
@@ -61,6 +63,69 @@ const java = cleanVersion(compatibility?.java, [
   "Backend runtime ",
 ]);
 const javaClean = java?.replace(/ per repository.*$/i, "").replace(/ per README.*$/i, "");
+
+const stat = STORE_STATS[product.slug];
+const priceLabel =
+  stat?.price !== undefined ? formatPrice(stat.price) : stat?.free === true ? "Free" : undefined;
+const ratingLabel =
+  stat?.rating !== undefined && stat.ratings !== undefined && stat.ratings >= 1
+    ? `★ ${stat.rating.toFixed(1)} (${stat.ratings} ${stat.ratings === 1 ? "rating" : "ratings"})`
+    : undefined;
+const countLabel =
+  stat?.purchases !== undefined
+    ? `${stat.purchases.toLocaleString("en-US")} purchases`
+    : stat?.downloads !== undefined
+      ? `${stat.downloads.toLocaleString("en-US")} downloads`
+      : undefined;
+
+const docUrl = docsEntry !== undefined ? `${SITE.siteUrl}/docs/${docsEntry.id}/` : undefined;
+type FaqPart = string | { label: string; href: string };
+const faq: { q: string; a: FaqPart[] }[] = [
+  {
+    q: `Where can I buy ${product.name}?`,
+    a: [product.name, " is sold on ", { label: "BuiltByBit page", href: product.storeUrl }, "."],
+  },
+];
+if (compatibility?.platforms !== undefined) {
+  faq.push({
+    q: `Which platforms does ${product.name} support?`,
+    a: [`${compatibility.platforms.join(", ")}.`],
+  });
+}
+if (compatibility !== undefined) {
+  faq.push({
+    q: `Does ${product.name} support Folia?`,
+    a: [
+      compatibility.folia === "declared"
+        ? "Yes. The repository declares Folia support."
+        : "Folia support is not declared in the repository.",
+    ],
+  });
+}
+if (docsEntry !== undefined) {
+  faq.push({
+    q: `Where is the ${product.name} documentation?`,
+    a: ["Read the ", { label: "ArkFlame docs", href: `/docs/${docsEntry.id}/` }, ` for ${product.name}.`],
+  });
+}
+faq.push({
+  q: "Where can I get support?",
+  a: ["Join the ArkFlame ", { label: "Discord", href: SITE.discordUrl }, "."],
+});
+
+const plainText = (parts: FaqPart[]): string =>
+  parts.map((part) => (typeof part === "string" ? part : part.label)).join("");
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faq.map(({ q, a }) => ({
+    "@type": "Question",
+    "name": q,
+    "acceptedAnswer": { "@type": "Answer", "text": plainText(a) },
+  })),
+};
+const faqLdPayload = JSON.stringify(faqLd).replace(/</g, "\\u003c");
 ---
 
 <article class="af-product af-container">
@@ -114,15 +179,28 @@ const javaClean = java?.replace(/ per repository.*$/i, "").replace(/ per README.
         )
       }
 
+      {
+        (priceLabel !== undefined || ratingLabel !== undefined || countLabel !== undefined) && (
+          <ul class="af-product__stats" aria-label="Store stats">
+            {priceLabel !== undefined && <li class="af-product__price">{priceLabel}</li>}
+            {ratingLabel !== undefined && <li>{ratingLabel}</li>}
+            {countLabel !== undefined && <li>{countLabel}</li>}
+          </ul>
+        )
+      }
+      <p class="af-product__asof">
+        Stats as of <time datetime={STATS_AS_OF}>{STATS_AS_OF}</time> on BuiltByBit
+      </p>
+
       <div class="af-product__cta">
         <a class="btn btn-primary" href={product.storeUrl} target="_blank" rel="noopener noreferrer">
           Get on BuiltByBit
         </a>
         {
           docsEntry !== undefined ? (
-            <a class="btn" href={`/docs/${docsEntry.id}/`}>Read documentation</a>
+            <a class="af-product__text-link" href={`/docs/${docsEntry.id}/`}>Read documentation →</a>
           ) : (
-            <a class="btn" href="#compatibility">Check compatibility</a>
+            <a class="af-product__text-link" href="#compatibility">Check compatibility →</a>
           )
         }
       </div>
@@ -144,8 +222,8 @@ const javaClean = java?.replace(/ per repository.*$/i, "").replace(/ per README.
       <a href="#overview">Overview</a>
       <a href="#features">Features</a>
       <a href="#compatibility">Compatibility</a>
-      <a href="#install">Install</a>
-      {docsEntry !== undefined && <a href="#documentation">Documentation</a>}
+      <a href="#documentation">Documentation</a>
+      <a href="#faq">FAQ</a>
     </nav>
 
     <div class="af-product__sections">
@@ -204,28 +282,10 @@ const javaClean = java?.replace(/ per repository.*$/i, "").replace(/ per README.
         }
       </section>
 
-      <section id="install" class="af-product__section">
-        <h2>Install</h2>
+      <section id="documentation" class="af-product__section">
+        <h2>Documentation and install</h2>
         {
           docsEntry !== undefined ? (
-            <>
-              <p>
-                The quick start covers installation, configuration and the commands you need to get running.
-              </p>
-              <p><a class="af-product__inline-link" href={`/docs/${docsEntry.id}/`}>Open the {product.name} documentation →</a></p>
-            </>
-          ) : (
-            <p>
-              Install from the current BuiltByBit release. The listing carries the artifact and its requirements.
-            </p>
-          )
-        }
-      </section>
-
-      {
-        docsEntry !== undefined && (
-          <section id="documentation" class="af-product__section">
-            <h2>Documentation</h2>
             <a class="af-product__docs-card" href={`/docs/${docsEntry.id}/`}>
               <span class="af-product__docs-kicker">Quick start</span>
               <span class="af-product__docs-title">{docsEntry.data.title}</span>
@@ -234,9 +294,13 @@ const javaClean = java?.replace(/ per repository.*$/i, "").replace(/ per README.
                 Updated {docsEntry.data.updated.toISOString().slice(0, 10)}
               </span>
             </a>
-          </section>
-        )
-      }
+          ) : (
+            <p>
+              Install from the current BuiltByBit release. The listing carries the artifact and its requirements.
+            </p>
+          )
+        }
+      </section>
 
       {
         guides.length > 0 && (
@@ -253,6 +317,26 @@ const javaClean = java?.replace(/ per repository.*$/i, "").replace(/ per README.
           </section>
         )
       }
+
+      <section id="faq" class="af-product__section" aria-labelledby="faq-title">
+        <h2 id="faq-title">FAQ</h2>
+        <dl class="af-product__faq">
+          {
+            faq.map(({ q, a }) => (
+              <div>
+                <dt>{q}</dt>
+                <dd>
+                  {a.map((part) =>
+                    typeof part === "string" ? part : <a href={part.href} rel={part.href.startsWith("http") ? "noopener noreferrer" : undefined}>{part.label}</a>,
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <script type="application/ld+json" set:html={faqLdPayload} />
 
       {
         related.length > 0 && (
@@ -423,6 +507,57 @@ const javaClean = java?.replace(/ per repository.*$/i, "").replace(/ per README.
 
   .af-product__official a:hover {
     color: var(--af-accent);
+  }
+
+  .af-product__stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--af-text);
+    font-size: 15px;
+  }
+
+  .af-product__price {
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .af-product__asof {
+    margin: 6px 0 0;
+    color: var(--af-muted);
+    font-size: 12.5px;
+  }
+
+  .af-product__text-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 4px;
+    color: var(--af-accent);
+    font-size: 15px;
+  }
+
+  .af-product__faq {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+  }
+
+  .af-product__faq dt {
+    color: var(--af-text);
+    font-weight: 600;
+  }
+
+  .af-product__faq dd {
+    margin: 4px 0 0;
+    color: var(--af-muted);
+    font-size: 15px;
+    line-height: 1.6;
   }
 
   .af-product__layout {

@@ -23,7 +23,7 @@ npm run check           # build + verify
 npm run preview         # serve dist/
 ```
 
-`verify` inspects generated HTML, so always run it after a fresh build. It checks URLs, canonical tags, structured data, the 51-product catalogue, docs/guide routes, internal links and sitemap coverage.
+`verify` inspects generated HTML, so always run it after a fresh build. It checks URLs, canonical tags, structured data, the 52-product catalogue, docs/guide routes, internal links, sitemap coverage and that `store-stats.ts` has one entry per product.
 
 ## Routes
 
@@ -44,7 +44,8 @@ npm run preview         # serve dist/
 
 ## Data and content authority
 
-- `src/data/products.ts` — the only product identity authority. 51 records with slug, name, category, summary, tags, optional artwork, official URL, store URL and the editorial `featured` flag.
+- `src/data/products.ts` — the only product identity authority. 52 records with slug, name, category, summary, tags, optional artwork, official URL, store URL and the editorial `featured` flag.
+- `src/data/store-stats.ts` — dated BuiltByBit snapshot (`STATS_AS_OF`) keyed by product slug: price, free flag, rating, rating count, purchases, downloads. Every product has an entry; use `{}` to omit fields the store does not show. `formatPrice()` formats prices.
 - `src/data/product-details.ts` — keyed rich copy: a two-sentence description, source-backed highlights and optional compatibility. It validates at import time that every product has exactly one entry and that no orphan entries exist.
 - `src/data/categories.ts` — five category routes and their copy.
 - `src/data/site.ts` — company, platform names and shared constants.
@@ -54,7 +55,7 @@ Rules:
 
 - Add or remove a product only in `src/data/products.ts`, then update `src/data/product-details.ts`; the integrity guards fail the build otherwise.
 - Compatibility may only come from the product repository or an explicit public listing claim. `runtimeVerified: false` stays false unless the plugin was actually exercised on that runtime.
-- Never add a price, rating, review count, download count, sales rank or invented benchmark. Omit the field instead.
+- Price, rating, rating count, purchase count and download count may appear only as the dated snapshot in `src/data/store-stats.ts`, sourced from the public BuiltByBit creator page `https://builtbybit.com/creators/linsaftw.152552/`. Refresh it by re-reading the store and updating `STATS_AS_OF`. Never invent a value; omit a field the store does not show. Do not add sales ranks or benchmarks.
 - `featured` is editorial, not a popularity metric. Do not label it "Popular" or "Trending".
 - Tags are product scope, not a compatibility matrix.
 

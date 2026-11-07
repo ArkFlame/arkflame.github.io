@@ -9,22 +9,22 @@ const buildAreas = [
   {
     label: "Security",
     href: "/plugins/security/",
-    body: "Exploit protection, anticheat, authentication and abuse prevention for Minecraft servers and networks.",
+    body: "Exploit protection, anticheat, authentication and abuse prevention for servers and networks.",
   },
   {
     label: "Performance",
     href: "/plugins/performance/",
-    body: "Server optimization tools for entity pressure, redstone abuse, runtime stability and high-load environments.",
+    body: "Optimization tools for entity load, redstone abuse, runtime stability and high-load servers.",
   },
   {
     label: "Network",
     href: "/plugins/network/",
-    body: "Proxy infrastructure for Minecraft networks built around Velocity and Bungee-compatible environments.",
+    body: "Proxy infrastructure for networks running Velocity or Bungee-compatible proxies.",
   },
   {
     label: "Gameplay",
     href: "/plugins/gameplay/",
-    body: "PvP, practice, minigame and player-facing systems built for multiplayer Minecraft.",
+    body: "PvP, practice, minigame and player-facing systems for multiplayer servers.",
   },
 ];
 
@@ -93,16 +93,14 @@ const jsonLd = {
         authentication, anticheat and gameplay software.
       </p>
       <p class="ab-copy">
-        The work is infrastructure software rather than resource packs,
-        shaders or client modifications. Products run on the server or proxy
-        side of a Minecraft deployment, which is where abuse filtering, load
-        control and network entry protection actually have to happen.
+        We build infrastructure software, not resource packs, shaders or client
+        mods. Our products run on the server or proxy, where abuse filtering,
+        load control and network entry protection have to happen.
       </p>
       <p class="ab-copy">
-        Every product listed on this site documents its own supported platforms
-        and version compatibility, so check the individual product page before
-        deploying. Nothing here is presented as a finished guarantee for an
-        environment you have not tested. Minecraft is a trademark of Mojang
+        Each product page lists its own supported platforms and versions. Check
+        that page before you deploy. Nothing here is a guarantee for an
+        environment you haven't tested. Minecraft is a trademark of Mojang
         Studios. ArkFlame Studios is not affiliated with Mojang or Microsoft.
       </p>
     </div>
@@ -112,12 +110,11 @@ const jsonLd = {
     <div class="af-container">
       <h2 id="ab-build-heading">What we build</h2>
       <p class="ab-copy">
-        The catalogue is grouped into four areas. Authentication and anticheat
-        work sits inside security; proxy and ingress control sits inside
-        network infrastructure. Security products cover crash and dupe exploit
-        protection, packet abuse filtering, combat anticheat and premium
-        authentication bridges. Network software guards the entry point of a
-        Minecraft network rather than running inside a single server.
+        Our catalogue has four areas. Authentication and anticheat sit under
+        security. Proxy and ingress control sit under network. Security
+        products cover crash and dupe exploit protection, packet abuse
+        filtering, combat anticheat and premium authentication bridges. Network
+        software guards the entry point of a network, not a single server.
       </p>
       <ul class="ab-areas">
         {
@@ -130,10 +127,10 @@ const jsonLd = {
         }
       </ul>
       <p class="ab-copy">
-        Products span legacy and modern Minecraft environments, including Paper,
-        Folia, Velocity and BungeeCord. Engineering work concentrates on packet
-        handling, concurrency, cross-version compatibility, runtime cost and
-        security boundaries.
+        Products cover legacy and modern Minecraft, including Paper, Folia,
+        Velocity and BungeeCord. Our work focuses on packet handling,
+        concurrency, cross-version compatibility, runtime cost and security
+        boundaries.
       </p>
     </div>
   </section>
@@ -142,21 +139,19 @@ const jsonLd = {
     <div class="af-container">
       <h2 id="ab-roots-heading">Public roots</h2>
       <p class="ab-copy">
-        ArkFlame-branded Minecraft activity is independently documented through
-        ArkFlame Network by 2013-11-29. That record is evidence of the brand's
-        public roots; it is not a claim about when the current company began
-        operating.
+        ArkFlame Network independently documents ArkFlame-branded Minecraft
+        activity from 2013-11-29. That shows the brand's public roots. It does
+        not say when the current company started.
       </p>
-      <p class="ab-copy">Publicly verifiable product and hub milestones:</p>
+      <p class="ab-copy">Public product and hub milestones:</p>
       <ol class="ab-milestones">
         {milestones.map((milestone) => <li>{milestone}</li>)}
       </ol>
       <p class="ab-copy">
-        Each BuiltByBit entry marks the first public release date recorded for
-        that product on its marketplace page. The 2026-05-28 entry is the public
-        article that consolidated ArkFlame Studios as the main hub for the
-        surrounding work. These are release and publication records, not
-        corporate milestones.
+        Each BuiltByBit entry is the first public release date listed on that
+        product's marketplace page. The 2026-05-28 entry is the public article
+        that made ArkFlame Studios the main hub for the surrounding work. These
+        are release and publication dates, not corporate milestones.
       </p>
     </div>
   </section>
@@ -180,11 +175,10 @@ const jsonLd = {
             software developer and the builder behind ArkFlame Studios.
           </p>
           <p class="ab-copy">
-            LinsaFTW publicly describes himself as coding since 2010. That is his
-            own personal account of his experience, not a date for this company.
-            Design, implementation and release of the products listed here are
-            his work; support questions are answered through the public channels
-            linked from each product page.
+            LinsaFTW says he has been coding since 2010. That's his personal
+            history, not a start date for this company. He designs, builds and
+            releases the products listed here. Support questions go through the
+            public channels linked on each product page.
           </p>
           <a
             class="btn btn-primary"
@@ -217,6 +211,9 @@ const jsonLd = {
   }
 
   .ab-crumb a {
+    display: inline-block;
+    padding-block: 8px;
+    margin-block: -8px;
     color: var(--af-muted);
   }
 

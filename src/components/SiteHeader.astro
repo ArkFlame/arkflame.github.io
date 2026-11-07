@@ -147,9 +147,7 @@ const primaryNav = [
     position: sticky;
     inset-block-start: 0;
     z-index: 60;
-    background-color: color-mix(in srgb, var(--af-bg) 91%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background-color: var(--af-bg);
     border-block-end: 1px solid var(--af-border);
   }
 
@@ -164,6 +162,7 @@ const primaryNav = [
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    min-height: 32px;
     flex-shrink: 0;
   }
 

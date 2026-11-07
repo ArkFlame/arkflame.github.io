@@ -22,7 +22,7 @@ export const CATEGORY_SLUGS: readonly ProductCategory[] = [
   "smp",
 ];
 
-/** Single product authority. 51 records, grouped by category. */
+/** Single product authority. 52 records, grouped by category. */
 export const PRODUCTS: readonly Product[] = [
   // security
   {
@@ -41,8 +41,8 @@ export const PRODUCTS: readonly Product[] = [
     slug: "fairplay",
     name: "FairPlay",
     category: "security",
-    summary: "Combat anticheat with 140+ checks and Grim integration.",
-    tags: ["Anticheat", "Combat", "140+ checks", "Grim"],
+    summary: "Combat anticheat with 169+ checks, local AI and Grim hooks.",
+    tags: ["Anticheat", "Combat", "169+ checks", "Local AI", "Grim"],
     image: "/assets/img/products/fairplay-banner.webp",
     icon: "/assets/img/product-icons/fairplay.webp",
     officialUrl: "https://fairplay.arkflame.com/",
@@ -452,6 +452,15 @@ export const PRODUCTS: readonly Product[] = [
     summary: "Configurable legendary weapons for SMP/PvP/FFA with premade weapons.",
     tags: ["Weapons", "PvP", "FFA"],
     storeUrl: "https://builtbybit.com/resources/smp-weapons.113979/",
+    featured: false,
+  },
+  {
+    slug: "flameshop",
+    name: "FlameShop",
+    category: "smp",
+    summary: "Shop, sell and worth plugin for Economy SMP servers.",
+    tags: ["Shop", "Sell", "Worth", "Economy"],
+    storeUrl: "https://builtbybit.com/resources/flameshop-worth-sell-shop.129919/",
     featured: false,
   },
   {

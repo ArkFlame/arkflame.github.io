@@ -6,17 +6,17 @@ category: "network"
 updated: 2026-10-30
 ---
 
-VeloFlame is a Velocity proxy fork that adds antibot checks, connection rate limits, a firewall module, and administrative whitelist and maintenance commands. Internally the project is `velocity-ctd`, and its README is upstream Velocity-CTD text, not VeloFlame documentation.
+VeloFlame is a Velocity proxy fork. It adds antibot checks, connection rate limits, a firewall module, and whitelist and maintenance commands for admins. Internally the project is `velocity-ctd`. Its README is upstream Velocity-CTD text, not VeloFlame documentation.
 
 ## Requirements
 
-- Root or `CAP_NET_ADMIN` on Linux when `firewall.ipset` stays `true`, the default. The config notes that `ipset` and `iptables` are required; if setup fails, the Java-side cache still works.
-- No plugin dependency descriptor; VeloFlame replaces the proxy.
+- Root or `CAP_NET_ADMIN` on Linux when `firewall.ipset` stays `true`, the default. The config notes that `ipset` and `iptables` are required. If setup fails, the Java-side cache still works.
+- No plugin dependency descriptor. VeloFlame replaces the proxy.
 - Java 25 build toolchain.
 
-The protocol API declares `MINIMUM_VERSION = MINECRAFT_1_7_2` and a maximum at `MINECRAFT_26_3`, so the declared range is 1.7.2 through 26.3.
+The protocol API declares `MINIMUM_VERSION = MINECRAFT_1_7_2` and a maximum at `MINECRAFT_26_3`. The declared range is 1.7.2 through 26.3.
 
-Two version strings disagree: Gradle reports `4.2.1-SNAPSHOT`, while `VeloFlame.java` reports internal version `1.4.9`.
+Two version strings disagree. Gradle reports `4.2.1-SNAPSHOT`, while `VeloFlame.java` reports internal version `1.4.9`.
 
 ## Install
 
@@ -25,7 +25,7 @@ Two version strings disagree: Gradle reports `4.2.1-SNAPSHOT`, while `VeloFlame.
 3. Run it. A default `veloflame.toml` is generated alongside the core `velocity.toml`.
 4. If `firewall.ipset` remains `true`, install `ipset` and `iptables` and run with root or `CAP_NET_ADMIN`.
 
-**Artifact-name drift:** the README says `-all`; this build emits `VeloFlame-Lite.jar`.
+**Artifact-name drift:** the README says `-all`. This build emits `VeloFlame-Lite.jar`.
 
 ## Configure
 
@@ -47,7 +47,7 @@ connections-period = 5
 serverbound-unknown-play-max-packet-size = 204800
 ```
 
-Core proxy settings such as bind address, servers, and forwarding remain in `velocity.toml`. The `[limbo]` section is marked VeloFlame PRO only and defaults to `enabled = true`. Its default global whitelist includes localhost and private addresses; remove those entries on a test instance or the limbo check will never see your connection. `[advanced] seamless-server-switching` defaults to `false` and the config warns to enable it only when backends use compatible registries and data packs.
+Core proxy settings such as bind address, servers, and forwarding stay in `velocity.toml`. The `[limbo]` section is marked VeloFlame PRO only and defaults to `enabled = true`. Its default global whitelist includes localhost and private addresses. Remove those entries on a test instance, or the limbo check never sees your connection. `[advanced] seamless-server-switching` defaults to `false`. The config warns to enable it only when backends use compatible registries and data packs.
 
 ## Commands
 
@@ -68,7 +68,7 @@ Root is `/veloflame`, alias `/velo`. `/bungeecord` and `/bungee` aliases are add
 
 Whitelist and maintenance arguments use Velocity's single-word string argument, so entries cannot contain spaces.
 
-The README also documents inherited upstream commands; this page does not reproduce them, because they are upstream docs rather than VeloFlame-specific behavior verified here.
+The README also documents inherited upstream commands. This page does not reproduce them, because they are upstream docs rather than VeloFlame-specific behavior verified here.
 
 ## Permissions
 
@@ -81,11 +81,11 @@ These four nodes are checked in source:
 | `veloflame.firewall` | `FirewallSubcommand` |
 | `veloflame.maintenance` | `MaintenanceSubcommand` |
 
-No descriptor declares these nodes, so there are **no default values**. Assign them through your permission plugin; do not assume operator grants. Upstream `velocity.command.*` nodes appear only in the inherited README, with `velocity.command.gkick` as the one code-confirmed sample.
+No descriptor declares these nodes, so there are **no default values**. Assign them through your permission plugin. Do not assume operator grants. Upstream `velocity.command.*` nodes appear only in the inherited README. `velocity.command.gkick` is the one code-confirmed sample.
 
 ## Troubleshooting
 
-VeloFlame has **no troubleshooting document or section**. Only inline config comments cover failure behavior: firewall setup failure falls back to the Java-side cache, seamless switching carries a registry compatibility warning, and limbo testing requires removing localhost/private entries from the global whitelist. Do not treat those comments as a diagnostic guide.
+VeloFlame has **no troubleshooting document or section**. Only inline config comments cover failure behavior. Firewall setup failure falls back to the Java-side cache. Seamless switching carries a registry compatibility warning. Limbo testing requires removing localhost and private entries from the global whitelist. Do not treat those comments as a diagnostic guide.
 
 
 ## Related

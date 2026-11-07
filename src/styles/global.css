@@ -1,13 +1,9 @@
 @import "./fonts.css";
 @import "tailwindcss";
 @source "../../src/**/*.{astro,ts,js,mjs}";
-@plugin "daisyui" {
-  themes: false;
-}
-
 @theme {
-  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Rajdhani", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Outfit", "Outfit Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Rajdhani", "Rajdhani Fallback", ui-sans-serif, system-ui, sans-serif;
 
   --color-af-bg: #050810;
   --color-af-raised: #0a1020;
@@ -38,7 +34,7 @@
   --af-radius: 12px;
   --af-container: 1160px;
   --af-gutter: 22px;
-  --af-section-y: 60px;
+  --af-section-y: 36px;
   --af-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --af-transition: 0.22s var(--af-ease);
 }
@@ -62,19 +58,7 @@
     min-height: 100%;
     background-color: var(--af-bg);
     background-image:
-      radial-gradient(ellipse 90% 60% at 50% 0%, color-mix(in srgb, var(--af-primary) 12%, transparent), transparent 70%),
-      radial-gradient(ellipse 70% 50% at 50% 100%, color-mix(in srgb, var(--af-accent) 8%, transparent), transparent 65%),
-      repeating-linear-gradient(
-        to right,
-        color-mix(in srgb, var(--af-border) 22%, transparent) 0 1px,
-        transparent 1px 64px
-      ),
-      repeating-linear-gradient(
-        to bottom,
-        color-mix(in srgb, var(--af-border) 22%, transparent) 0 1px,
-        transparent 1px 64px
-      );
-    background-attachment: fixed;
+      radial-gradient(ellipse 90% 60% at 50% 0%, color-mix(in srgb, var(--af-primary) 12%, transparent), transparent 70%);
     color: var(--af-text);
     font-family: var(--font-sans);
     font-weight: 400;
@@ -357,7 +341,8 @@
   position: absolute;
   inset-block-start: 8px;
   inset-inline-end: 8px;
-  padding: 4px 9px;
+  min-height: 32px;
+  padding: 4px 10px;
   background-color: var(--af-surface);
   border: 1px solid var(--af-border-strong);
   border-radius: 5px;
@@ -370,6 +355,13 @@
 .af-prose .af-copy-code:hover {
   border-color: var(--af-accent);
   color: var(--af-accent);
+}
+
+/* 32px touch target without changing breadcrumb layout: padding is cancelled by negative margin. */
+.af-breadcrumb a {
+  display: inline-block;
+  padding-block: 8px;
+  margin-block: -8px;
 }
 
 .af-prose blockquote {

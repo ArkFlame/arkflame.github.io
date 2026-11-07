@@ -45,6 +45,8 @@ const initial = [...products].sort((a, b) => {
         <option value="featured">Featured first</option>
         <option value="name">Name A–Z</option>
         <option value="category">Category</option>
+        <option value="purchases">Most purchased</option>
+        <option value="rating">Top rated</option>
       </select>
     </div>
   </div>
@@ -67,7 +69,6 @@ const initial = [...products].sort((a, b) => {
       No plugins match those filters.
       <button type="button" class="af-catalog__clear" data-catalog-clear>Clear filters</button>
     </p>
-    <p class="af-catalog__note">Featured picks from the ArkFlame catalogue.</p>
   </div>
 
   <ul class="af-catalog__list" data-catalog-list>
@@ -89,7 +90,7 @@ const initial = [...products].sort((a, b) => {
       catalog.querySelectorAll<HTMLButtonElement>("[data-catalog-filters] [data-category]"),
     );
     const known = new Set(buttons.map((button) => button.dataset.category ?? "all"));
-    const knownSorts = new Set(["featured", "name", "category"]);
+    const knownSorts = new Set(["featured", "name", "category", "purchases", "rating"]);
 
     if (search !== null && sort !== null && list !== null && buttons.length > 0) {
       const cards = Array.from(list.querySelectorAll<HTMLElement>("[data-product]"));
@@ -131,6 +132,18 @@ const initial = [...products].sort((a, b) => {
           if (byCategory !== 0) return byCategory;
           return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
         }
+        if (sortBy === "purchases") {
+          const byPurchases = Number(b.dataset.purchases ?? "0") - Number(a.dataset.purchases ?? "0");
+          if (byPurchases !== 0) return byPurchases;
+          return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+        }
+        if (sortBy === "rating") {
+          const byRating = Number(b.dataset.rating ?? "0") - Number(a.dataset.rating ?? "0");
+          if (byRating !== 0) return byRating;
+          const byRatings = Number(b.dataset.ratings ?? "0") - Number(a.dataset.ratings ?? "0");
+          if (byRatings !== 0) return byRatings;
+          return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+        }
         const featured = Number(b.dataset.featured ?? "0") - Number(a.dataset.featured ?? "0");
         if (featured !== 0) return featured;
         return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
@@ -140,8 +153,12 @@ const initial = [...products].sort((a, b) => {
         const needle = query.trim().toLowerCase();
         let visible = 0;
 
+        const previous = cards.slice();
         cards.sort(compare);
-        for (const card of cards) list.append(card);
+        // Re-append only when the order changed; appending all cards on every keystroke re-lays out the list.
+        if (cards.some((card, index) => card !== previous[index])) {
+          for (const card of cards) list.append(card);
+        }
 
         for (const card of cards) {
           const matchesCategory = category === "all" || card.dataset.category === category;
@@ -226,7 +243,8 @@ const initial = [...products].sort((a, b) => {
     position: relative;
   }
 
-  .af-catalog__search-icon {
+  /* Icon renders its own root <svg>, so the scoped selector must reach it via :global. */
+  .af-catalog__search :global(.af-catalog__search-icon) {
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: 15px;
@@ -268,7 +286,7 @@ const initial = [...products].sort((a, b) => {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    min-height: 40px;
+    min-height: 44px;
     padding: 7px 13px;
     background-color: transparent;
     border: 1px solid var(--af-border-strong);
@@ -328,10 +346,8 @@ const initial = [...products].sort((a, b) => {
     text-transform: uppercase;
   }
 
-  .af-catalog__note {
-    margin: 0 0 0 auto;
-    color: var(--af-muted);
-    font-size: 12.5px;
+  .af-catalog__empty[hidden] {
+    display: none;
   }
 
   .af-catalog__empty {
@@ -349,7 +365,8 @@ const initial = [...products].sort((a, b) => {
   }
 
   .af-catalog__clear {
-    padding: 5px 10px;
+    min-height: 44px;
+    padding: 5px 12px;
     background: transparent;
     border: 1px solid var(--af-border-strong);
     border-radius: 6px;
@@ -377,11 +394,6 @@ const initial = [...products].sort((a, b) => {
   @media (max-width: 720px) {
     .af-catalog__controls {
       grid-template-columns: minmax(0, 1fr);
-    }
-
-    .af-catalog__note {
-      flex-basis: 100%;
-      margin: 0;
     }
 
     .af-catalog__list {

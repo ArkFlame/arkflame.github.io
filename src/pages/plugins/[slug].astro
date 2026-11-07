@@ -7,7 +7,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import CategoryPage from "@/components/CategoryPage.astro";
 import ProductPage from "@/components/ProductPage.astro";
 import { SITE } from "@/data/site";
-import { getProductDetail } from "@/data/product-details";
+import { STORE_STATS } from "@/data/store-stats";
 
 /**
  * Single dynamic route owning both `/plugins/<category>/` and `/plugins/<product>/`.
@@ -50,15 +50,24 @@ const CATEGORY_TITLE_PHRASE: Readonly<Record<ProductCategory, string>> = {
 
 const abs = (path: string): string => new URL(path, SITE.siteUrl).href;
 
-/** Richer, still truthful meta description for product routes. */
-function metaDescription(summary: string, description: string): string {
-  const full = `${summary} ${description}`.replace(/\s+/g, " ").trim();
-  if (full.length <= 155) return full;
-  return `${full.slice(0, 152).replace(/\s+\S*$/, "")}…`;
+/** Product title: "<name> — <phrase> | ArkFlame", trimmed to 60 chars. */
+function metaTitle(name: string, phrase: string): string {
+  const full = `${name} — ${phrase} | ArkFlame`;
+  if (full.length <= 60) return full;
+  const short = `${name} — ${phrase}`;
+  return short.length <= 60 ? short : `${short.slice(0, 59).trimEnd()}…`;
+}
+
+/** Product description: "<name>: <phrase>. <summary>" plus BuiltByBit, kept <= 155 chars. */
+function metaDescription(name: string, phrase: string, summary: string): string {
+  const suffix = " Get it on BuiltByBit.";
+  const head = `${name}: ${phrase}. ${summary}`.replace(/\s+/g, " ").trim();
+  const max = 155 - suffix.length;
+  const body = head.length <= max ? head : `${head.slice(0, max - 1).replace(/\s+\S*$/, "")}…`;
+  return `${body}${suffix}`;
 }
 const homeUrl = `${SITE.siteUrl}/`;
 const websiteId = `${SITE.siteUrl}/#website`;
-const organizationId = `${SITE.siteUrl}/#organization`;
 const pluginsUrl = abs("/plugins/");
 
 const breadcrumbs = (trail: readonly { name: string; url: string }[]) => [
@@ -107,6 +116,18 @@ if ("category" in rest) {
   const productUrl = abs(`/plugins/${product.slug}/`);
   const categoryUrl = abs(`/plugins/${category.slug}/`);
   const imagePath = product.image ?? SITE.ogImage;
+  const price = STORE_STATS[product.slug]?.price;
+  // Offer only when the store shows a price. Free items omit it; ratings are never emitted (visible text only).
+  const offers =
+    price === undefined
+      ? undefined
+      : {
+          "@type": "Offer",
+          "price": price.toFixed(2),
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": product.storeUrl,
+        };
   jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -119,9 +140,14 @@ if ("category" in rest) {
         "image": `${SITE.siteUrl}${imagePath}`,
         "keywords": product.tags.join(", "),
         "applicationCategory": "GameApplication",
-        "operatingSystem": "Minecraft server",
+        "operatingSystem": "Java",
         "isPartOf": { "@id": websiteId },
-        "publisher": { "@id": organizationId },
+        "publisher": {
+          "@type": "Organization",
+          "name": SITE.name,
+          "url": `${SITE.siteUrl}/`,
+        },
+        ...(offers === undefined ? {} : { offers }),
       },
       {
         "@type": "BreadcrumbList",
@@ -149,8 +175,12 @@ if ("category" in rest) {
     </BaseLayout>
   ) : (
     <BaseLayout
-      title={`${rest.product.name} — ${CATEGORY_TITLE_PHRASE[rest.product.category]} | ArkFlame`}
-      description={metaDescription(rest.product.summary, getProductDetail(rest.product).description)}
+      title={metaTitle(rest.product.name, CATEGORY_TITLE_PHRASE[rest.product.category])}
+      description={metaDescription(
+        rest.product.name,
+        CATEGORY_TITLE_PHRASE[rest.product.category],
+        rest.product.summary,
+      )}
       canonicalPath={`/plugins/${rest.product.slug}/`}
       image={rest.product.image ?? SITE.ogImage}
       jsonLd={jsonLd}

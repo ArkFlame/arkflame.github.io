@@ -19,8 +19,8 @@ const jsonLd = {
 ---
 
 <BaseLayout
-  title="Global DOM Optimizer — Offscreen Rendering Extension | ArkFlame Studios"
-  description="Make long articles, conversations and content-heavy pages smoother with local offscreen rendering containment. Discover Global DOM Optimizer by ArkFlame Studios."
+  title="Global DOM Optimizer: Offscreen Rendering | ArkFlame"
+  description="Make long articles, conversations and content-heavy pages smoother with local offscreen rendering. Get Global DOM Optimizer by ArkFlame Studios."
   canonicalPath="/global-dom-optimizer/"
   image={`${imageRoot}/og-cover.webp`}
   jsonLd={jsonLd}
@@ -34,7 +34,7 @@ const jsonLd = {
           <span>GLOBAL DOM OPTIMIZER <small>VERSION 0.0.6</small></span>
         </div>
         <h1 id="gdo-title">A cleaner,<br /><span>faster web.</span></h1>
-        <p class="gdo-lead">Long conversations, articles, feeds and documentation should stay responsive. Global DOM Optimizer helps Chromium skip unnecessary rendering of eligible content outside the viewport—without removing it from the page.</p>
+        <p class="gdo-lead">Long chats, articles, feeds and docs should stay responsive. Global DOM Optimizer helps Chromium skip rendering eligible content outside the viewport, without removing it from the page.</p>
         <div class="gdo-actions">
           <a class="gdo-primary" href="/downloads/global-dom-optimizer-0.0.6.zip" download>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13m-5-5 5 5 5-5M4 17v3h16v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
@@ -60,16 +60,16 @@ const jsonLd = {
         <div class="gdo-section-heading">
           <p class="gdo-eyebrow">HOW IT WORKS</p>
           <h2 id="gdo-how-title">Less work beyond what you see.</h2>
-          <p>Content remains in the document. Supported sections far from view can skip layout and painting until you approach them.</p>
+          <p>Content stays in the document. Eligible sections far from view skip layout and painting until you scroll near them.</p>
         </div>
         <div class="gdo-mechanics">
           <div class="gdo-diagram">
             <img src={`${imageRoot}/offscreen-viewport.svg`} width="760" height="450" loading="lazy" decoding="async" alt="Illustration of visible content rendered normally between two sections whose offscreen rendering work is skipped" />
           </div>
           <div class="gdo-steps">
-            <article><span>01</span><div><h3>Detect independent blocks</h3><p>Identifies eligible paragraphs, messages, articles, code and image sections—even inside nested scrollers.</p></div></article>
-            <article><span>02</span><div><h3>Skip offscreen rendering</h3><p>Uses native <code>content-visibility</code> containment rather than deleting nodes or rewriting the website.</p></div></article>
-            <article><span>03</span><div><h3>Restore content on approach</h3><p>Viewport-aware observation and cached scan regions bring nearby elements back as you scroll.</p></div></article>
+            <article><span>01</span><div><h3>Detect independent blocks</h3><p>Finds eligible paragraphs, messages, articles, code and image sections, even inside nested scrollers.</p></div></article>
+            <article><span>02</span><div><h3>Skip offscreen rendering</h3><p>Uses native <code>content-visibility</code> containment. It doesn't delete nodes or rewrite the site.</p></div></article>
+            <article><span>03</span><div><h3>Restore content on approach</h3><p>Viewport checks and cached scan regions bring nearby elements back as you scroll.</p></div></article>
           </div>
         </div>
       </div>
@@ -81,17 +81,17 @@ const jsonLd = {
           <h2 id="gdo-benefits-title">Quietly useful. Fully in control.</h2>
         </div>
         <div class="gdo-features">
-          <article><div class="feature-glyph" aria-hidden="true">▤</div><h3>Long-form content</h3><p>Designed for lengthy AI conversations, documents, tutorials and image-rich feeds.</p></article>
-          <article><div class="feature-glyph" aria-hidden="true">▦</div><h3>Incremental scanning</h3><p>Tracks structural changes in cached regions instead of rescanning the entire page after each update.</p></article>
-          <article><div class="feature-glyph" aria-hidden="true">◎</div><h3>Live diagnostics</h3><p>Inspect managed blocks, offscreen coverage estimates, scan counts and local scan work.</p></article>
-          <article><div class="feature-glyph" aria-hidden="true">◇</div><h3>Your choice per website</h3><p>One automatic optimization strategy, plus a global switch and a site-specific on/off control.</p></article>
+          <article><div class="feature-glyph" aria-hidden="true">▤</div><h3>Long-form content</h3><p>Built for long AI chats, documents, tutorials and image-heavy feeds.</p></article>
+          <article><div class="feature-glyph" aria-hidden="true">▦</div><h3>Incremental scanning</h3><p>Tracks structural changes in cached regions. It doesn't rescan the whole page after each update.</p></article>
+          <article><div class="feature-glyph" aria-hidden="true">◎</div><h3>Live diagnostics</h3><p>See managed blocks, offscreen coverage estimates, scan counts and local scan work.</p></article>
+          <article><div class="feature-glyph" aria-hidden="true">◇</div><h3>Your choice per website</h3><p>One automatic strategy, a global switch and a per-site on/off switch.</p></article>
         </div>
       </div>
     </section>
     <section class="gdo-section gdo-install" aria-labelledby="gdo-install-title">
       <div class="af-container gdo-install-inner">
-        <div><p class="gdo-eyebrow">GET STARTED</p><h2 id="gdo-install-title">Install in under a minute.</h2><p>Download the extension, unzip it, then open <code>chrome://extensions</code> in your Chromium-based browser. Enable Developer mode and select <strong>Load unpacked</strong>.</p><a class="gdo-primary" href="/downloads/global-dom-optimizer-0.0.6.zip" download>Download the extension ZIP <span aria-hidden="true">↓</span></a></div>
-        <div class="gdo-caution"><h3>Designed to be safe, not magical.</h3><p>Optimization varies by site and device. Interactive elements may be left untouched, and reduced rendering work does not guarantee a particular FPS, CPU or RAM improvement. The percentage in the extension is an estimated scroll-height coverage metric—not a benchmark result.</p><p><a href="/global-dom-optimizer/privacy/">Read the privacy policy <span aria-hidden="true">↗</span></a></p></div>
+        <div><p class="gdo-eyebrow">GET STARTED</p><h2 id="gdo-install-title">Install in under a minute.</h2><p>Download and unzip the extension. Open <code>chrome://extensions</code> in your Chromium-based browser, turn on Developer mode, and pick <strong>Load unpacked</strong>.</p><a class="gdo-primary" href="/downloads/global-dom-optimizer-0.0.6.zip" download>Download the extension ZIP <span aria-hidden="true">↓</span></a></div>
+        <div class="gdo-caution"><h3>Designed to be safe, not magical.</h3><p>Results vary by site and device. Interactive elements may be left alone. Less rendering work doesn't guarantee better FPS, CPU or RAM. The percentage in the extension estimates scroll-height coverage. It is not a benchmark.</p><p><a href="/global-dom-optimizer/privacy/">Read the privacy policy <span aria-hidden="true">↗</span></a></p></div>
       </div>
     </section>
   </div>

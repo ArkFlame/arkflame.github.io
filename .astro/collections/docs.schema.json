@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "plugin": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "security",
+        "performance",
+        "network",
+        "gameplay",
+        "smp"
+      ]
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "runtimeVerified": {
+      "default": false,
+      "type": "boolean"
+    },
+    "evidenceNote": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "plugin",
+    "category",
+    "updated"
+  ]
+}

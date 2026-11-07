@@ -84,6 +84,18 @@ const published = updated.toLocaleDateString("en-US", { year: "numeric", month: 
         }
       </div>
     </details>
+    <script is:inline>
+      // Runs during parsing, right after the drawer, so the mobile collapse happens before first layout.
+      (() => {
+        const drawer = document.currentScript?.previousElementSibling;
+        if (!(drawer instanceof HTMLDetailsElement)) return;
+        const drawerQuery = window.matchMedia("(max-width: 900px)");
+        drawer.open = !drawerQuery.matches;
+        drawerQuery.addEventListener("change", () => {
+          drawer.open = !drawerQuery.matches;
+        });
+      })();
+    </script>
 
     <div class="af-article__main">
       <div class="af-prose" data-prose>
@@ -95,15 +107,6 @@ const published = updated.toLocaleDateString("en-US", { year: "numeric", month: 
 </article>
 
 <script>
-  const drawerQuery = window.matchMedia("(max-width: 900px)");
-  for (const drawer of document.querySelectorAll<HTMLDetailsElement>(".af-article__drawer")) {
-    const sync = (): void => {
-      drawer.open = !drawerQuery.matches;
-    };
-    sync();
-    drawerQuery.addEventListener("change", sync);
-  }
-
   for (const table of document.querySelectorAll<HTMLTableElement>("[data-prose] table")) {
     if (table.scrollWidth > table.clientWidth) {
       table.tabIndex = 0;

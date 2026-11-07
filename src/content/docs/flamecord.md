@@ -10,18 +10,18 @@ FlameCord is a BungeeCord/Waterfall fork that replaces the proxy jar. It adds an
 
 ## Requirements
 
-- A Linux host if the firewall module stays enabled. `antibot.firewall.ipset` defaults to `true`, and startup runs `apt install iptables -y`, `apt install ipset -y`, `ipset create flamecord hash:ip timeout <time>`, and an `iptables -t raw -I PREROUTING` drop rule for the `flamecord` set. This needs root.
+- A Linux host if the firewall module stays enabled. `antibot.firewall.ipset` defaults to `true`. Startup runs `apt install iptables -y`, `apt install ipset -y`, `ipset create flamecord hash:ip timeout <time>`, and an `iptables -t raw -I PREROUTING` drop rule for the `flamecord` set. This needs root.
 - No plugin dependencies. FlameCord is a standalone proxy replacement, not a plugin.
-- Java 17 is the proxy module's Maven compiler release and Java 11 the bootstrap's. These are compile targets; the README states no runtime Java version.
+- Java 17 is the proxy module's Maven compiler release and Java 11 the bootstrap's. These are compile targets. The README states no runtime Java version.
 
 The proxy's protocol table lists `1.8.x` through `1.21.x` plus `26.x`, ending at `MINECRAFT_26_3`. The project version is `26.1-R0.1-SNAPSHOT`.
 
 ## Install
 
 1. Build or obtain `FlameCord.jar`. The bootstrap module sets `finalName` to `FlameCord` and main class `net.md_5.bungee.Bootstrap`.
-2. Place the jar in the proxy directory and run it. The README's instruction is to drag and drop it into the server folder.
-3. Keep `iptables` and `ipset` installed and run as root if you leave `antibot.firewall.ipset: true`.
-4. First start generates `flamecord.yml` and `modules.yml`. Missing keys are appended on later loads with `setIfUnexistant`.
+2. Place the jar in the proxy directory and run it. The README says to drag and drop it into the server folder.
+3. Keep `iptables` and `ipset` installed, and run as root, if you leave `antibot.firewall.ipset: true`.
+4. The first start generates `flamecord.yml` and `modules.yml`. Missing keys are appended on later loads with `setIfUnexistant`.
 
 No FlameCord component goes on backends.
 
@@ -51,19 +51,19 @@ balancer:
   enabled: false
 ```
 
-The firewall thread also destroys and recreates the `flamecord` ipset at startup and removes the iptables rule at shutdown. The repository does not state what happens when `apt`, `ipset`, or `iptables` fail, so verify the rule exists rather than assuming the module is active.
+The firewall thread also destroys and recreates the `flamecord` ipset at startup, and removes the iptables rule at shutdown. The repository does not state what happens when `apt`, `ipset`, or `iptables` fail. Verify the rule exists rather than assuming the module is active.
 
 `modules.yml` toggles upstream Bungee modules: `alert`, `find`, `ip`, `list`, `perms`, `reload`, `send`, `server`, and `reconnect`. All default to `true` except `reconnect`.
 
 ## Commands and permissions
 
-FlameCord uses the upstream Bungee command set. The `modules.yml` flags enable `alert`, `find`, `ip`, `list`, `perms`, `reload`, `send`, `server` and `reconnect`.
+FlameCord uses the upstream Bungee command set. The `modules.yml` flags enable `alert`, `find`, `ip`, `list`, `perms`, `reload`, `send`, `server`, and `reconnect`.
 
-FlameCord declares **no permission nodes**. The module ships no `plugin.yml` or equivalent descriptor. Do not copy upstream Bungee permission nodes into a FlameCord setup expecting them to be verified here.
+FlameCord declares **no permission nodes**. The module ships no `plugin.yml` or equivalent descriptor. Do not copy upstream Bungee permission nodes into a FlameCord setup and expect them to be verified here.
 
 ## Troubleshooting
 
-The repository has **no troubleshooting document or section**. The only operational failure path visible in source is the firewall startup sequence: the `apt`, `ipset`, and `iptables` commands run on a background thread, gated by `antibot.firewall.ipset`. Failure handling is not defined in the repo. Source shows the exact commands it attempts; verify those took effect on the host.
+The repository has **no troubleshooting document or section**. The only operational failure path visible in source is the firewall startup sequence. The `apt`, `ipset`, and `iptables` commands run on a background thread, gated by `antibot.firewall.ipset`. Failure handling is not defined in the repo. Source shows the exact commands it attempts. Verify on the host that they took effect.
 
 
 ## Related

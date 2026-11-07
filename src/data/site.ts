@@ -18,8 +18,8 @@ export const SITE = {
 
 export const HERO = {
   eyebrow: "MINECRAFT SERVER SOFTWARE",
-  h1: "We make Minecraft plugins.",
-  body: "Security, performance, proxy infrastructure and gameplay systems for production Minecraft servers. Built to keep networks fast, protected and online.",
+  h1: "Anticheat and lag control for Minecraft owners.",
+  body: "Anticheat, lag limiters and proxies for Bukkit, Paper, Folia and Velocity servers.",
   primaryCta: "Browse plugins",
   secondaryCta: "Read the docs",
 } as const;

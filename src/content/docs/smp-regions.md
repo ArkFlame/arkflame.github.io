@@ -8,23 +8,23 @@ updated: 2026-10-30
 
 ## What it does
 
-SMP Regions manages cuboid regions whose player-made changes reset on a timer. It protects original map blocks, tracks temporary placements and breaks, persists the temporal cache, and skips resets when nothing changed. Regions resolve per world; when several match, higher `priority` wins per flag. `__global__` provides a per-world fallback, and the same region name may exist in different worlds.
+SMP Regions manages cuboid regions whose player-made changes reset on a timer. It protects original map blocks, tracks temporary placements and breaks, persists the temporal cache, and skips resets when nothing changed. Regions resolve per world. When several match, the higher `priority` wins per flag. `__global__` provides a per-world fallback. The same region name may exist in different worlds.
 
-Region files live under `plugins/SMPRegions/regions/<world>/<region>.yml`; tracked blocks live under `cache/temporal_blocks/<world>/<x_y_z>.yml`. The plugin keeps its own region index and reset model rather than requiring WorldGuard, and `/rg` is registered only when WorldGuard is absent.
+Region files live under `plugins/SMPRegions/regions/<world>/<region>.yml`. Tracked blocks live under `cache/temporal_blocks/<world>/<x_y_z>.yml`. The plugin keeps its own region index and reset model and does not require WorldGuard. `/rg` is registered only when WorldGuard is absent.
 
 ## Requirements
 
 - Bukkit/Spigot/Paper/Folia. `plugin.yml` declares `api-version: 1.13` and `folia-supported: true`.
-- The README states a `1.8 -> 1.21.11` target and Java 8 source target. That is a compatibility target, not a tested matrix.
+- The README states a `1.8 -> 1.21.11` target and a Java 8 source target. That is a compatibility target, not a tested matrix.
 - Optional soft dependencies: DecentHolograms, FancyHolograms, and `packetevents`.
-- PacketEvents `2.13.0` is required only for local `time-lock` client-time simulation; it is not bundled.
+- PacketEvents `2.13.0` is required only for local `time-lock` client-time simulation. It is not bundled.
 - WorldGuard is not required for protection checks.
 
 ## Install
 
-The README documents `mvn clean install`, which publishes the artifact to the local Maven repository. It names `target/SMPRegions-1.2.1.jar`; `pom.xml` declares `1.2.3`, and `CHANGELOG.md` stops at `1.2.0`. Confirm the built jar name from the build output.
+The README documents `mvn clean install`, which publishes the artifact to the local Maven repository. It names `target/SMPRegions-1.2.1.jar`. `pom.xml` declares `1.2.3`, and `CHANGELOG.md` stops at `1.2.0`. Confirm the built jar name from the build output.
 
-Drop the jar in `plugins/` and start the server. The jar ships `config.yml`, `lang/`, and a disabled `regions/world/example-region.yml`. Resets, saves, and reloads operate on the files under the data folder.
+Drop the jar in `plugins/` and start the server. The jar ships `config.yml`, `lang/`, and a disabled `regions/world/example-region.yml`. Resets, saves, and reloads operate on files under the data folder.
 
 ## Configure
 
@@ -44,9 +44,9 @@ flags:
   temporal-block-break: allow
 ```
 
-`reset-every` is minutes; `0` disables automatic resets for that region while manual `/smprg reset` and individual temporal timers still work. Temporal flags are evaluated first and are actor-independent: owners, members, operators, and `smpregions.bypass` do not bypass an allowed temporal route. A denied or unset temporal flag falls through to permanent `block-place` or `block-break`. `entity_place` is independent and has no temporal mode.
+`reset-every` is in minutes. `0` disables automatic resets for that region. Manual `/smprg reset` and individual temporal timers still work. Temporal flags are evaluated first and are actor-independent. Owners, members, operators, and `smpregions.bypass` do not bypass an allowed temporal route. A denied or unset temporal flag falls through to permanent `block-place` or `block-break`. `entity_place` is independent and has no temporal mode.
 
-Global defaults include `general.max-reset-blocks-per-tick: 20`, `reset-check-interval-seconds: 60`, `build-denied-adventure-mode: true`, and `temporal-block.restore-block-physics: false`. `chunk-unload: deny` retains whole intersected chunks via native tickets where the runtime supports them; legacy runtimes log one warning and leave retention inactive. `__global__` rejects a non-unset `chunk-unload`.
+Global defaults include `general.max-reset-blocks-per-tick: 20`, `reset-check-interval-seconds: 60`, `build-denied-adventure-mode: true`, and `temporal-block.restore-block-physics: false`. `chunk-unload: deny` keeps whole intersected chunks loaded via native tickets where the runtime supports them. Legacy runtimes log one warning and leave retention inactive. `__global__` rejects a non-unset `chunk-unload`.
 
 ## Commands
 
