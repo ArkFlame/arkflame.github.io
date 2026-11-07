@@ -236,6 +236,7 @@ const initial = [...products].sort((a, b) => {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
     gap: 12px;
+    align-items: end;
     margin-block-start: 26px;
   }
 
@@ -256,6 +257,8 @@ const initial = [...products].sort((a, b) => {
   }
 
   .af-catalog__search .input {
+    height: 47px;
+    padding-block: 0;
     padding-inline-start: 42px;
     background-color: var(--af-raised);
   }
@@ -272,6 +275,7 @@ const initial = [...products].sort((a, b) => {
 
   .af-catalog__sort .input {
     height: 47px;
+    padding-block: 0;
     background-color: var(--af-raised);
   }
 
