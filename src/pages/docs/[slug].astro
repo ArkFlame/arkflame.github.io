@@ -5,6 +5,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import { CATEGORIES } from "@/data/categories";
 import { getProduct } from "@/data/products";
 import { SITE } from "@/data/site";
+import { absUrl, article, breadcrumb, graph, orgRef, softwareRef } from "@/data/schema";
 
 export async function getStaticPaths() {
   const docs = await getCollection("docs");
@@ -37,36 +38,23 @@ const guides = (await getCollection("guides"))
 
 const path = `/docs/${entry.id}/`;
 const url = `${SITE.siteUrl}${path}`;
-const productUrl = `${SITE.siteUrl}/plugins/${product.slug}/`;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Article",
-      "@id": `${url}#article`,
-      headline: entry.data.title,
-      description: entry.data.description,
-      url,
-      mainEntityOfPage: url,
-      dateModified: entry.data.updated.toISOString(),
-      inLanguage: "en-US",
-      author: { "@type": "Organization", name: SITE.name, url: `${SITE.siteUrl}/` },
-      publisher: { "@id": `${SITE.siteUrl}/#organization` },
-      about: { "@type": "SoftwareApplication", name: product.name, url: productUrl },
-      isPartOf: { "@id": `${SITE.siteUrl}/#website` },
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": `${url}#breadcrumb`,
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: `${SITE.siteUrl}/` },
-        { "@type": "ListItem", position: 2, name: "Documentation", item: `${SITE.siteUrl}/docs/` },
-        { "@type": "ListItem", position: 3, name: entry.data.title, item: url },
-      ],
-    },
-  ],
-};
+const jsonLd = graph(
+  article({
+    type: "TechArticle",
+    url,
+    headline: entry.data.title,
+    description: entry.data.description,
+    dateModified: entry.data.updated,
+    image: product.image,
+    author: orgRef,
+    about: softwareRef(product),
+  }),
+  breadcrumb(`${url}#breadcrumb`, [
+    { name: "Documentation", url: absUrl("/docs/") },
+    { name: entry.data.title, url },
+  ]),
+);
 ---
 
 <BaseLayout

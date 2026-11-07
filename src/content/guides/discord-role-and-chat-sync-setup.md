@@ -7,7 +7,7 @@ relatedPlugins: ["discordflow", "smp-punishments", "staffmodex"]
 topics: ["discord", "sync", "roles", "network"]
 ---
 
-DiscordFlow connects a Minecraft network to Discord. It syncs roles, syncs chat, adds proximity voice and lets staff run console commands from Discord. It runs on Bukkit-family servers with a BungeeCord or Velocity bridge. Plan the proxy part first, then add the backend modules, then test each sync with a test account.
+DiscordFlow connects a Minecraft network to Discord. It syncs roles, syncs chat, adds proximity voice and gives staff console access from Discord. It runs on Bukkit-family servers with a BungeeCord or Velocity bridge. Plan the proxy part first, then add the backend modules, then test each sync with a test account.
 
 ## What DiscordFlow covers
 
@@ -17,29 +17,33 @@ Because the proxy and backend need different modules, decide the topology before
 
 ## Choose the topology
 
-A single Spigot or Paper server needs the Bukkit-family module only. A network with a proxy needs the BungeeCord or Velocity module on the proxy, and the Bukkit-family module on each backend that players reach. Install the module that matches each jar. Do not put the proxy module on a backend.
+The repository states that the plugin runs on Bukkit-family servers with a BungeeCord or Velocity bridge. A single server needs the Bukkit-family module only. A network with a proxy needs the proxy module on the proxy, and the Bukkit-family module on each backend that players reach.
 
 ## Set up the bot first
 
-Create the Discord bot and invite it to your server before you touch the Minecraft config. Give it only the permissions it needs for role management and the channels you plan to sync. Check the bot's role position. A bot below the roles it manages cannot change them.
+Discord bot setup is outside what the repository documents, so follow Discord's own developer documentation for creating the bot and inviting it. In general, give the bot only the permissions it needs for the roles and channels you plan to sync. Discord's role hierarchy also applies: a bot can only manage roles that sit below its own highest role. Check that position before you test role sync.
 
 ## Configure role sync
 
-Map each Discord role to the Minecraft group or permission that goes with it. Start with one role, such as a verified-member role, and test it with a test account. Confirm the role appears in Discord and the permission applies in game. Add the staff roles last, after the basic mapping works.
+Map each Discord role to the in-game group or permission it should carry. The mapping syntax is in the plugin config, which this guide does not reproduce. Start with one role, such as a verified-member role, and test it with a test account. Confirm the role appears in Discord and the permission applies in game. Add staff roles last, after the basic mapping works.
 
 ## Configure chat sync
 
-Pick one channel for each direction you want. Two-way sync on a busy channel doubles the message flow, so start with one channel. Test with a short message, a long message and a message with formatting, since each one can break differently. Keep the ChatSentinel filter on the Minecraft side if you already use it, so spam does not reach Discord.
+Pick one channel for each direction you want. Start with one channel, since a busy two-way channel produces a lot of traffic. Test with a short message, a long message and a message with formatting, so you see how each one renders on both sides.
+
+If you already run a chat filter such as [ChatSentinel](/docs/chatsentinel/), test whether filtered messages reach Discord. The repository does not document how DiscordFlow and ChatSentinel interact, so verify that on your server.
 
 ## Set up proximity voice
 
-Proximity voice is one of the four feature areas, so test it separately from role and chat sync. Test it with two accounts standing at different distances. Check the voice settings in the config before you invite players, and change one value at a time.
+Proximity voice is one of the four feature areas, so test it separately from role and chat sync. Test it with two accounts standing at different distances. The repository does not describe the voice settings, so read the config on your install and change one value at a time.
 
 ## Enable console access carefully
 
-Console access lets staff run commands from Discord. It is powerful. Restrict it to the staff roles that need it, and log every command. Do not give it to a general role. Test with a harmless command, such as a broadcast, before you use a command that changes player data.
+Console access lets staff run commands from Discord, so restrict it to the staff roles that need it. As general practice, keep a log of every command and do not give console access to a general role. Test with a harmless command, such as a broadcast, before you use a command that changes player data.
 
 ## Test order
+
+The order below is a general practice, not a sequence from the repository:
 
 1. Install the proxy module on the proxy and the Bukkit-family module on each backend.
 2. Start the network and confirm each module loads without errors.
@@ -50,17 +54,17 @@ Console access lets staff run commands from Discord. It is powerful. Restrict it
 
 ## Common failure points
 
-If a player has the Discord role but not the in-game permission, check the role mapping first. A bot below the managed roles cannot change them, so check the bot's role position. Read the console on every server in the network, since each module logs on its own server.
+If a player has the Discord role but not the in-game permission, check the role mapping first. Check the bot's role position too. Each server in the network loads its own module, so read the console on every server, not only the proxy.
 
 ## What this does not do
 
-DiscordFlow syncs roles and chat. It does not punish players. For mutes, bans and warnings, use a punishment plugin such as [SMP Punishments](/plugins/smp-punishments/). For staff tools inside the game, [StaffModeX](/plugins/staffmodex/) provides staff-mode inventories and moderation tools.
+The repository lists role sync, chat sync, proximity voice and console access as the features. Punishments are not among them. For mutes, bans and warnings, use a punishment plugin such as [SMP Punishments](/plugins/smp-punishments/). For staff tools inside the game, [StaffModeX](/plugins/staffmodex/) provides staff-mode inventories and moderation tools.
 
 ## Frequently asked questions
 
 ### Does DiscordFlow need a proxy?
 
-Not for a single server. A network with a proxy needs the BungeeCord or Velocity module on the proxy.
+No. A single Bukkit-family server runs the Bukkit-family module alone. A network with a proxy needs the BungeeCord or Velocity module on the proxy.
 
 ### Does the universal artifact include JDA?
 
@@ -72,4 +76,4 @@ The repository requires Java 11 or newer.
 
 ### Does DiscordFlow punish players?
 
-No. It syncs roles, chat, voice and console access. Use a punishment plugin for mutes and bans.
+Not according to its listed features. Use a punishment plugin for mutes and bans.

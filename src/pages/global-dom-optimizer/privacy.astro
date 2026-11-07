@@ -1,11 +1,29 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { absUrl, breadcrumb, graph, webPage } from "@/data/schema";
+
+const pageUrl = absUrl("/global-dom-optimizer/privacy/");
+const jsonLd = graph(
+  webPage(
+    "WebPage",
+    `${pageUrl}#webpage`,
+    "Global DOM Optimizer Privacy Policy | ArkFlame Studios",
+    pageUrl,
+    "Privacy policy for Global DOM Optimizer by ArkFlame Studios. Learn what the browser extension processes locally, saves, and never transmits.",
+    { breadcrumb: { "@id": `${pageUrl}#breadcrumb` } },
+  ),
+  breadcrumb(`${pageUrl}#breadcrumb`, [
+    { name: "Global DOM Optimizer", url: absUrl("/global-dom-optimizer/") },
+    { name: "Privacy", url: pageUrl },
+  ]),
+);
 ---
 
 <BaseLayout
   title="Global DOM Optimizer Privacy Policy | ArkFlame Studios"
   description="Privacy policy for Global DOM Optimizer by ArkFlame Studios. Learn what the browser extension processes locally, saves, and never transmits."
   canonicalPath="/global-dom-optimizer/privacy/"
+  jsonLd={jsonLd}
 >
   <div class="privacy-shell af-container">
     <div class="privacy-head">

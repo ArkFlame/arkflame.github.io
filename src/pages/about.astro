@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { SITE } from "@/data/site";
 import { PRODUCTS } from "@/data/products";
+import { ORG_ID, absUrl, breadcrumb, graph, webPage } from "@/data/schema";
 
 const description =
   "ArkFlame Studios builds Minecraft server, security, performance and gameplay software. It is built by LinsaFTW, an Argentine software developer.";
@@ -36,37 +37,17 @@ const milestones = [
   "FairPlay — verified public BuiltByBit launch: 2026-06-12",
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "AboutPage",
-      "@id": "https://arkflame.com/about/#aboutpage",
-      name: "About ArkFlame Studios | Minecraft Infrastructure Software",
-      url: "https://arkflame.com/about/",
-      isPartOf: { "@id": "https://arkflame.com/#website" },
-      mainEntity: { "@id": "https://arkflame.com/#organization" },
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://arkflame.com/about/#breadcrumb",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: "https://arkflame.com/",
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "About",
-          item: "https://arkflame.com/about/",
-        },
-      ],
-    },
-  ],
-};
+const jsonLd = graph(
+  webPage(
+    "AboutPage",
+    `${absUrl("/about/")}#aboutpage`,
+    "About ArkFlame Studios | Minecraft Infrastructure Software",
+    absUrl("/about/"),
+    description,
+    { mainEntity: { "@id": ORG_ID } },
+  ),
+  breadcrumb(`${absUrl("/about/")}#breadcrumb`, [{ name: "About", url: absUrl("/about/") }]),
+);
 ---
 
 <BaseLayout

@@ -8,6 +8,7 @@ import { PRODUCTS, getProduct, getProductsByCategory } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
 import { STORE_STATS, STATS_AS_OF } from "@/data/store-stats";
 import { getCollection } from "astro:content";
+import { absUrl, graph, webPage } from "@/data/schema";
 
 const docsCount = (await getCollection("docs")).length;
 const allGuides = await getCollection("guides");
@@ -63,39 +64,15 @@ const popular = [...PRODUCTS]
   .sort((a, b) => purchasesOf(b.slug) - purchasesOf(a.slug))
   .slice(0, 8);
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${SITE.siteUrl}/#organization`,
-      name: SITE.name,
-      url: `${SITE.siteUrl}/`,
-      logo: `${SITE.siteUrl}${SITE.logo}`,
-      image: `${SITE.siteUrl}${SITE.ogImage}`,
-      description:
-        "ArkFlame Studios builds Minecraft server software for security, performance, proxies, anticheat and SMP gameplay.",
-      sameAs: [
-        SITE.githubUrl,
-        SITE.builtByBitUrl,
-        SITE.discordUrl,
-        getProduct("flamecord")?.officialUrl,
-        getProduct("exploitfixer")?.officialUrl,
-        getProduct("veloflame")?.officialUrl,
-        getProduct("fairplay")?.officialUrl,
-        SITE.founderUrl,
-      ].filter((url): url is string => url !== undefined),
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE.siteUrl}/#website`,
-      name: SITE.name,
-      url: `${SITE.siteUrl}/`,
-      publisher: { "@id": `${SITE.siteUrl}/#organization` },
-      inLanguage: "en-US",
-    },
-  ],
-};
+const jsonLd = graph(
+  webPage(
+    "WebPage",
+    `${absUrl("/")}#webpage`,
+    "Minecraft Plugins & Server Software | ArkFlame Studios",
+    absUrl("/"),
+    "Minecraft plugins, anticheat, authentication and proxy software for security, performance and SMP servers. Built by ArkFlame Studios.",
+  ),
+);
 ---
 
 <BaseLayout

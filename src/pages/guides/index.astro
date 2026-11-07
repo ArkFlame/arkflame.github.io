@@ -1,42 +1,28 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { SITE } from "@/data/site";
+import { absUrl, breadcrumb, graph, itemList, webPage } from "@/data/schema";
 
 const guides = (await getCollection("guides")).sort(
   (a, b) => b.data.updated.getTime() - a.data.updated.getTime(),
 );
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "CollectionPage",
-      "@id": `${SITE.siteUrl}/guides/#collection`,
-      name: "ArkFlame technical guides",
-      url: `${SITE.siteUrl}/guides/`,
-      description: "Task-led guides for Minecraft server security, proxies, Folia and performance work.",
-      isPartOf: { "@id": `${SITE.siteUrl}/#website` },
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": `${SITE.siteUrl}/guides/#breadcrumb`,
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: `${SITE.siteUrl}/` },
-        { "@type": "ListItem", position: 2, name: "Guides", item: `${SITE.siteUrl}/guides/` },
-      ],
-    },
-    {
-      "@type": "ItemList",
-      itemListElement: guides.map((guide, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: guide.data.title,
-        url: `${SITE.siteUrl}/guides/${guide.id}/`,
-      })),
-    },
-  ],
-};
+const guidesUrl = absUrl("/guides/");
+const jsonLd = graph(
+  webPage(
+    "CollectionPage",
+    `${guidesUrl}#collection`,
+    "ArkFlame technical guides",
+    guidesUrl,
+    "Task-led guides for Minecraft server security, proxies, Folia and performance work.",
+    { mainEntity: { "@id": `${guidesUrl}#itemlist` }, breadcrumb: { "@id": `${guidesUrl}#breadcrumb` } },
+  ),
+  itemList(
+    `${guidesUrl}#itemlist`,
+    guides.map((guide) => ({ name: guide.data.title, url: absUrl(`/guides/${guide.id}/`) })),
+  ),
+  breadcrumb(`${guidesUrl}#breadcrumb`, [{ name: "Guides", url: guidesUrl }]),
+);
 ---
 
 <BaseLayout

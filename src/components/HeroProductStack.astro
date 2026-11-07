@@ -14,6 +14,7 @@ const primaryBase = primary.image?.replace(/\.webp$/, "");
 <div class="hps" aria-label={`${primary.name} and featured products`}>
   <div class="hps__frame">
     {primary.image ? (
+      <a class="hps__link" href={`/plugins/${primary.slug}/`} aria-label={`View ${primary.name}`}>
       <img
         class="hps__primary"
         src={primary.image}
@@ -26,13 +27,14 @@ const primaryBase = primary.image?.replace(/\.webp$/, "");
         decoding="async"
         fetchpriority="high"
       />
+      </a>
     ) : (
       <div class="hps__fallback" role="img" aria-label={`${primary.name} preview unavailable`}>
         {primary.name}
       </div>
     )}
     {tiles.map((product, index) => (
-      <div class:list={["hps__tile", `hps__tile--${index + 1}`]}>
+      <a class:list={["hps__tile", `hps__tile--${index + 1}`]} href={`/plugins/${product.slug}/`} aria-label={`View ${product.name}`}>
         {product.icon ?? product.image ? (
           <img
             src={product.icon ?? product.image}
@@ -47,12 +49,14 @@ const primaryBase = primary.image?.replace(/\.webp$/, "");
             {product.name}
           </div>
         )}
-      </div>
+      </a>
     ))}
   </div>
 </div>
 
 <style>
+  .hps__link { display: contents; }
+  a.hps__tile { display: block; }
   .hps {
     width: 100%;
     max-width: 470px;

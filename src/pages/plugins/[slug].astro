@@ -1,13 +1,21 @@
 ---
 import type { Product, ProductCategory } from "@/data/products";
-import { PRODUCTS } from "@/data/products";
+import { PRODUCTS, getProductsByCategory } from "@/data/products";
 import type { CategoryInfo } from "@/data/categories";
 import { getCategory, getCategorySlugs } from "@/data/categories";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CategoryPage from "@/components/CategoryPage.astro";
 import ProductPage from "@/components/ProductPage.astro";
 import { SITE } from "@/data/site";
-import { STORE_STATS } from "@/data/store-stats";
+import {
+  absUrl,
+  breadcrumb,
+  graph,
+  itemList,
+  softwareApplication,
+  webPage,
+  type SchemaNode,
+} from "@/data/schema";
 
 /**
  * Single dynamic route owning both `/plugins/<category>/` and `/plugins/<product>/`.
@@ -48,8 +56,6 @@ const CATEGORY_TITLE_PHRASE: Readonly<Record<ProductCategory, string>> = {
   smp: "Minecraft SMP plugin",
 };
 
-const abs = (path: string): string => new URL(path, SITE.siteUrl).href;
-
 /** Product title: "<name> — <phrase> | ArkFlame", trimmed to 60 chars. */
 function metaTitle(name: string, phrase: string): string {
   const full = `${name} — ${phrase} | ArkFlame`;
@@ -66,100 +72,48 @@ function metaDescription(name: string, phrase: string, summary: string): string 
   const body = head.length <= max ? head : `${head.slice(0, max - 1).replace(/\s+\S*$/, "")}…`;
   return `${body}${suffix}`;
 }
-const homeUrl = `${SITE.siteUrl}/`;
-const websiteId = `${SITE.siteUrl}/#website`;
-const pluginsUrl = abs("/plugins/");
+const pluginsUrl = absUrl("/plugins/");
 
-const breadcrumbs = (trail: readonly { name: string; url: string }[]) => [
-  { "@type": "ListItem", "position": 1, "name": "Home", "item": homeUrl },
-  ...trail.map((entry, index) => ({
-    "@type": "ListItem",
-    "position": index + 2,
-    "name": entry.name,
-    "item": entry.url,
-  })),
-];
-
-let jsonLd: unknown;
+let jsonLd: SchemaNode;
 
 if ("category" in rest) {
   const category = rest.category;
-  const categoryUrl = abs(`/plugins/${category.slug}/`);
-  jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "CollectionPage",
-        "@id": `${categoryUrl}#collection`,
-        "name": category.h1,
-        "url": categoryUrl,
-        "description": category.intro,
-        "isPartOf": { "@id": websiteId },
-        "breadcrumb": { "@id": `${categoryUrl}#breadcrumb` },
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${categoryUrl}#breadcrumb`,
-        "itemListElement": breadcrumbs([
-          { name: "Minecraft Plugins", url: pluginsUrl },
-          { name: category.name, url: categoryUrl },
-        ]),
-      },
-    ],
-  };
-} else if ("product" in rest) {
+  const categoryUrl = absUrl(`/plugins/${category.slug}/`);
+  const members = getProductsByCategory(category.slug);
+  jsonLd = graph(
+    webPage(
+      "CollectionPage",
+      `${categoryUrl}#collection`,
+      category.h1,
+      categoryUrl,
+      category.intro,
+      { mainEntity: { "@id": `${categoryUrl}#itemlist` }, breadcrumb: { "@id": `${categoryUrl}#breadcrumb` } },
+    ),
+    itemList(
+      `${categoryUrl}#itemlist`,
+      members.map((member) => ({ name: member.name, url: absUrl(`/plugins/${member.slug}/`) })),
+    ),
+    breadcrumb(`${categoryUrl}#breadcrumb`, [
+      { name: "Minecraft Plugins", url: pluginsUrl },
+      { name: category.name, url: categoryUrl },
+    ]),
+  );
+} else {
   const product = rest.product;
   const category = getCategory(product.category);
   if (category === undefined) {
     throw new Error(`plugins/[slug]: unknown category "${product.category}" for product "${product.slug}"`);
   }
-  const productUrl = abs(`/plugins/${product.slug}/`);
-  const categoryUrl = abs(`/plugins/${category.slug}/`);
-  const imagePath = product.image ?? SITE.ogImage;
-  const price = STORE_STATS[product.slug]?.price;
-  // Offer only when the store shows a price. Free items omit it; ratings are never emitted (visible text only).
-  const offers =
-    price === undefined
-      ? undefined
-      : {
-          "@type": "Offer",
-          "price": price.toFixed(2),
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "url": product.storeUrl,
-        };
-  jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "SoftwareApplication",
-        "@id": `${productUrl}#software`,
-        "name": product.name,
-        "url": productUrl,
-        "description": product.summary,
-        "image": `${SITE.siteUrl}${imagePath}`,
-        "keywords": product.tags.join(", "),
-        "applicationCategory": "GameApplication",
-        "operatingSystem": "Java",
-        "isPartOf": { "@id": websiteId },
-        "publisher": {
-          "@type": "Organization",
-          "name": SITE.name,
-          "url": `${SITE.siteUrl}/`,
-        },
-        ...(offers === undefined ? {} : { offers }),
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${productUrl}#breadcrumb`,
-        "itemListElement": breadcrumbs([
-          { name: "Minecraft Plugins", url: pluginsUrl },
-          { name: category.name, url: categoryUrl },
-          { name: product.name, url: productUrl },
-        ]),
-      },
-    ],
-  };
+  const productUrl = absUrl(`/plugins/${product.slug}/`);
+  const categoryUrl = absUrl(`/plugins/${category.slug}/`);
+  jsonLd = graph(
+    softwareApplication(product),
+    breadcrumb(`${productUrl}#breadcrumb`, [
+      { name: "Minecraft Plugins", url: pluginsUrl },
+      { name: category.name, url: categoryUrl },
+      { name: product.name, url: productUrl },
+    ]),
+  );
 }
 ---
 

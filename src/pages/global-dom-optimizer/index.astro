@@ -1,21 +1,26 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { SITE } from "@/data/site";
+import { WEBSITE_ID, breadcrumb, graph, orgRef } from "@/data/schema";
 
 const imageRoot = "/assets/img/global-dom-optimizer";
 const productUrl = `${SITE.siteUrl}/global-dom-optimizer/`;
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "Global DOM Optimizer",
-  description: "A Chromium browser extension that uses native offscreen rendering containment on eligible content in long pages.",
-  url: productUrl,
-  softwareVersion: "0.0.6",
-  applicationCategory: "BrowserApplication",
-  operatingSystem: "Chromium-based browsers",
-  image: `${SITE.siteUrl}${imageRoot}/og-cover.webp`,
-  publisher: { "@type": "Organization", name: SITE.name, url: SITE.siteUrl },
-};
+const jsonLd = graph(
+  {
+    "@type": "SoftwareApplication",
+    "@id": `${productUrl}#software`,
+    name: "Global DOM Optimizer",
+    description: "A Chromium browser extension that uses native offscreen rendering containment on eligible content in long pages.",
+    url: productUrl,
+    softwareVersion: "0.0.6",
+    applicationCategory: "BrowserApplication",
+    operatingSystem: "Chromium-based browsers",
+    image: `${SITE.siteUrl}${imageRoot}/og-cover.webp`,
+    publisher: orgRef,
+    isPartOf: { "@id": WEBSITE_ID },
+  },
+  breadcrumb(`${productUrl}#breadcrumb`, [{ name: "Global DOM Optimizer", url: productUrl }]),
+);
 ---
 
 <BaseLayout
