@@ -7,7 +7,7 @@ relatedPlugins: ["authme-premium", "flamecord", "veloflame"]
 topics: ["security", "proxy", "networking"]
 ---
 
-A login failure often mixes two problems. One is network reachability: only the proxy should be able to open a backend connection. The other is application trust: the backend must recognize the proxy's UUID and token (Mode A) or shared secret (Mode B). Opening the backend port fixes neither. It just removes the boundary that makes trust mean something.
+A login failure often mixes two problems. One is network reachability: only the proxy should be able to open a backend connection. The other is application trust: the backend must recognize the proxy's UUID and token (Mode A) or shared secret (Mode B). Opening the backend port fixes neither. It removes the boundary that trust depends on.
 
 ## Layer 1: make the backend unreachable from the internet
 
@@ -74,8 +74,8 @@ No. Forwarding is identity, not authorization. Lock the backend's reachability a
 
 ### Does a proxy firewall replace a backend access list?
 
-No. The guide describes the proxy firewall as separate from a backend access list.
+No. The proxy firewall does not decide which hosts can reach a backend.
 
 ### Is backend locking a plugin feature?
 
-No. It is host configuration. The guide covers it as a separate layer.
+No. It is host configuration.

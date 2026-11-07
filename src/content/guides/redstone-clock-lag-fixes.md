@@ -7,14 +7,12 @@ relatedPlugins: ["redstonelimiter", "flamestack", "entitylimiter"]
 topics: ["redstone", "clock", "lag", "performance"]
 ---
 
-A redstone clock toggles on a fixed cycle, so it fires again and again without a player touching it. One clock is cheap. Many clocks in one chunk, or a machine that never stops, can keep the server busy around the clock. This guide shows how to find that load, how to limit it with RedstoneLimiter, and how to keep working farms running while you do it.
-
+A redstone clock toggles on a fixed cycle, so it fires again and again without a player touching it. One clock is cheap. Many clocks in one chunk, or a machine that never stops, can keep the server busy around the clock.
 The order matters. Measure first, limit second, and test each change on its own.
 
 ## Confirm the clock is the cost
 
-Before you add any limiter, find out whether redstone is the cost at all. Use the [diagnose-lag guide](/guides/diagnose-lag-before-limiters/) to measure tick time and hot paths. If the largest cost is entities or chunk loading, a redstone limit will not fix it. The [lag diagnosis guide](/guides/diagnose-lag-before-limiters/) explains which numbers to read first.
-
+Before you add any limiter, find out whether redstone is the cost at all. Use the [diagnose-lag guide](/guides/diagnose-lag-before-limiters/) to measure tick time and hot paths. If the largest cost is entities or chunk loading, a redstone limit will not fix it.
 When the numbers point at redstone, note the location of the clock. A clock inside a player base is easy to find. A clock in a remote farm may need a visit or a player report.
 
 ## Run RedstoneLimiter in monitor mode

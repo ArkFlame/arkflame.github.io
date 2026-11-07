@@ -7,8 +7,7 @@ relatedPlugins: ["fairplay"]
 topics: ["anticheat", "false positives", "operations"]
 ---
 
-A FairPlay alert is a signal, not a verdict. Before you disable a check or grant an exemption, find out which check fired, whether the alert is for the player you think it is, and what the latency trace shows. The [FairPlay product page](/plugins/fairplay/) covers scope and the [docs](/docs/fairplay/) cover install. This page is the triage path.
-
+A FairPlay alert is a signal, not a verdict. Before you disable a check or grant an exemption, find out which check fired, whether the alert is for the player you think it is, and what the latency trace shows. The [FairPlay product page](/plugins/fairplay/) covers scope and the [docs](/docs/fairplay/) cover install.
 ## Point your alert feed at one player
 
 `/fp alerts <enable|disable|toggle|inspect|clear> [player]` controls alerts for the staff member running it.

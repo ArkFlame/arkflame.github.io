@@ -11,7 +11,7 @@ SMP Lobby builds the lobby server for a survival network. It covers PvP in the l
 
 ## What it does
 
-A lobby is the first server players reach. SMP Lobby keeps that space safe and useful. It can send players to other servers through a redirect, show titles and announcements, and stop players from falling into the void. The repository declares twelve commands, thirty-six permissions and more than ten configuration files.
+A lobby is the first server players reach. SMP Lobby can send players to other servers through a redirect, show titles and announcements, and stop players from falling into the void. The repository declares twelve commands, thirty-six permissions and more than ten configuration files.
 
 ## Features
 

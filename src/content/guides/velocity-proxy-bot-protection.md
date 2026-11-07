@@ -76,7 +76,7 @@ For product details, see the [VeloFlame product page](/plugins/veloflame/) and t
 
 ### Does one setting stop a bot attack?
 
-No. The guide uses a stack of controls, each catching what the layer above missed.
+No. The layers above only work together.
 
 ### Which proxy should I use on Velocity?
 

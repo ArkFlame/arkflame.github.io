@@ -7,7 +7,7 @@ updated: 2026-11-07
 evidenceNote: "Repository README and manifest, inspected 30 Oct 2026. Local directory is ArkFlame/SMP-Leash; descriptor name is LeashWorkers"
 ---
 
-Leash Workers lets players leash entities and assigns configured jobs to villagers. A villager with a job can work in a set role. The plugin depends on PacketEvents and ships five commands with twenty-five permissions.
+Leash Workers lets players leash entities and assigns configured jobs to villagers. The plugin depends on PacketEvents and ships five commands with twenty-five permissions.
 
 ## What it does
 

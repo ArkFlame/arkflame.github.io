@@ -7,8 +7,7 @@ relatedPlugins: ["flamepractice", "smp-combat", "smp-weapons", "hubcombat"]
 topics: ["practice", "pvp", "duels", "queues", "kits"]
 ---
 
-A practice server lets players fight in controlled matches, such as one-on-one duels, ranked queues or free-for-all rounds. FlamePractice runs that model on Spigot. It covers arenas, queues, kits and player state, and it is set up through five configuration files. This guide covers the order to set it up, how to build arenas and kits you can test, and what to check before you open queues to players.
-
+A practice server lets players fight in controlled matches, such as one-on-one duels, ranked queues or free-for-all rounds. FlamePractice runs that model on Spigot. It covers arenas, queues, kits and player state, and it is set up through five configuration files.
 ## What FlamePractice covers
 
 The plugin runs three modes: duels, ranked queues and FFA. Arenas define where matches happen. Queues decide who plays whom. Kits define what each player starts with. Player state, such as their inventory and position during a match, is handled by the plugin.

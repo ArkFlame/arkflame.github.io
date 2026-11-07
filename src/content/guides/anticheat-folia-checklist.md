@@ -7,8 +7,7 @@ relatedPlugins: ["fairplay"]
 topics: ["anticheat", "folia", "scheduling", "false-positives"]
 ---
 
-An anticheat on Folia has two jobs: catch cheaters, and not disturb honest players. Folia runs each region on its own thread, so a check that reads or changes player state from the wrong thread can fail in ways a single-threaded server never shows. Check the setup before you rely on it.
-
+An anticheat on Folia has two jobs: catch cheaters, and not disturb honest players. Folia runs each region on its own thread, so a check that reads or changes player state from the wrong thread can fail in ways a single-threaded server never shows.
 This checklist uses FairPlay as the worked example. FairPlay declares `folia-supported: true` and is built on PacketEvents. GrimAC is not a product in this catalogue. FairPlay can read flags from GrimAC when it is installed, and it runs without it. The same steps apply to any anticheat you evaluate.
 
 ## 1. Confirm the hard dependencies load

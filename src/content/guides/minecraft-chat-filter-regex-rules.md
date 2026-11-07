@@ -7,8 +7,7 @@ relatedPlugins: ["chatsentinel", "chatsentinel-premium", "smp-punishments", "dis
 topics: ["chat", "filter", "regex", "moderation"]
 ---
 
-A chat filter stops swearing and spam from reaching other players. ChatSentinel does this with regex rules. It runs on Bukkit, BungeeCord and Velocity, and it uses blacklist and whitelist rule sets plus a message configuration. This guide covers how to set it up, how to write rules you can test, and what the plugin does not do.
-
+A chat filter stops swearing and spam from reaching other players. ChatSentinel does this with regex rules. It runs on Bukkit, BungeeCord and Velocity, and it uses blacklist and whitelist rule sets plus a message configuration.
 If you want the wider picture of advertising, flood and spam control, read the [stop chat spam and advertising guide](/guides/stop-chat-spam-and-advertising/) first. This guide focuses on the filter itself.
 
 ## What ChatSentinel checks

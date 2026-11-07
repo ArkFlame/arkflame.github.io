@@ -7,8 +7,7 @@ relatedPlugins: ["lucky-pillars", "squidgamex", "disasters", "smp-lobby"]
 topics: ["minigame", "pillars", "events", "paper"]
 ---
 
-Pillars of Fortune is a minigame where players stand on pillars and random blocks decide what each round offers. Lucky Pillars implements it for Paper. It ships five commands, twenty-four permissions and configuration for GUIs, hotbars, messages and scoreboards. This guide covers the dependencies, the order to set up a round, and the checks to run before you schedule an event.
-
+Pillars of Fortune is a minigame where players stand on pillars and random blocks decide what each round offers. Lucky Pillars implements it for Paper. It ships five commands, twenty-four permissions and configuration for GUIs, hotbars, messages and scoreboards.
 ## What Lucky Pillars covers
 
 The plugin runs Pillars of Fortune rounds. It manages the round flow, the player's hotbar during play and the scoreboard. Each of those can be configured, so you can change how a round looks without changing the game logic.

@@ -51,14 +51,12 @@ FlameCord compiles for Java 17. VeloFlame's build toolchain is Java 25. Both are
 
 ## What each layer covers
 
-The layers do different jobs, so they are not interchangeable:
+Each layer does a different job:
 
 - Rate limits and packet guards slow down connection floods and malformed traffic before they reach the backends.
 - The firewall blocks addresses at the host. FlameCord's module uses ipset and iptables. VeloFlame adds firewall commands on Velocity.
 - The whitelist decides who can join while maintenance is on.
 - Backend locking decides who can reach a backend at all. It is the only layer that protects a backend if the proxy is bypassed.
-
-If a layer is missing, the others still run, but the gap shows up as traffic that reaches a place it should not.
 
 ## Keep the proxy and backend configs in step
 

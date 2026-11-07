@@ -6,7 +6,7 @@ category: "security"
 updated: 2026-10-30
 ---
 
-FairPlay is a combat-focused anticheat built around compensation, not punishment alone. Detection feeds mitigation, such as synthetic hit opportunities for a clean player against a flagged target. It also ships conventional check modules for aimbot, autoclicker, autototem, fastbreak, hitbox, killaura, scaffold, and timer.
+FairPlay is a combat anticheat. Detection feeds mitigation, such as synthetic hit opportunities for a clean player against a flagged target. It also ships conventional check modules for aimbot, autoclicker, autototem, fastbreak, hitbox, killaura, scaffold, and timer.
 
 ## Requirements
 

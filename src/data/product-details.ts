@@ -159,7 +159,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   mobstacker: {
     description:
-      "MobStacker merges nearby mobs of the same type to cut entity counts and the tick cost that comes with them. Two commands and a config file cover the stacking behaviour.",
+      "MobStacker merges nearby mobs of the same type to cut entity counts and the tick cost they add. Two commands and a config file cover the stacking behaviour.",
     highlights: [
       "Same-type mob stacking",
       "Entity-count reduction",
@@ -190,7 +190,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   entitylimiter: {
     description:
-      "EntityLimiter sets hard caps on entity counts to stop crash and lag conditions caused by entity pressure. Eight configuration files cover limits, messages and behaviour.",
+      "EntityLimiter sets hard caps on entity counts to prevent crashes and lag from entity pressure. Eight configuration files cover limits, messages and behaviour.",
     highlights: [
       "Entity-count limits",
       "Crash and lag prevention",
@@ -279,7 +279,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   // --- Gameplay -----------------------------------------------------------
   flamepractice: {
     description:
-      "FlamePractice runs duel, ranked and FFA practice on a Spigot-based server. Arenas, queues, kits and player state are covered by five configuration files and a large command surface.",
+      "FlamePractice runs duel, ranked and FFA practice on a Spigot-based server. Arenas, queues, kits and player state are covered by five configuration files and thirty commands.",
     highlights: [
       "Duels, ranked queues and FFA",
       "Arena and kit configuration",
@@ -361,7 +361,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   squidgamex: {
     description:
-      "SquidGameX runs large Squid Game-style events with a set of game and configuration files. It is built for Bukkit, Spigot, Paper and Folia servers.",
+      "SquidGameX runs large Squid Game-style events with game and configuration files. It is built for Bukkit, Spigot, Paper and Folia servers.",
     highlights: [
       "Squid Game-style event rounds",
       "Ten-plus game and configuration files",
@@ -652,7 +652,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   "smp-lifesteal": {
     description:
-      "SMP Lifesteal adds health-based combat progression for survival servers. It ships nine commands, a large permission tree and six configuration files, and documents 1.8.8–1.21.x support.",
+      "SMP Lifesteal adds health-based combat progression for survival servers. It ships nine commands, 102 permissions and six configuration files, and documents 1.8.8–1.21.x support.",
     highlights: [
       "Lifesteal combat progression",
       "Nine commands and 102 permissions",
@@ -771,7 +771,7 @@ export const PRODUCT_DETAILS: Readonly<Record<string, ProductDetail>> = {
   },
   "smp-menus": {
     description:
-      "SMP Menus provides help and rules menus as an alternative to DeluxeMenus. Menus are defined in configuration with a menu-driven interface.",
+      "SMP Menus provides help and rules menus as an alternative to DeluxeMenus. Menus are defined in configuration.",
     highlights: [
       "Configurable help and rules menus",
       "Menu-driven interface",

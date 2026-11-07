@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import HeroProductStack from "@/components/HeroProductStack.astro";
+import FounderCard from "@/components/FounderCard.astro";
 import ProductCard from "@/components/ProductCard.astro";
 import Icon from "@/components/Icon.astro";
 import { SITE, HERO, PLATFORM_STRIP } from "@/data/site";
@@ -175,6 +176,16 @@ const jsonLd = graph(
         ))
       }
     </ul>
+  </section>
+
+  <section class="founder-home af-container af-section" aria-labelledby="founder-heading">
+    <FounderCard headingId="founder-heading" compact>
+      <p class="founder-home__body">
+        LinsaFTW is an Argentine software developer who designs, builds and
+        releases the products listed here.
+      </p>
+      <a class="btn" href="/about/">About the founder</a>
+    </FounderCard>
   </section>
 
   <section class="docs af-container af-section" aria-labelledby="docs-title">
@@ -547,5 +558,12 @@ const jsonLd = graph(
     .cats__list {
       grid-template-columns: minmax(0, 1fr);
     }
+  }
+
+  .founder-home__body {
+    margin: 0 0 16px;
+    max-width: 62ch;
+    color: var(--af-muted);
+    line-height: 1.65;
   }
 </style>

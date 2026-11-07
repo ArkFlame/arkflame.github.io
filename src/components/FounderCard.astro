@@ -1,0 +1,86 @@
+---
+interface Props {
+  headingId: string;
+  compact?: boolean;
+}
+
+const { headingId, compact = false } = Astro.props;
+const founderPhoto = "/assets/img/founder/linsaftw";
+---
+
+<div class:list={["founder af-card", compact && "founder--compact"]}>
+  <img
+    class="founder__photo"
+    src={`${founderPhoto}-480.webp`}
+    srcset={`${founderPhoto}-480.webp 480w, ${founderPhoto}-720.webp 720w, ${founderPhoto}-1080.webp 1080w`}
+    sizes={compact ? "(max-width: 560px) 120px, 140px" : "(max-width: 560px) 160px, 220px"}
+    alt="Juan Cruz Linsalata (LinsaFTW), founder of ArkFlame Studios, holding a small netbook that shows a terminal."
+    width="480"
+    height="640"
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="founder__copy">
+    <h2 id={headingId}>Meet the founder</h2>
+    <p class="founder__role">Juan Cruz Linsalata, LinsaFTW</p>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .founder {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .founder__photo {
+    flex: 0 0 auto;
+    width: 220px;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid var(--af-border-strong);
+    border-radius: 22px;
+  }
+
+  .founder__copy {
+    flex: 1 1 320px;
+    min-width: 0;
+  }
+
+  .founder__role {
+    margin: 0 0 12px;
+    color: var(--af-accent);
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .founder--compact {
+    gap: 24px;
+    padding: 20px;
+  }
+
+  .founder--compact .founder__photo {
+    width: 140px;
+    border-radius: 16px;
+  }
+
+  .founder--compact .founder__role {
+    font-size: 17px;
+  }
+
+  @media (max-width: 560px) {
+    .founder__photo {
+      width: 160px;
+    }
+
+    .founder--compact .founder__photo {
+      width: 120px;
+    }
+  }
+</style>

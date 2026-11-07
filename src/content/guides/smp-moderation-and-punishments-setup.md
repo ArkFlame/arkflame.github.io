@@ -13,7 +13,7 @@ Set moderation up in layers. Punishments come first, then staff tools, then chat
 
 SMP Punishments covers bans, kicks, mutes and warnings. It has an optional voice-chat mute hook. The suite has twenty-five commands and thirty-eight permissions. Give staff the permissions by rank, not by name, so you can change a rank without editing each player.
 
-Test each command with a test account before you give staff access. Check that a warning is recorded, a mute blocks chat, and a ban stops a login. A punishment that does not do what the command says is the most damaging bug a moderation plugin can have.
+Test each command with a test account before you give staff access. Check that a warning is recorded, a mute blocks chat, and a ban stops a login. A punishment that does not do what its command says is a serious bug.
 
 ## Add staff mode
 

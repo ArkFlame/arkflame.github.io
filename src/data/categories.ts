@@ -39,9 +39,9 @@ export const CATEGORIES: readonly CategoryInfo[] = [
     title: "Minecraft Performance Plugins | ArkFlame Studios",
     h1: "Minecraft Performance Plugins",
     intro:
-      "Server optimization tools for entity pressure, redstone abuse, runtime stability and high-load environments.",
+      "Server optimization tools for entity pressure, redstone abuse and runtime stability.",
     overview:
-      "Performance plugins target the work that costs a server the most: entity counts, redstone machines and dense player builds. RedstoneLimiter cancels or throttles redstone activity that crosses configured limits, and its monitor mode measures load before you enforce anything. BlockLimiter caps block counts per chunk. EntityLimiter sets hard caps on entity counts. MobStacker and FlameStack merge mobs and ground items to reduce entity pressure. FlamePaper is a Paper 1.8.8 fork that replaces the server jar, so it is not a plugin. Measure TPS and tick time first, so you add the limiter that addresses the cost you actually see.",
+      "Performance plugins target the work that costs a server the most: entity counts, redstone machines and dense player builds. RedstoneLimiter cancels or throttles redstone activity that crosses configured limits, and its monitor mode measures load before you enforce anything. BlockLimiter caps block counts per chunk. EntityLimiter sets hard caps on entity counts. MobStacker and FlameStack merge mobs and ground items to reduce entity pressure. FlamePaper is a Paper 1.8.8 fork that replaces the server jar, so it is not a plugin. Measure TPS and tick time first, then add the limiter that matches the cost you see.",
     audience:
       "Server admins whose TPS drops come from entity counts, redstone machines or dense player-built structures.",
     icon: "gauge",
@@ -54,7 +54,7 @@ export const CATEGORIES: readonly CategoryInfo[] = [
     title: "Minecraft Proxy & Network Software | ArkFlame Studios",
     h1: "Minecraft Proxy & Network Software",
     intro:
-      "Proxy infrastructure for secure Minecraft networks built around Velocity and Bungee-compatible environments.",
+      "Secure proxy software for Minecraft networks on Velocity and Bungee-compatible setups.",
     overview:
       "Network software guards the entry point of a Minecraft network. FlameCord is a BungeeCord and Waterfall-compatible proxy with anti-bot and anti-crash modules. It is proxy software, not a Bukkit plugin. VeloFlame is a Velocity fork with the same protection goal, adding whitelist, firewall and maintenance commands. DiscordFlow syncs roles, chat, proximity voice and console access between Minecraft and Discord. Pick the proxy by the ecosystem you already run: FlameCord for BungeeCord or Waterfall, VeloFlame for Velocity. Because the proxy takes the connections, keep backend ports reachable only from the proxy.",
     audience:
@@ -68,7 +68,7 @@ export const CATEGORIES: readonly CategoryInfo[] = [
     name: "Gameplay",
     title: "Minecraft Gameplay Plugins | ArkFlame Studios",
     h1: "Minecraft Gameplay Plugins",
-    intro: "PvP, practice, minigame and player-facing systems built for multiplayer Minecraft.",
+    intro: "PvP, practice, minigame and player-facing systems for multiplayer Minecraft.",
     overview:
       "Gameplay plugins cover the systems players use directly: PvP practice, clans, classes, weapons, events and minigames. FlamePractice runs duels, ranked play and FFA. MineClans is a factions-style system with power, land claiming and alliances. MineClasses adds armor-based classes with automatic potion effects. FlameForge covers custom weapons, upgrades and reforging. For events, MineKoth and SH-Koth run hill-capture events and SquidGameX runs large Squid Game-style events. Disasters and Lucky Pillars are minigame implementations. Check each product page for its platform and dependencies before you install.",
     audience:
@@ -84,7 +84,7 @@ export const CATEGORIES: readonly CategoryInfo[] = [
     h1: "Minecraft SMP Plugins",
     intro: "Survival systems for combat, regions, farming, lifesteal, moderation, menus and progression.",
     overview:
-      "SMP plugins cover the survival loop: land protection, combat, progression, farming, economy, moderation and menus. SMP Protections and ProtectionStones Extras handle claims, menus and region flags. SMP Regions is a WorldGuard-alternative region system. SMP Lifesteal, SMP Harvest and FlameSpawners add progression and farming. FlameShop covers shop, sell and worth for economy servers, and SMP Shards adds AFK-earned currency. SMP Punishments adds moderation with voice-chat mute support. Several SMP listings advertise Folia support. That is a listing claim, so verify it on your own Folia server before you rely on it.",
+      "SMP plugins cover the survival loop: land protection, combat, progression, farming, economy, moderation and menus. SMP Protections and ProtectionStones Extras handle claims, menus and region flags. SMP Regions is a WorldGuard-alternative region system. SMP Lifesteal, SMP Harvest and FlameSpawners add progression and farming. FlameShop covers shop, sell and worth for economy servers, and SMP Shards adds AFK-earned currency. SMP Punishments adds moderation with voice-chat mute support. Several SMP listings advertise Folia support. That is a listing claim; verify it on your own Folia server before relying on it.",
     audience:
       "Operators of survival servers who need protection, progression, economy or moderation systems.",
     icon: "tree",
