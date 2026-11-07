@@ -33,13 +33,6 @@ const buildAreas = [
   },
 ];
 
-const milestones = [
-  "FlameCord: first public BuiltByBit release, 2020-02-01",
-  "VeloFlame: first public BuiltByBit release, 2025-10-27",
-  "2026-05-28: public article naming ArkFlame Studios the main hub",
-  "FairPlay: first public BuiltByBit release, 2026-06-12",
-];
-
 const jsonLd = graph(
   webPage(
     "AboutPage",
@@ -139,10 +132,6 @@ const jsonLd = graph(
           <dd>Minecraft server plugins and proxy software for security, performance, network and SMP gameplay.</dd>
         </div>
         <div>
-          <dt>Since</dt>
-          <dd>ArkFlame-branded activity is documented from 2013-11-29. This site does not state a company start date.</dd>
-        </div>
-        <div>
           <dt>Catalogue</dt>
           <dd>{PRODUCTS.length} products listed on the plugins index.</dd>
         </div>
@@ -183,25 +172,6 @@ const jsonLd = graph(
           Meet LinsaFTW
         </a>
       </FounderCard>
-    </div>
-  </section>
-
-  <section class="af-section" aria-labelledby="ab-roots-heading">
-    <div class="af-container">
-      <h2 id="ab-roots-heading">Public roots</h2>
-      <p class="ab-copy">
-        ArkFlame Network independently documents ArkFlame-branded Minecraft
-        activity from 2013-11-29. That shows the brand's public roots, not when
-        the current company started.
-      </p>
-      <ol class="ab-milestones">
-        {milestones.map((milestone) => <li>{milestone}</li>)}
-      </ol>
-      <p class="ab-copy">
-        BuiltByBit dates are the first public release listed on each product's
-        marketplace page. They are release and publication dates, not corporate
-        milestones.
-      </p>
     </div>
   </section>
 
@@ -334,20 +304,7 @@ const jsonLd = graph(
     }
   }
 
-  .ab-milestones {
-    display: grid;
-    gap: 10px;
-    margin: 0 0 14px;
-    padding-left: 22px;
-    max-width: 62ch;
-    color: var(--af-muted);
-    line-height: 1.6;
-  }
 
-  .ab-milestones li::marker {
-    color: var(--af-accent);
-    font-family: var(--font-display);
-  }
 
   .ab-cta {
     padding-block-end: var(--af-section-y);
