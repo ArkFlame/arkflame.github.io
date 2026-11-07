@@ -148,7 +148,7 @@ export const PRODUCTS: readonly Product[] = [
     name: "FlamePaper",
     category: "performance",
     summary:
-      "Paper 1.8.8 fork focused on security, performance, stability, knockback, tick loop and redstone behavior.",
+      "Paper 1.8.8 fork focused on security, performance, stability, patches, knockback, tick loop and redstone behavior.",
     tags: ["Paper fork", "1.8.8", "Server stability", "Redstone"],
     image: "/assets/img/products/flamepaper.webp",
     icon: "/assets/img/product-icons/flamepaper.webp",
